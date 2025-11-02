@@ -1,0 +1,31 @@
+﻿@page "/logout"
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+@inject NavigationManager Nav
+
+<h3 class="text-center mt-5">Đang đăng xuất...</h3>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            // 🧹 Xóa token trong LocalStorage
+            await LocalStorage.RemoveItemAsync("access_token");
+            await LocalStorage.RemoveItemAsync("refresh_token");
+
+            // Nếu có thêm thông tin user (ví dụ tên, avatar) cũng xóa luôn
+            await LocalStorage.RemoveItemAsync("user_profile");
+
+            // ⏳ Đợi nhẹ để UI hiển thị
+            await Task.Delay(500);
+
+            // 🔁 Chuyển hướng về trang đăng nhập
+            Nav.NavigateTo("/login", true);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Logout error: {ex.Message}");
+            Nav.NavigateTo("/login", true);
+        }
+    }
+}

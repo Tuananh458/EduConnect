@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<RuntimeIdentifier>browser-wasm</RuntimeIdentifier>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<!-- Local Storage (JWT, token, user info) -->
+		<PackageReference Include="Blazored.LocalStorage" Version="4.5.0" />
+
+		<!-- Google OAuth (client-side) -->
+		<PackageReference Include="Google.Apis.Auth" Version="1.72.0" />
+
+		<!-- Blazor WebAssembly Core -->
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.21" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.21" PrivateAssets="all" />
+		<PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="8.0.21" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<!-- Static assets -->
+		<Folder Include="Pages\CauHoi\" />
+		<Folder Include="wwwroot\images\" />
+		<Folder Include="wwwroot\template\" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<!-- Shared models (DTOs, entities) -->
+		<ProjectReference Include="..\EduConnect.Shared\EduConnect.Shared.csproj" />
+	</ItemGroup>
+
+</Project>

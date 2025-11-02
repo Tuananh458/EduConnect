@@ -1,0 +1,50 @@
+﻿.edu-navbar {
+    background-color: #504EF3;
+    color: white;
+}
+
+    .edu-navbar .nav-link {
+        color: white !important;
+        font-size: 1rem;
+    }
+
+        .edu-navbar .nav-link:hover {
+            opacity: 0.85;
+        }
+
+.search-bar .form-control,
+.search-bar .form-select,
+.search-bar .input-group-text {
+    border: none;
+    border-radius: 20px;
+}
+
+.search-bar .form-control {
+    height: 40px;
+}
+
+.notif-badge {
+    position: absolute;
+    top: 4px;
+    right: 8px;
+    background-color: orange;
+    color: white;
+    font-size: 0.7rem;
+    border-radius: 50%;
+    width: 16px;
+    height: 16px;
+    text-align: center;
+    line-height: 16px;
+}
+
+.user-avatar {
+    background-color: white;
+    color: #504EF3;
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}

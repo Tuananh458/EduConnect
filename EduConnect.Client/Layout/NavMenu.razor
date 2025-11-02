@@ -1,0 +1,70 @@
+﻿@using Blazored.LocalStorage
+@inject NavigationManager Nav
+@inject ILocalStorageService LocalStorage
+
+<nav class="navbar navbar-expand-lg navbar-light shadow-sm sticky-top edu-navbar">
+    <div class="container-fluid px-4">
+        <!-- Logo -->
+        <a class="navbar-brand d-flex align-items-center" href="/">
+            <img src="images/logo.png" alt="EduConnect" height="40" class="me-2" />
+            <span class="fw-bold text-white fs-5">OLM</span>
+        </a>
+
+        <!-- Thanh tìm kiếm -->
+        <div class="search-bar mx-3 flex-grow-1">
+            <div class="input-group">
+                <span class="input-group-text"><i class="fa fa-search"></i></span>
+                <input type="text" class="form-control" placeholder="Tìm kiếm bài học, bài tập, mã lớp, mã khóa học..." />
+                <select class="form-select w-auto">
+                    <option>Học liệu</option>
+                    <option>Bài viết</option>
+                    <option>Giáo viên</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Menu bên phải -->
+        <ul class="navbar-nav align-items-center ms-auto">
+            <li class="nav-item me-3">
+                <a class="nav-link text-white" href="/profile"><i class="fa fa-user"></i></a>
+            </li>
+            <li class="nav-item me-3">
+                <a class="nav-link text-white" href="/messages"><i class="fa fa-comment"></i></a>
+            </li>
+            <li class="nav-item me-3 position-relative">
+                <a class="nav-link text-white" href="/notifications">
+                    <i class="fa fa-bell"></i>
+                    <span class="notif-badge">1</span>
+                </a>
+            </li>
+
+            <!-- Menu tài khoản -->
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle text-white d-flex align-items-center" href="#" id="userDropdown"
+                   role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <div class="user-avatar">TA</div>
+                    <span class="ms-2">Tuấn Anh Hoàng Kim Tuấn Anh</span>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="userDropdown">
+                    <li><a class="dropdown-item" href="/profile">Hồ sơ của tôi</a></li>
+                    <li><a class="dropdown-item" href="/change-password">Đổi mật khẩu</a></li>
+                    <li><hr class="dropdown-divider" /></li>
+                    <li>
+                        <button class="dropdown-item text-danger" @onclick="Logout">
+                            <i class="fa fa-sign-out-alt me-2"></i> Đăng xuất
+                        </button>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+@code {
+    private async Task Logout()
+    {
+        await LocalStorage.RemoveItemAsync("access_token");
+        await LocalStorage.RemoveItemAsync("refresh_token");
+        Nav.NavigateTo("/login", true);
+    }
+}

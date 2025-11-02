@@ -1,0 +1,257 @@
+﻿@page "/lop-hoc"
+@using EduConnect.Client.Services
+@using EduConnect.Shared.DTOs
+@inject LopHocService LopHocService
+@inject IJSRuntime JS
+
+<div class="container-fluid">
+    <h2 class="mb-4 text-primary">📘 Quản lý lớp học</h2>
+
+    <button class="btn btn-primary mb-3" @onclick="ShowCreateModal">
+        <i class="fas fa-plus"></i> Thêm lớp học
+    </button>
+
+    @if (lopHocs == null)
+    {
+        <div>Đang tải dữ liệu...</div>
+    }
+    else if (!lopHocs.Any())
+    {
+        <div class="alert alert-info">Chưa có lớp học nào.</div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover align-middle">
+                <thead class="table-primary text-center">
+                    <tr>
+                        <th>Mã lớp</th>
+                        <th>Tên lớp</th>
+                        <th>Khối học</th>
+                        <th>Sĩ số</th>
+                        <th>Trạng thái</th>
+                        <th>Ngày tạo</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var lop in lopHocs)
+                    {
+                        <tr>
+                            <td>@lop.MaLopHoc</td>
+                            <td>@lop.TenLopHoc</td>
+                            <td>@GetTenKhoiHoc(lop.MaKhoiHoc)</td>
+                            <td>@lop.SiSo</td>
+                            <td>@lop.TrangThai</td>
+                            <td>@lop.NgayTao?.ToString("dd/MM/yyyy")</td>
+                            <td class="text-center">
+                                <button class="btn btn-sm btn-warning me-2" @onclick="() => Edit(lop.MaLopHoc)">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn btn-sm btn-danger" @onclick="() => Delete(lop.MaLopHoc)">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
+
+<!-- Modal thêm / sửa lớp học -->
+@if (showModal)
+{
+    <div class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-primary">@modalTitle</h5>
+                    <button type="button" class="btn-close" @onclick="CloseModal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Tên lớp học</label>
+                        <input @bind="editModel.TenLopHoc" class="form-control" placeholder="VD: 10A1;10A2;11A1" />
+                        @if (isCreate)
+                        {
+                            <small class="text-muted">* Có thể nhập nhiều tên lớp, cách nhau bằng dấu chấm phẩy (;)</small>
+                        }
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Khối học</label>
+                        <select @bind="editModel.MaKhoiHoc" class="form-select">
+                            <option value="">-- Chọn khối học --</option>
+                            @foreach (var khoi in khoiHocs)
+                            {
+                                <option value="@khoi.Key">@khoi.Value</option>
+                            }
+                        </select>
+                    </div>
+
+                    @if (!isCreate)
+                    {
+                        <div class="mb-3">
+                            <label class="form-label">Trạng thái</label>
+                            <select @bind="editModel.TrangThai" class="form-select">
+                                <option value="Hoạt động">Hoạt động</option>
+                                <option value="Tạm dừng">Tạm dừng</option>
+                                <option value="Ngưng hoạt động">Ngưng hoạt động</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Sĩ số</label>
+                            <input type="number" @bind="editModel.SiSo" class="form-control" />
+                        </div>
+                    }
+
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" @onclick="CloseModal">Đóng</button>
+                    <button class="btn btn-primary" @onclick="Save">@buttonText</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    private List<LopHocDto>? lopHocs;
+    private bool showModal = false;
+    private bool isCreate = true;
+    private string modalTitle = "Thêm lớp học";
+    private string buttonText = "Lưu";
+
+    private CreateLopHocRequest createModel = new();
+    private UpdateLopHocRequest editModel = new();
+
+    // ✅ Danh sách khối học cố định cho THPT
+    private readonly Dictionary<int, string> khoiHocs = new()
+    {
+        { 10, "Khối 10" },
+        { 11, "Khối 11" },
+        { 12, "Khối 12" }
+    };
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadLopHoc();
+    }
+
+    private async Task LoadLopHoc()
+    {
+        lopHocs = await LopHocService.GetAllAsync();
+        StateHasChanged();
+    }
+
+    private string GetTenKhoiHoc(int maKhoiHoc)
+    {
+        return khoiHocs.ContainsKey(maKhoiHoc) ? khoiHocs[maKhoiHoc] : "Không xác định";
+    }
+
+    private void ShowCreateModal()
+    {
+        isCreate = true;
+        modalTitle = "Thêm lớp học mới";
+        buttonText = "Thêm";
+        editModel = new();
+        createModel = new();
+        showModal = true;
+    }
+
+    private void CloseModal() => showModal = false;
+
+    private async Task Edit(int id)
+    {
+        var item = await LopHocService.GetByIdAsync(id);
+        if (item == null)
+        {
+            await JS.InvokeVoidAsync("alert", "Không tìm thấy lớp học!");
+            return;
+        }
+
+        isCreate = false;
+        modalTitle = "Cập nhật lớp học";
+        buttonText = "Cập nhật";
+
+        editModel = new UpdateLopHocRequest
+            {
+                MaLopHoc = item.MaLopHoc,
+                TenLopHoc = item.TenLopHoc,
+                MaKhoiHoc = item.MaKhoiHoc,
+                SiSo = item.SiSo ?? 0,
+                TrangThai = item.TrangThai ?? "Hoạt động"
+            };
+
+        showModal = true;
+    }
+
+    private async Task Save()
+    {
+        if (string.IsNullOrWhiteSpace(editModel.TenLopHoc))
+        {
+            await JS.InvokeVoidAsync("alert", "Tên lớp học không được để trống!");
+            return;
+        }
+
+        if (editModel.MaKhoiHoc == 0)
+        {
+            await JS.InvokeVoidAsync("alert", "Vui lòng chọn khối học!");
+            return;
+        }
+
+        if (isCreate)
+        {
+            createModel.TenLopHoc = editModel.TenLopHoc;
+            createModel.MaKhoiHoc = editModel.MaKhoiHoc;
+
+            var success = await LopHocService.CreateAsync(createModel);
+
+            if (success)
+            {
+                await JS.InvokeVoidAsync("alert", "✅ Thêm lớp học thành công!");
+                await LoadLopHoc();
+                showModal = false;
+            }
+            else
+            {
+                await JS.InvokeVoidAsync("alert", "❌ Thêm thất bại!");
+            }
+        }
+        else
+        {
+            var success = await LopHocService.UpdateAsync(editModel);
+
+            if (success)
+            {
+                await JS.InvokeVoidAsync("alert", "✅ Cập nhật thành công!");
+                await LoadLopHoc();
+                showModal = false;
+            }
+            else
+            {
+                await JS.InvokeVoidAsync("alert", "❌ Cập nhật thất bại!");
+            }
+        }
+    }
+
+    private async Task Delete(int id)
+    {
+        var confirm = await JS.InvokeAsync<bool>("confirm", "Bạn có chắc chắn muốn xóa lớp học này?");
+        if (!confirm) return;
+
+        var success = await LopHocService.DeleteAsync(id);
+        if (success)
+        {
+            await JS.InvokeVoidAsync("alert", "🗑️ Xóa lớp học thành công!");
+            await LoadLopHoc();
+        }
+        else
+        {
+            await JS.InvokeVoidAsync("alert", "❌ Lỗi khi xóa lớp học!");
+        }
+    }
+}

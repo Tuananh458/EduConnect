@@ -1,0 +1,103 @@
+﻿@page "/hoclieu"
+@using EduConnect.Shared.DTOs.HocLieu
+@using EduConnect.Client.Services
+@inject HocLieuService HocLieuService
+@inject NavigationManager Nav
+
+<h4>Học liệu của tôi</h4>
+<p class="text-primary" style="cursor:pointer">Hướng dẫn tạo các loại học liệu</p>
+
+<div class="d-flex mb-3 gap-2">
+    <select class="form-select form-select-sm" style="width:150px">
+        <option>Tất cả</option>
+    </select>
+    <select class="form-select form-select-sm" style="width:180px">
+        <option>Tất cả</option>
+    </select>
+    <input class="form-control form-control-sm" style="max-width:250px" placeholder="Nhập tên học liệu" />
+    <button class="btn btn-sm btn-outline-primary">Lọc</button>
+    <div class="ms-auto">
+        <div class="btn-group">
+            <button class="btn btn-sm btn-primary dropdown-toggle" data-bs-toggle="dropdown">
+                <i class="bi bi-plus-square"></i> Tạo mới học liệu
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end">
+                <li><a class="dropdown-item" @onclick="() => OpenCreateModal()">Luyện tập trắc nghiệm</a></li>
+                <li><a class="dropdown-item" @onclick="() => OpenCreateModal()">Đề thi thông minh</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<table class="table table-hover table-bordered align-middle">
+    <thead class="table-light">
+        <tr>
+            <th>STT</th>
+            <th>Tên học liệu</th>
+            <th>Ngày tạo</th>
+            <th>Thể loại</th>
+            <th>Khóa học</th>
+            <th style="width:100px">Hành động</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (data != null && data.Any())
+        {
+            var stt = 1;
+            @foreach (var item in data)
+            {
+                <tr>
+                    <td>@stt</td>
+                    <td>
+                        <a href="javascript:void(0)"
+                           @onclick="@(() => Nav.NavigateTo($"/hoclieu/editor/{item.MaHocLieu}"))">
+                            @item.TenHocLieu
+                        </a>
+                    </td>
+                    <td>@item.NgayTao.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td>@item.TheLoai</td>
+                    <td></td>
+                    <td>
+                        <div class="btn-group">
+                            <button class="btn btn-sm btn-warning"
+                                    @onclick="@(() => Nav.NavigateTo($"/hoclieu/editor/{item.MaHocLieu}"))">
+                                Chọn
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                stt++;
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="6" class="text-center text-muted">Không có học liệu nào.</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@if (showCreate)
+{
+    <HocLieuCreateModal OnCreated="OnCreated" OnClose="() => showCreate = false" />
+}
+
+@code {
+    private List<HocLieuDto> data = new();
+    private bool showCreate = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        data = await HocLieuService.GetAllAsync();
+    }
+
+    void OpenCreateModal() => showCreate = true;
+
+    async Task OnCreated(int id)
+    {
+        showCreate = false;
+        data = await HocLieuService.GetAllAsync();
+        Nav.NavigateTo($"/hoclieu/editor/{id}");
+    }
+}

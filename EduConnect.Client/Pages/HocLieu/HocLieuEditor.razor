@@ -1,0 +1,141 @@
+﻿@page "/hoclieu/editor/{id:int}"
+@using EduConnect.Shared.DTOs.HocLieu
+@using EduConnect.Client.Services
+@inject HocLieuService HocLieuService
+@inject CauHoiHocLieuService CauHoiService
+@inject HocLieuCauHoiService HLCHService
+@inject IJSRuntime JS
+
+<h5>@hocLieu?.TenHocLieu</h5>
+
+<div class="d-flex justify-content-between align-items-center mb-3 border rounded p-2 bg-white">
+    <div class="d-flex gap-3">
+        <a class="fw-semibold text-dark">Trộn đề</a>
+        <a class="fw-semibold text-dark">Thiết lập</a>
+        <a class="fw-semibold text-dark">DS bài làm</a>
+        <a class="fw-semibold text-dark">Thống kê</a>
+    </div>
+    <div class="d-flex gap-2">
+        <span class="badge @(hocLieu?.DaDuyet == true ? "bg-success" : "bg-secondary")">
+            @(hocLieu?.DaDuyet == true ? "Đã duyệt" : "Chưa duyệt")
+        </span>
+        <button class="btn btn-sm btn-primary">Lưu</button>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header d-flex justify-content-between">
+        <span><i class="bi bi-cloud-arrow-up"></i> Tạo nội dung đề thi</span>
+        <button class="btn btn-sm btn-outline-secondary" @onclick="LoadAll">Làm mới</button>
+    </div>
+    <div class="card-body">
+        <button class="btn btn-success btn-sm mb-3" @onclick="() => showCreateQuestion = true">
+            + Tạo câu hỏi mới
+        </button>
+
+        <div class="row">
+            <div class="col-md-6">
+                <h6>Câu hỏi của bạn</h6>
+                <div class="border rounded bg-light" style="min-height:300px;max-height:420px;overflow-y:auto;">
+                    @foreach (var q in cauHoiChuaChon)
+                    {
+                        <div class="d-flex justify-content-between align-items-center px-2 py-2 border-bottom bg-white">
+                            <div><strong>@q.NoiDung</strong> <small class="text-muted">(@q.DoKho)</small></div>
+                            <button class="btn btn-sm btn-outline-success" @onclick="() => Chon(q.MaCauHoi)">Chọn</button>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <h6>Câu hỏi được chọn <span class="badge bg-secondary">@cauHoiDaChon.Count</span></h6>
+                <div class="border rounded" style="min-height:300px;max-height:420px;overflow-y:auto;">
+                    @foreach (var q in cauHoiDaChon)
+                    {
+                        <div class="d-flex justify-content-between align-items-center px-2 py-2 border-bottom bg-success bg-opacity-10">
+                            <div><strong>@q.NoiDung</strong> <small>(1 điểm)</small></div>
+                            <button class="btn btn-sm btn-outline-danger" @onclick="() => Bo(q.MaCauHoi)">Xóa</button>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (showCreateQuestion)
+{
+    <div class="modal-backdrop fade show"></div>
+    <div class="modal d-block">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5>Tạo câu hỏi</h5>
+                    <button class="btn-close" @onclick="() => showCreateQuestion = false"></button>
+                </div>
+                <div class="modal-body">
+                    <textarea class="form-control mb-2" rows="3" placeholder="Nhập nội dung câu hỏi" @bind="newQuestion.NoiDung"></textarea>
+                    <select class="form-select mb-2" @bind="newQuestion.DoKho">
+                        <option>Nhận biết</option>
+                        <option>Thông hiểu</option>
+                        <option>Vận dụng</option>
+                        <option>Vận dụng cao</option>
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" @onclick="() => showCreateQuestion = false">Đóng</button>
+                    <button class="btn btn-primary" @onclick="LuuCauHoiMoi">Lưu</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public int id { get; set; }
+    private HocLieuDto? hocLieu;
+    private bool showCreateQuestion = false;
+
+    private List<CauHoiHocLieuDto> cauHoiDaChon = new();
+    private List<CauHoiHocLieuDto> cauHoiChuaChon = new();
+    private CreateCauHoiHocLieuRequest newQuestion = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        hocLieu = await HocLieuService.GetByIdAsync(id);
+        await LoadAll();
+    }
+
+    private async Task LoadAll()
+    {
+        var daChon = await CauHoiService.GetByHocLieuAsync(id);
+        var tatCa = await CauHoiService.GetAllAsync();
+        cauHoiDaChon = daChon;
+        cauHoiChuaChon = tatCa.Where(x => !daChon.Any(d => d.MaCauHoi == x.MaCauHoi)).ToList();
+    }
+
+    private async Task Chon(int maCauHoi)
+    {
+        if (await HLCHService.AddAsync(id, maCauHoi, 1)) await LoadAll();
+    }
+
+    private async Task Bo(int maCauHoi)
+    {
+        if (await HLCHService.RemoveAsync(id, maCauHoi)) await LoadAll();
+    }
+
+    private async Task LuuCauHoiMoi()
+    {
+        newQuestion.MaHocLieu = id;
+        if (await CauHoiService.CreateAsync(newQuestion))
+        {
+            showCreateQuestion = false;
+            newQuestion = new();
+            await LoadAll();
+        }
+        else
+        {
+            await JS.InvokeVoidAsync("alert", "Không thể lưu câu hỏi");
+        }
+    }
+}

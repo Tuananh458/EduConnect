@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EduConnect</title>
+    <base href="/" />
+
+    <!-- ======= FONT & ICONS ======= -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+          crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <!-- ======= BOOTSTRAP CORE ======= -->
+    <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet" />
+
+    <!-- ======= SITE STYLES ======= -->
+    <link href="css/site.css" rel="stylesheet" />
+    <link href="css/auth.css" rel="stylesheet" />
+    <link href="css/register.css" rel="stylesheet" />
+
+    <!-- ======= TEMPLATE SB ADMIN 2 ======= -->
+    <link href="template/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,300,400,600,700,800,900"
+          rel="stylesheet" />
+    <link href="template/css/sb-admin-2.min.css" rel="stylesheet" />
+
+    <!-- ======= BLAZOR COMPONENT STYLES ======= -->
+    <link href="EduConnect.Client.styles.css" rel="stylesheet" />
+
+</head>
+
+<body>
+    <div id="app">Đang tải...</div>
+
+    <!-- ============ GOOGLE SIGN-IN ============ -->
+    <script src="https://accounts.google.com/gsi/client" async defer onload="initGoogle()"></script>
+    <script>
+        window.showModal = function (id) {
+            var modal = new bootstrap.Modal(document.getElementById(id));
+            modal.show();
+        };
+
+        window.hideModal = function (id) {
+            var el = document.getElementById(id);
+            var modal = bootstrap.Modal.getInstance(el);
+            if (modal) modal.hide();
+        };
+    </script>
+
+    <script>
+   
+
+        async function sendGoogleTokenToBackend(idToken) {
+            try {
+                const res = await fetch(`${API_BASE}/api/auth/google-login`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ idToken })
+                });
+                const text = await res.text();
+                try { return JSON.parse(text); }
+                catch { return { status: "error", message: "Phản hồi không hợp lệ từ máy chủ" }; }
+            } catch (err) {
+                console.error("Lỗi kết nối:", err);
+                return { status: "error", message: err.message };
+            }
+        }
+
+        async function handleCredentialResponse(resp) {
+            const data = await sendGoogleTokenToBackend(resp.credential);
+            if (data.status === "success") {
+                localStorage.setItem("access_token", data.access);
+                localStorage.setItem("refresh_token", data.refresh);
+                alert("🎉 Đăng nhập Google thành công!");
+                window.location.href = "/";
+            } else {
+                alert("❌ " + (data.message || "Đăng nhập thất bại"));
+            }
+        }
+
+        function initGoogle() {
+            const tryInit = () => {
+                const div = document.getElementById("googleSignInContainer");
+                if (!window.google || !div) return setTimeout(tryInit, 150);
+                google.accounts.id.initialize({
+                    client_id: GOOGLE_CLIENT_ID,
+                    callback: handleCredentialResponse,
+                    ux_mode: "popup"
+                });
+                google.accounts.id.renderButton(div, {
+                    theme: "outline",
+                    size: "large",
+                    width: "360"
+                });
+            };
+            tryInit();
+        }
+
+        function loadGoogleSignIn() { initGoogle(); }
+    </script>
+    <!-- ======================================= -->
+    <!-- ======= TEMPLATE SCRIPTS (SB ADMIN 2) ======= -->
+    <script src="template/vendor/jquery/jquery.min.js"></script>
+    <script src="template/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="template/vendor/jquery-easing/jquery.easing.min.js"></script>
+    <script src="template/js/sb-admin-2.min.js"></script>
+    <script src="template/vendor/chart.js/Chart.min.js"></script>
+    <script src="template/js/demo/chart-area-demo.js"></script>
+    <script src="template/js/demo/chart-pie-demo.js"></script>
+
+    <!-- ======= BLAZOR BOOTSTRAP ======= -->
+    <script src="_framework/blazor.webassembly.js"></script>
+</body>
+</html>

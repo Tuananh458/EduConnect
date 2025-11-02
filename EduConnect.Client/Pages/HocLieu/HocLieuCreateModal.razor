@@ -1,0 +1,51 @@
+﻿@using EduConnect.Client.Services
+@using EduConnect.Shared.DTOs.HocLieu
+@inject HocLieuService HocLieuService
+
+<div class="modal-backdrop fade show"></div>
+<div class="modal d-block" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Tạo học liệu mới</h5>
+                <button type="button" class="btn-close" @onclick="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label">Tên học liệu *</label>
+                    <input class="form-control" @bind="model.TenHocLieu" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Thể loại *</label>
+                    <select class="form-select" @bind="model.TheLoai">
+                        <option value="Luyện tập trắc nghiệm">Luyện tập trắc nghiệm</option>
+                        <option value="Đề thi thông minh">Đề thi thông minh</option>
+                        <option value="Tài liệu">Tài liệu</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" @onclick="Close">Đóng</button>
+                <button class="btn btn-primary" @onclick="Create">Tạo</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public EventCallback<int> OnCreated { get; set; }
+    [Parameter] public EventCallback OnClose { get; set; }
+
+    private CreateHocLieuRequest model = new() { TheLoai = "Luyện tập trắc nghiệm" };
+
+    private async Task Create()
+    {
+        var id = await HocLieuService.CreateAsync(model);
+        if (id.HasValue)
+        {
+            await OnCreated.InvokeAsync(id.Value);
+        }
+    }
+
+    private async Task Close() => await OnClose.InvokeAsync();
+}
