@@ -2,102 +2,326 @@
 @using EduConnect.Shared.DTOs.HocLieu
 @using EduConnect.Client.Services
 @inject HocLieuService HocLieuService
-@inject NavigationManager Nav
+@inject IJSRuntime JS
+@inject NavigationManager NavManager
 
-<h4>Học liệu của tôi</h4>
-<p class="text-primary" style="cursor:pointer">Hướng dẫn tạo các loại học liệu</p>
+<h4 class="mb-3 fw-bold text-primary">Học liệu của tôi</h4>
 
-<div class="d-flex mb-3 gap-2">
-    <select class="form-select form-select-sm" style="width:150px">
-        <option>Tất cả</option>
-    </select>
-    <select class="form-select form-select-sm" style="width:180px">
-        <option>Tất cả</option>
-    </select>
-    <input class="form-control form-control-sm" style="max-width:250px" placeholder="Nhập tên học liệu" />
-    <button class="btn btn-sm btn-outline-primary">Lọc</button>
-    <div class="ms-auto">
-        <div class="btn-group">
-            <button class="btn btn-sm btn-primary dropdown-toggle" data-bs-toggle="dropdown">
-                <i class="bi bi-plus-square"></i> Tạo mới học liệu
-            </button>
-            <ul class="dropdown-menu dropdown-menu-end">
-                <li><a class="dropdown-item" @onclick="() => OpenCreateModal()">Luyện tập trắc nghiệm</a></li>
-                <li><a class="dropdown-item" @onclick="() => OpenCreateModal()">Đề thi thông minh</a></li>
+<!-- Thanh tiêu đề + nút tạo -->
+<div class="d-flex flex-wrap align-items-center mb-3 gap-3">
+    <a href="#" class="text-decoration-underline text-primary fw-semibold">
+        Hướng dẫn tạo các loại học liệu
+    </a>
+
+    <div class="ms-auto position-relative">
+        <button class="btn btn-primary" @onclick="ToggleCreateMenu">
+            <i class="fas fa-plus me-1"></i> Tạo mới học liệu
+        </button>
+
+        @if (showCreateMenu)
+        {
+            <ul class="list-group position-absolute end-0 mt-2 shadow" style="min-width:280px; z-index:1050;">
+                @foreach (var loai in LoaiHocLieus)
+                {
+                    <li class="list-group-item list-group-item-action d-flex align-items-center gap-2"
+                        role="button"
+                        @onclick="() => OpenCreateModal(loai)">
+                        <span class="badge rounded-pill text-white"
+                              style="background-color:@loai.Color;width:34px;text-align:center;">
+                            @loai.Code
+                        </span>
+                        <span>@loai.Name</span>
+                    </li>
+                }
+                <li class="list-group-item text-center">
+                    <button class="btn btn-sm btn-link text-secondary" @onclick="() => showCreateMenu = false">Đóng</button>
+                </li>
             </ul>
+        }
+    </div>
+</div>
+
+<!-- Bộ lọc -->
+<div class="card shadow-sm mb-3">
+    <div class="card-body">
+        <div class="row g-3">
+            <div class="col-md-2">
+                <label class="form-label">Loại học liệu</label>
+                <select class="form-select" @bind="filter.MaLoaiHocLieu">
+                    <option value="all">Tất cả</option>
+                    @foreach (var loai in LoaiHocLieus)
+                    {
+                        <option value="@loai.RealCode">@loai.Name</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">Nguồn tạo</label>
+                <select class="form-select" @bind="filter.NguonTao">
+                    <option value="all">Tất cả</option>
+                    <option value="Tự tạo">Tự tạo</option>
+                    <option value="Sao chép">Sao chép khung</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Tên học liệu</label>
+                <input class="form-control" placeholder="Nhập tên học liệu..." @bind="filter.Keyword" />
+            </div>
+            <div class="col-md-3 d-flex align-items-end gap-3">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="chkTuDo" @bind="filter.LaHocLieuTuDo" />
+                    <label class="form-check-label" for="chkTuDo">Tự do</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="chkAn" @bind="filter.LaHocLieuAn" />
+                    <label class="form-check-label" for="chkAn">Ẩn</label>
+                </div>
+            </div>
+            <div class="col-md-2 d-flex align-items-end">
+                <button class="btn btn-outline-primary w-100" @onclick="LoadData">
+                    <i class="fas fa-filter me-1"></i> Lọc
+                </button>
+            </div>
         </div>
     </div>
 </div>
 
-<table class="table table-hover table-bordered align-middle">
-    <thead class="table-light">
-        <tr>
-            <th>STT</th>
-            <th>Tên học liệu</th>
-            <th>Ngày tạo</th>
-            <th>Thể loại</th>
-            <th>Khóa học</th>
-            <th style="width:100px">Hành động</th>
-        </tr>
-    </thead>
-    <tbody>
-        @if (data != null && data.Any())
-        {
-            var stt = 1;
-            @foreach (var item in data)
-            {
-                <tr>
-                    <td>@stt</td>
-                    <td>
-                        <a href="javascript:void(0)"
-                           @onclick="@(() => Nav.NavigateTo($"/hoclieu/editor/{item.MaHocLieu}"))">
-                            @item.TenHocLieu
-                        </a>
-                    </td>
-                    <td>@item.NgayTao.ToString("dd/MM/yyyy HH:mm")</td>
-                    <td>@item.TheLoai</td>
-                    <td></td>
-                    <td>
-                        <div class="btn-group">
-                            <button class="btn btn-sm btn-warning"
-                                    @onclick="@(() => Nav.NavigateTo($"/hoclieu/editor/{item.MaHocLieu}"))">
-                                Chọn
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-                stt++;
-            }
-        }
-        else
-        {
-            <tr>
-                <td colspan="6" class="text-center text-muted">Không có học liệu nào.</td>
-            </tr>
-        }
-    </tbody>
-</table>
+<!-- Danh sách -->
+<div class="card shadow-sm">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th style="width:60px;">#</th>
+                        <th>Tên học liệu</th>
+                        <th style="width:180px;">Ngày tạo</th>
+                        <th style="width:180px;">Thể loại</th>
+                        <th style="width:160px;">Khóa học</th>
+                        <th style="width:110px;">Hành động</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (items == null)
+                    {
+                        <tr><td colspan="6" class="text-center text-muted py-3">Đang tải dữ liệu...</td></tr>
+                    }
+                    else if (!items.Any())
+                    {
+                        <tr><td colspan="6" class="text-center text-muted py-3">Không có học liệu nào</td></tr>
+                    }
+                    else
+                    {
+                        @foreach (var (item, index) in items.Select((v, i) => (v, i + 1)))
+                        {
+                            <tr>
+                                <td>@index</td>
+                                <td>
+                                    <a class="text-primary fw-semibold" href="/hoclieu/editor/@item.Id">@item.TenHocLieu</a>
+                                </td>
+                                <td>@item.NgayTao.ToLocalTime():dd/MM/yyyy HH:mm</td>
+                                <td>@item.TheLoai</td>
+                                <td>@item.TenKhoaHoc</td>
+                                <td class="position-relative">
+                                    <button class="btn btn-warning btn-sm text-white"
+                                            @onclick="() => ToggleRowMenu(item.Id)">
+                                        Chọn
+                                    </button>
 
-@if (showCreate)
+                                    @if (openedRowMenuId == item.Id)
+                                    {
+                                        <ul class="list-group position-absolute mt-2" style="z-index:1050; min-width:170px;">
+                                            <li class="list-group-item list-group-item-action" @onclick="() => Edit(item.Id)">Sửa đổi</li>
+                                            <li class="list-group-item list-group-item-action text-danger" @onclick="() => Delete(item.Id)">Xóa</li>
+                                            <li class="list-group-item list-group-item-action" @onclick="() => Mark(item.Id)">Chấm bài</li>
+                                            <li class="list-group-item list-group-item-action" @onclick="() => Duplicate(item.Id)">Nhân bản</li>
+                                            <li class="list-group-item list-group-item-action" @onclick="() => Assign(item.Id)">Gán vào khóa học</li>
+                                            <li class="list-group-item list-group-item-action" @onclick="() => Share(item.Id)">Chia sẻ</li>
+                                            <li class="list-group-item text-center">
+                                                <button class="btn btn-sm btn-link text-secondary" @onclick="() => openedRowMenuId = null">Đóng</button>
+                                            </li>
+                                        </ul>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal tạo học liệu kiểu OLM -->
+@if (showCreateModal)
 {
-    <HocLieuCreateModal OnCreated="OnCreated" OnClose="() => showCreate = false" />
+    <div class="modal fade show d-block" style="background:rgba(0,0,0,.45);">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content border-0 shadow-lg rounded-3">
+
+                <div class="modal-header border-0 pb-0">
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="badge rounded-pill text-white fw-bold"
+                             style="background-color:@selectedLoai?.Color;width:40px;height:40px;display:flex;align-items:center;justify-content:center;">
+                            @selectedLoai?.Code
+                        </div>
+                        <h5 class="modal-title fw-semibold text-dark">@selectedLoai?.Name</h5>
+                    </div>
+                    <button type="button" class="btn-close" @onclick="CloseCreateModal"></button>
+                </div>
+
+                <div class="modal-body pt-0 px-4 pb-4">
+                    <EditForm Model="@createModel" OnValidSubmit="@Create">
+                        <DataAnnotationsValidator />
+                        <ValidationSummary />
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Tiêu đề học liệu <span class="text-danger">*</span></label>
+                            <InputText class="form-control rounded-3 py-2" @bind-Value="createModel.TenHocLieu" placeholder="Nhập tiêu đề..." required />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Chọn lớp</label>
+                            <select class="form-select rounded-3 py-2"
+                                    @bind="selectedLop"
+                                    @bind:after="OnLopChanged">
+                                <option value="">Tổng hợp lớp</option>
+                                @foreach (var lop in DanhSachLop)
+                                {
+                                    <option value="@lop">@lop</option>
+                                }
+                            </select>
+
+
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Chọn môn</label>
+                            <select class="form-select rounded-3 py-2" @bind="selectedMon" disabled="@string.IsNullOrEmpty(selectedLop)">
+                                <option value="">@(string.IsNullOrEmpty(selectedLop) ? "Hãy chọn lớp trước..." : "Chọn môn học")</option>
+                                @foreach (var mon in DanhSachMon)
+                                {
+                                    <option value="@mon">@mon</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Bộ sách</label>
+                            <select class="form-select rounded-3 py-2" @bind="selectedBoSach">
+                                <option value="">Chọn bộ sách</option>
+                                @foreach (var bo in DanhSachBoSach)
+                                {
+                                    <option value="@bo">@bo</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="d-flex gap-4 mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="chkTuDo2" @bind="createModel.LaHocLieuTuDo" />
+                                <label class="form-check-label" for="chkTuDo2">Học liệu tự do</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="chkAn2" @bind="createModel.LaHocLieuAn" />
+                                <label class="form-check-label" for="chkAn2">Học liệu ẩn</label>
+                            </div>
+                        </div>
+
+                        <div class="modal-footer border-0 pt-0">
+                            <button type="button" class="btn btn-secondary px-4 py-2 rounded-3" @onclick="CloseCreateModal">Hủy</button>
+                            <button type="submit" class="btn btn-primary px-4 py-2 rounded-3">Tạo</button>
+                        </div>
+                    </EditForm>
+                </div>
+            </div>
+        </div>
+    </div>
 }
 
 @code {
-    private List<HocLieuDto> data = new();
-    private bool showCreate = false;
+    private List<HocLieuListDto>? items;
+    private HocLieuFilterDto filter = new() { MaLoaiHocLieu = "all", NguonTao = "all" };
 
-    protected override async Task OnInitializedAsync()
+    private bool showCreateMenu, showCreateModal;
+    private CreateHocLieuRequest createModel = new();
+    private LoaiHocLieuView? selectedLoai;
+    private int? openedRowMenuId;
+
+    private List<string> DanhSachLop = new() { "Lớp 6", "Lớp 7", "Lớp 8", "Lớp 9", "Lớp 10", "Lớp 11", "Lớp 12" };
+    private List<string> DanhSachMon = new() { "Toán", "Ngữ văn", "Tiếng Anh", "Vật lý", "Hóa học", "Sinh học", "Lịch sử", "Địa lý" };
+    private List<string> DanhSachBoSach = new() { "Cánh diều", "Chân trời sáng tạo", "Kết nối tri thức", "Vì tương lai" };
+
+    private string? selectedLop;
+    private string? selectedMon;
+    private string? selectedBoSach;
+
+    private List<LoaiHocLieuView> LoaiHocLieus = new()
     {
-        data = await HocLieuService.GetAllAsync();
+        new("TN", "Luyện tập trắc nghiệm", "TN", "#3b82f6"),
+        new("ĐT", "Đề thi thông minh", "DT", "#f97316"),
+        new("LT", "Lý thuyết tương tác", "LT", "#22c55e"),
+        new("VD", "Video Youtube có điểm dừng", "VD", "#0ea5e9"),
+        new("TL", "Đề thi tự luận", "TL", "#6366f1"),
+        new("LK", "Liên kết học tập", "LK", "#f59e0b"),
+        new("GH", "Game hóa", "GH", "#ef4444")
+    };
+
+    protected override async Task OnInitializedAsync() => await LoadData();
+
+    private async Task LoadData() => items = await HocLieuService.GetAllAsync(filter) ?? new();
+
+    private void ToggleCreateMenu() => showCreateMenu = !showCreateMenu;
+
+    private void OpenCreateModal(LoaiHocLieuView loai)
+    {
+        selectedLoai = loai;
+        createModel = new()
+        {
+            TenHocLieu = "",
+            MaLoaiHocLieu = loai.RealCode,
+            TenLoaiHocLieu = loai.Name,
+            NguonTao = "Tự tạo"
+        };
+        selectedLop = selectedMon = selectedBoSach = "";
+        showCreateMenu = false;
+        showCreateModal = true;
     }
 
-    void OpenCreateModal() => showCreate = true;
-
-    async Task OnCreated(int id)
+    private void OnLopChanged()
     {
-        showCreate = false;
-        data = await HocLieuService.GetAllAsync();
-        Nav.NavigateTo($"/hoclieu/editor/{id}");
+        // vì selectedLop đã được @bind cập nhật
+        selectedMon = ""; // reset môn học
     }
+
+
+    private void CloseCreateModal() => showCreateModal = false;
+
+    private void ToggleRowMenu(int id) => openedRowMenuId = openedRowMenuId == id ? null : id;
+
+    private async Task Create()
+    {
+        await HocLieuService.CreateAsync(createModel);
+        await JS.InvokeVoidAsync("alert", "Đã tạo học liệu thành công!");
+        showCreateModal = false;
+        await LoadData();
+    }
+
+    private void Edit(int id) => NavManager.NavigateTo($"/hoclieu/editor/{id}");
+
+    private async Task Delete(int id)
+    {
+        if (await JS.InvokeAsync<bool>("confirm", "Bạn có chắc muốn xóa học liệu này?"))
+        {
+            await HocLieuService.DeleteAsync(id);
+            await LoadData();
+        }
+    }
+
+    private async Task Mark(int id) => await JS.InvokeVoidAsync("alert", "Tính năng chấm bài sẽ phát triển sau.");
+    private async Task Duplicate(int id) { await HocLieuService.DuplicateAsync(id); await LoadData(); }
+    private async Task Assign(int id) { await HocLieuService.AssignToCourseAsync(id, 1); await LoadData(); }
+    private async Task Share(int id) { await HocLieuService.ShareAsync(id); await LoadData(); }
+
+    public record LoaiHocLieuView(string Code, string Name, string RealCode, string Color);
 }

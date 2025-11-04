@@ -1,15 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace EduConnect.Shared.DTOs.HocLieu
+﻿namespace EduConnect.Shared.DTOs.HocLieu
 {
     public class CauHoiHocLieuDto
     {
-        public int MaCauHoi { get; set; }
+        public int Id { get; set; }
+        public int HocLieuId { get; set; }
         public string NoiDung { get; set; } = string.Empty;
-        public LoaiCauHoiHocLieu Loai { get; set; }
+        public string LoaiCauHoi { get; set; } = "TN_1DAPANDUNG";
         public string DoKho { get; set; } = "Nhận biết";
-        public string? GiaiThich { get; set; }
-        public DateTime NgayTao { get; set; }
+        public decimal Diem { get; set; } = 1m;
+        public string? DapAnA { get; set; }
+        public string? DapAnB { get; set; }
+        public string? DapAnC { get; set; }
+        public string? DapAnD { get; set; }
+        public string? DapAnDung { get; set; }
     }
 }

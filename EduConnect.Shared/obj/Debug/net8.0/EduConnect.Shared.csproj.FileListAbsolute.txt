@@ -1,0 +1,12 @@
+D:\DA\EduConnect\EduConnect.Shared\bin\Debug\net8.0\EduConnect.Shared.deps.json
+D:\DA\EduConnect\EduConnect.Shared\bin\Debug\net8.0\EduConnect.Shared.dll
+D:\DA\EduConnect\EduConnect.Shared\bin\Debug\net8.0\EduConnect.Shared.pdb
+D:\DA\EduConnect\EduConnect.Shared\obj\Debug\net8.0\EduConnect.Shared.GeneratedMSBuildEditorConfig.editorconfig
+D:\DA\EduConnect\EduConnect.Shared\obj\Debug\net8.0\EduConnect.Shared.AssemblyInfoInputs.cache
+D:\DA\EduConnect\EduConnect.Shared\obj\Debug\net8.0\EduConnect.Shared.AssemblyInfo.cs
+D:\DA\EduConnect\EduConnect.Shared\obj\Debug\net8.0\EduConnect.Shared.csproj.CoreCompileInputs.cache
+D:\DA\EduConnect\EduConnect.Shared\obj\Debug\net8.0\EduConnect.Shared.sourcelink.json
+D:\DA\EduConnect\EduConnect.Shared\obj\Debug\net8.0\EduConnect.Shared.dll
+D:\DA\EduConnect\EduConnect.Shared\obj\Debug\net8.0\refint\EduConnect.Shared.dll
+D:\DA\EduConnect\EduConnect.Shared\obj\Debug\net8.0\EduConnect.Shared.pdb
+D:\DA\EduConnect\EduConnect.Shared\obj\Debug\net8.0\ref\EduConnect.Shared.dll

@@ -1,4 +1,7 @@
-﻿using EduConnect.Models.HocLieu;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using EduConnect.Models.HocLieu;
 using EduConnect.Repositories.Interfaces;
 using EduConnect.Services.Interfaces;
 using EduConnect.Shared.DTOs.HocLieu;
@@ -14,18 +17,24 @@ namespace EduConnect.Services.Implementations
             _repo = repo;
         }
 
-        public async Task<IEnumerable<HocLieuDto>> GetAllAsync()
+        public async Task<List<HocLieuListDto>> GetAllAsync(HocLieuFilterDto filter)
         {
-            var data = await _repo.GetAllAsync();
-            return data.Select(x => new HocLieuDto
+            var data = await _repo.GetAllAsync(
+                filter.Keyword,
+                filter.MaLoaiHocLieu,
+                filter.NguonTao,
+                filter.LaHocLieuTuDo ? true : (bool?)null,
+                filter.LaHocLieuAn ? true : (bool?)null
+            );
+
+            return data.Select(x => new HocLieuListDto
             {
-                MaHocLieu = x.MaHocLieu,
+                Id = x.Id,
                 TenHocLieu = x.TenHocLieu,
-                TheLoai = x.TheLoai,
-                DaDuyet = x.DaDuyet,
-                HienThi = x.HienThi,
-                NgayTao = x.NgayTao
-            });
+                NgayTao = x.NgayTao,
+                TheLoai = x.TenLoaiHocLieu ?? x.MaLoaiHocLieu,
+                TenKhoaHoc = x.TenKhoaHoc
+            }).ToList();
         }
 
         public async Task<HocLieuDto?> GetByIdAsync(int id)
@@ -35,34 +44,50 @@ namespace EduConnect.Services.Implementations
 
             return new HocLieuDto
             {
-                MaHocLieu = entity.MaHocLieu,
+                Id = entity.Id,
                 TenHocLieu = entity.TenHocLieu,
-                TheLoai = entity.TheLoai,
-                DaDuyet = entity.DaDuyet,
-                HienThi = entity.HienThi,
-                NgayTao = entity.NgayTao
+                MaLoaiHocLieu = entity.MaLoaiHocLieu,
+                TenLoaiHocLieu = entity.TenLoaiHocLieu,
+                NgayTao = entity.NgayTao,
+                NguonTao = entity.NguonTao,
+                LaHocLieuAn = entity.LaHocLieuAn,
+                LaHocLieuTuDo = entity.LaHocLieuTuDo,
+                TenKhoaHoc = entity.TenKhoaHoc
             };
         }
 
-        public async Task<int> CreateAsync(CreateHocLieuRequest request)
+        public async Task<HocLieuDto> CreateAsync(CreateHocLieuRequest request)
         {
             var entity = new HocLieu
             {
                 TenHocLieu = request.TenHocLieu,
-                TheLoai = request.TheLoai,
-                DaDuyet = false,
-                HienThi = true,
-                NgayTao = DateTime.Now
+                MaLoaiHocLieu = request.MaLoaiHocLieu,
+                TenLoaiHocLieu = request.TenLoaiHocLieu,
+                NguonTao = request.NguonTao,
+                LaHocLieuTuDo = request.LaHocLieuTuDo,
+                LaHocLieuAn = request.LaHocLieuAn
             };
 
-            await _repo.AddAsync(entity);
-            return entity.MaHocLieu;
+            var created = await _repo.AddAsync(entity);
+
+            return new HocLieuDto
+            {
+                Id = created.Id,
+                TenHocLieu = created.TenHocLieu,
+                MaLoaiHocLieu = created.MaLoaiHocLieu,
+                TenLoaiHocLieu = created.TenLoaiHocLieu,
+                NguonTao = created.NguonTao,
+                LaHocLieuTuDo = created.LaHocLieuTuDo,
+                LaHocLieuAn = created.LaHocLieuAn,
+                NgayTao = created.NgayTao
+            };
         }
 
         public async Task<bool> DeleteAsync(int id)
         {
             var entity = await _repo.GetByIdAsync(id);
             if (entity == null) return false;
+
             await _repo.DeleteAsync(entity);
             return true;
         }

@@ -3,132 +3,36 @@
   "WorkspaceRootPath": "D:\\DA\\EduConnect\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{4A7C5A45-14FC-44DD-8928-8FCED4BF515F}|EduConnect.Client\\EduConnect.Client.csproj|d:\\da\\educonnect\\educonnect.client\\layout\\authlayout.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{4A7C5A45-14FC-44DD-8928-8FCED4BF515F}|EduConnect.Client\\EduConnect.Client.csproj|solutionrelative:educonnect.client\\layout\\authlayout.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{4A7C5A45-14FC-44DD-8928-8FCED4BF515F}|EduConnect.Client\\EduConnect.Client.csproj|d:\\da\\educonnect\\educonnect.client\\layout\\adminlayout.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{4A7C5A45-14FC-44DD-8928-8FCED4BF515F}|EduConnect.Client\\EduConnect.Client.csproj|solutionrelative:educonnect.client\\layout\\adminlayout.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{4A7C5A45-14FC-44DD-8928-8FCED4BF515F}|EduConnect.Client\\EduConnect.Client.csproj|d:\\da\\educonnect\\educonnect.client\\wwwroot\\index.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{4A7C5A45-14FC-44DD-8928-8FCED4BF515F}|EduConnect.Client\\EduConnect.Client.csproj|solutionrelative:educonnect.client\\wwwroot\\index.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{4A7C5A45-14FC-44DD-8928-8FCED4BF515F}|EduConnect.Client\\EduConnect.Client.csproj|d:\\da\\educonnect\\educonnect.client\\properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
-      "RelativeMoniker": "D:0:0:{4A7C5A45-14FC-44DD-8928-8FCED4BF515F}|EduConnect.Client\\EduConnect.Client.csproj|solutionrelative:educonnect.client\\properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{B26FC876-5377-4B5B-8199-239B4FEAB1DB}|EduConnect\\EduConnect.csproj|d:\\da\\educonnect\\educonnect\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{B26FC876-5377-4B5B-8199-239B4FEAB1DB}|EduConnect\\EduConnect.csproj|solutionrelative:educonnect\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{B26FC876-5377-4B5B-8199-239B4FEAB1DB}|EduConnect\\EduConnect.csproj|d:\\da\\educonnect\\educonnect\\educonnect.http||{5703B403-55E7-4C63-8C88-A8F52C7A45C5}",
-      "RelativeMoniker": "D:0:0:{B26FC876-5377-4B5B-8199-239B4FEAB1DB}|EduConnect\\EduConnect.csproj|solutionrelative:educonnect\\educonnect.http||{5703B403-55E7-4C63-8C88-A8F52C7A45C5}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{B26FC876-5377-4B5B-8199-239B4FEAB1DB}|EduConnect\\EduConnect.csproj|d:\\da\\educonnect\\educonnect\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
       "RelativeMoniker": "D:0:0:{B26FC876-5377-4B5B-8199-239B4FEAB1DB}|EduConnect\\EduConnect.csproj|solutionrelative:educonnect\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{B26FC876-5377-4B5B-8199-239B4FEAB1DB}|EduConnect\\EduConnect.csproj|d:\\da\\educonnect\\educonnect\\appsettings.development.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
-      "RelativeMoniker": "D:0:0:{B26FC876-5377-4B5B-8199-239B4FEAB1DB}|EduConnect\\EduConnect.csproj|solutionrelative:educonnect\\appsettings.development.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{B26FC876-5377-4B5B-8199-239B4FEAB1DB}|EduConnect\\EduConnect.csproj|d:\\da\\educonnect\\educonnect\\services\\tokenservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{B26FC876-5377-4B5B-8199-239B4FEAB1DB}|EduConnect\\EduConnect.csproj|solutionrelative:educonnect\\services\\tokenservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{B26FC876-5377-4B5B-8199-239B4FEAB1DB}|EduConnect\\EduConnect.csproj|d:\\da\\educonnect\\educonnect\\services\\itokenservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{B26FC876-5377-4B5B-8199-239B4FEAB1DB}|EduConnect\\EduConnect.csproj|solutionrelative:educonnect\\services\\itokenservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{B26FC876-5377-4B5B-8199-239B4FEAB1DB}|EduConnect\\EduConnect.csproj|d:\\da\\educonnect\\educonnect\\services\\iemailservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{B26FC876-5377-4B5B-8199-239B4FEAB1DB}|EduConnect\\EduConnect.csproj|solutionrelative:educonnect\\services\\iemailservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{B26FC876-5377-4B5B-8199-239B4FEAB1DB}|EduConnect\\EduConnect.csproj|d:\\da\\educonnect\\educonnect\\services\\iauthservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{B26FC876-5377-4B5B-8199-239B4FEAB1DB}|EduConnect\\EduConnect.csproj|solutionrelative:educonnect\\services\\iauthservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{B26FC876-5377-4B5B-8199-239B4FEAB1DB}|EduConnect\\EduConnect.csproj|d:\\da\\educonnect\\educonnect\\services\\emailservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{B26FC876-5377-4B5B-8199-239B4FEAB1DB}|EduConnect\\EduConnect.csproj|solutionrelative:educonnect\\services\\emailservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{B26FC876-5377-4B5B-8199-239B4FEAB1DB}|EduConnect\\EduConnect.csproj|d:\\da\\educonnect\\educonnect\\services\\authservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{B26FC876-5377-4B5B-8199-239B4FEAB1DB}|EduConnect\\EduConnect.csproj|solutionrelative:educonnect\\services\\authservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{B26FC876-5377-4B5B-8199-239B4FEAB1DB}|EduConnect\\EduConnect.csproj|d:\\da\\educonnect\\educonnect\\models\\hoclieu\\cauhoihoclieu.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{B26FC876-5377-4B5B-8199-239B4FEAB1DB}|EduConnect\\EduConnect.csproj|solutionrelative:educonnect\\models\\hoclieu\\cauhoihoclieu.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{B26FC876-5377-4B5B-8199-239B4FEAB1DB}|EduConnect\\EduConnect.csproj|d:\\da\\educonnect\\educonnect\\models\\auth\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{B26FC876-5377-4B5B-8199-239B4FEAB1DB}|EduConnect\\EduConnect.csproj|solutionrelative:educonnect\\models\\auth\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{B26FC876-5377-4B5B-8199-239B4FEAB1DB}|EduConnect\\EduConnect.csproj|d:\\da\\educonnect\\educonnect\\models\\auth\\refreshtoken.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{B26FC876-5377-4B5B-8199-239B4FEAB1DB}|EduConnect\\EduConnect.csproj|solutionrelative:educonnect\\models\\auth\\refreshtoken.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{B26FC876-5377-4B5B-8199-239B4FEAB1DB}|EduConnect\\EduConnect.csproj|d:\\da\\educonnect\\educonnect\\models\\auth\\passwordreset.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{B26FC876-5377-4B5B-8199-239B4FEAB1DB}|EduConnect\\EduConnect.csproj|solutionrelative:educonnect\\models\\auth\\passwordreset.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{B26FC876-5377-4B5B-8199-239B4FEAB1DB}|EduConnect\\EduConnect.csproj|d:\\da\\educonnect\\educonnect\\models\\auth\\emailverification.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{B26FC876-5377-4B5B-8199-239B4FEAB1DB}|EduConnect\\EduConnect.csproj|solutionrelative:educonnect\\models\\auth\\emailverification.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{B26FC876-5377-4B5B-8199-239B4FEAB1DB}|EduConnect\\EduConnect.csproj|d:\\da\\educonnect\\educonnect\\helpers\\apiresponse.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{B26FC876-5377-4B5B-8199-239B4FEAB1DB}|EduConnect\\EduConnect.csproj|solutionrelative:educonnect\\helpers\\apiresponse.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{B26FC876-5377-4B5B-8199-239B4FEAB1DB}|EduConnect\\EduConnect.csproj|d:\\da\\educonnect\\educonnect\\data\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{B26FC876-5377-4B5B-8199-239B4FEAB1DB}|EduConnect\\EduConnect.csproj|solutionrelative:educonnect\\data\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{B26FC876-5377-4B5B-8199-239B4FEAB1DB}|EduConnect\\EduConnect.csproj|d:\\da\\educonnect\\educonnect\\controllers\\hoclieucauhoicontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{B26FC876-5377-4B5B-8199-239B4FEAB1DB}|EduConnect\\EduConnect.csproj|solutionrelative:educonnect\\controllers\\hoclieucauhoicontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{B26FC876-5377-4B5B-8199-239B4FEAB1DB}|EduConnect\\EduConnect.csproj|d:\\da\\educonnect\\educonnect\\controllers\\externalauthcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{B26FC876-5377-4B5B-8199-239B4FEAB1DB}|EduConnect\\EduConnect.csproj|solutionrelative:educonnect\\controllers\\externalauthcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{B26FC876-5377-4B5B-8199-239B4FEAB1DB}|EduConnect\\EduConnect.csproj|d:\\da\\educonnect\\educonnect\\controllers\\cauhoihoclieucontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{B26FC876-5377-4B5B-8199-239B4FEAB1DB}|EduConnect\\EduConnect.csproj|solutionrelative:educonnect\\controllers\\cauhoihoclieucontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{B26FC876-5377-4B5B-8199-239B4FEAB1DB}|EduConnect\\EduConnect.csproj|d:\\da\\educonnect\\educonnect\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{B26FC876-5377-4B5B-8199-239B4FEAB1DB}|EduConnect\\EduConnect.csproj|solutionrelative:educonnect\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{B26FC876-5377-4B5B-8199-239B4FEAB1DB}|EduConnect\\EduConnect.csproj|d:\\da\\educonnect\\educonnect\\properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
-      "RelativeMoniker": "D:0:0:{B26FC876-5377-4B5B-8199-239B4FEAB1DB}|EduConnect\\EduConnect.csproj|solutionrelative:educonnect\\properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{69864FB3-11AE-4C41-86F8-B25A46AF8597}|EduConnect.Shared\\EduConnect.Shared.csproj|d:\\da\\educonnect\\educonnect.shared\\dtos\\authdtos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{69864FB3-11AE-4C41-86F8-B25A46AF8597}|EduConnect.Shared\\EduConnect.Shared.csproj|solutionrelative:educonnect.shared\\dtos\\authdtos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{4A7C5A45-14FC-44DD-8928-8FCED4BF515F}|EduConnect.Client\\EduConnect.Client.csproj|d:\\da\\educonnect\\educonnect.client\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{4A7C5A45-14FC-44DD-8928-8FCED4BF515F}|EduConnect.Client\\EduConnect.Client.csproj|solutionrelative:educonnect.client\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{B26FC876-5377-4B5B-8199-239B4FEAB1DB}|EduConnect\\EduConnect.csproj|d:\\da\\educonnect\\educonnect\\models\\hoclieu\\hoclieu.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{B26FC876-5377-4B5B-8199-239B4FEAB1DB}|EduConnect\\EduConnect.csproj|solutionrelative:educonnect\\models\\hoclieu\\hoclieu.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{4A7C5A45-14FC-44DD-8928-8FCED4BF515F}|EduConnect.Client\\EduConnect.Client.csproj|d:\\da\\educonnect\\educonnect.client\\pages\\hoclieu\\hoclieueditor.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{4A7C5A45-14FC-44DD-8928-8FCED4BF515F}|EduConnect.Client\\EduConnect.Client.csproj|solutionrelative:educonnect.client\\pages\\hoclieu\\hoclieueditor.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{4A7C5A45-14FC-44DD-8928-8FCED4BF515F}|EduConnect.Client\\EduConnect.Client.csproj|d:\\da\\educonnect\\educonnect.client\\pages\\hoclieu\\hoclieucreatemodal.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{4A7C5A45-14FC-44DD-8928-8FCED4BF515F}|EduConnect.Client\\EduConnect.Client.csproj|solutionrelative:educonnect.client\\pages\\hoclieu\\hoclieucreatemodal.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{4A7C5A45-14FC-44DD-8928-8FCED4BF515F}|EduConnect.Client\\EduConnect.Client.csproj|d:\\da\\educonnect\\educonnect.client\\pages\\hoclieu\\components\\cauhoipreview.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{4A7C5A45-14FC-44DD-8928-8FCED4BF515F}|EduConnect.Client\\EduConnect.Client.csproj|solutionrelative:educonnect.client\\pages\\hoclieu\\components\\cauhoipreview.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{4A7C5A45-14FC-44DD-8928-8FCED4BF515F}|EduConnect.Client\\EduConnect.Client.csproj|d:\\da\\educonnect\\educonnect.client\\pages\\hoclieu\\hoclieulist.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{4A7C5A45-14FC-44DD-8928-8FCED4BF515F}|EduConnect.Client\\EduConnect.Client.csproj|solutionrelative:educonnect.client\\pages\\hoclieu\\hoclieulist.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{4A7C5A45-14FC-44DD-8928-8FCED4BF515F}|EduConnect.Client\\EduConnect.Client.csproj|d:\\da\\educonnect\\educonnect.client\\pages\\hoclieu\\components\\cauhoianswerlist.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{4A7C5A45-14FC-44DD-8928-8FCED4BF515F}|EduConnect.Client\\EduConnect.Client.csproj|solutionrelative:educonnect.client\\pages\\hoclieu\\components\\cauhoianswerlist.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4A7C5A45-14FC-44DD-8928-8FCED4BF515F}|EduConnect.Client\\EduConnect.Client.csproj|d:\\da\\educonnect\\educonnect.client\\pages\\hoclieu\\components\\cauhoieditor.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{4A7C5A45-14FC-44DD-8928-8FCED4BF515F}|EduConnect.Client\\EduConnect.Client.csproj|solutionrelative:educonnect.client\\pages\\hoclieu\\components\\cauhoieditor.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4A7C5A45-14FC-44DD-8928-8FCED4BF515F}|EduConnect.Client\\EduConnect.Client.csproj|d:\\da\\educonnect\\educonnect.client\\wwwroot\\js\\tinymce-init.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{4A7C5A45-14FC-44DD-8928-8FCED4BF515F}|EduConnect.Client\\EduConnect.Client.csproj|solutionrelative:educonnect.client\\wwwroot\\js\\tinymce-init.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4A7C5A45-14FC-44DD-8928-8FCED4BF515F}|EduConnect.Client\\EduConnect.Client.csproj|d:\\da\\educonnect\\educonnect.client\\wwwroot\\index.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{4A7C5A45-14FC-44DD-8928-8FCED4BF515F}|EduConnect.Client\\EduConnect.Client.csproj|solutionrelative:educonnect.client\\wwwroot\\index.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{69864FB3-11AE-4C41-86F8-B25A46AF8597}|EduConnect.Shared\\EduConnect.Shared.csproj|d:\\da\\educonnect\\educonnect.shared\\dtos\\hoclieu\\createcauhoihoclieurequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{69864FB3-11AE-4C41-86F8-B25A46AF8597}|EduConnect.Shared\\EduConnect.Shared.csproj|solutionrelative:educonnect.shared\\dtos\\hoclieu\\createcauhoihoclieurequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -143,214 +47,6 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "AuthLayout.razor",
-              "DocumentMoniker": "D:\\DA\\EduConnect\\EduConnect.Client\\Layout\\AuthLayout.razor",
-              "RelativeDocumentMoniker": "EduConnect.Client\\Layout\\AuthLayout.razor",
-              "ToolTip": "D:\\DA\\EduConnect\\EduConnect.Client\\Layout\\AuthLayout.razor",
-              "RelativeToolTip": "EduConnect.Client\\Layout\\AuthLayout.razor",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-11-02T14:14:17.639Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "AdminLayout.razor",
-              "DocumentMoniker": "D:\\DA\\EduConnect\\EduConnect.Client\\Layout\\AdminLayout.razor",
-              "RelativeDocumentMoniker": "EduConnect.Client\\Layout\\AdminLayout.razor",
-              "ToolTip": "D:\\DA\\EduConnect\\EduConnect.Client\\Layout\\AdminLayout.razor",
-              "RelativeToolTip": "EduConnect.Client\\Layout\\AdminLayout.razor",
-              "ViewState": "AQIAAIQAAAAAAAAAAAAAAAAAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-11-02T14:14:07.933Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "index.html",
-              "DocumentMoniker": "D:\\DA\\EduConnect\\EduConnect.Client\\wwwroot\\index.html",
-              "RelativeDocumentMoniker": "EduConnect.Client\\wwwroot\\index.html",
-              "ToolTip": "D:\\DA\\EduConnect\\EduConnect.Client\\wwwroot\\index.html",
-              "RelativeToolTip": "EduConnect.Client\\wwwroot\\index.html",
-              "ViewState": "AQIAAAYAAAAAAAAAAAAAADEAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
-              "WhenOpened": "2025-11-02T14:12:55.337Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "EduConnect.http",
-              "DocumentMoniker": "D:\\DA\\EduConnect\\EduConnect\\EduConnect.http",
-              "RelativeDocumentMoniker": "EduConnect\\EduConnect.http",
-              "ToolTip": "D:\\DA\\EduConnect\\EduConnect\\EduConnect.http",
-              "RelativeToolTip": "EduConnect\\EduConnect.http",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003502|",
-              "WhenOpened": "2025-11-02T14:12:03.566Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "appsettings.Development.json",
-              "DocumentMoniker": "D:\\DA\\EduConnect\\EduConnect\\appsettings.Development.json",
-              "RelativeDocumentMoniker": "EduConnect\\appsettings.Development.json",
-              "ToolTip": "D:\\DA\\EduConnect\\EduConnect\\appsettings.Development.json",
-              "RelativeToolTip": "EduConnect\\appsettings.Development.json",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2025-11-02T14:11:57.35Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "ITokenService.cs",
-              "DocumentMoniker": "D:\\DA\\EduConnect\\EduConnect\\Services\\ITokenService.cs",
-              "RelativeDocumentMoniker": "EduConnect\\Services\\ITokenService.cs",
-              "ToolTip": "D:\\DA\\EduConnect\\EduConnect\\Services\\ITokenService.cs",
-              "RelativeToolTip": "EduConnect\\Services\\ITokenService.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-02T14:11:44.969Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 10,
-              "Title": "IEmailService.cs",
-              "DocumentMoniker": "D:\\DA\\EduConnect\\EduConnect\\Services\\IEmailService.cs",
-              "RelativeDocumentMoniker": "EduConnect\\Services\\IEmailService.cs",
-              "ToolTip": "D:\\DA\\EduConnect\\EduConnect\\Services\\IEmailService.cs",
-              "RelativeToolTip": "EduConnect\\Services\\IEmailService.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-02T14:11:42.813Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 11,
-              "Title": "IAuthService.cs",
-              "DocumentMoniker": "D:\\DA\\EduConnect\\EduConnect\\Services\\IAuthService.cs",
-              "RelativeDocumentMoniker": "EduConnect\\Services\\IAuthService.cs",
-              "ToolTip": "D:\\DA\\EduConnect\\EduConnect\\Services\\IAuthService.cs",
-              "RelativeToolTip": "EduConnect\\Services\\IAuthService.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-02T14:11:41.108Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 12,
-              "Title": "EmailService.cs",
-              "DocumentMoniker": "D:\\DA\\EduConnect\\EduConnect\\Services\\EmailService.cs",
-              "RelativeDocumentMoniker": "EduConnect\\Services\\EmailService.cs",
-              "ToolTip": "D:\\DA\\EduConnect\\EduConnect\\Services\\EmailService.cs",
-              "RelativeToolTip": "EduConnect\\Services\\EmailService.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-02T14:11:37.559Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 13,
-              "Title": "AuthService.cs",
-              "DocumentMoniker": "D:\\DA\\EduConnect\\EduConnect\\Services\\AuthService.cs",
-              "RelativeDocumentMoniker": "EduConnect\\Services\\AuthService.cs",
-              "ToolTip": "D:\\DA\\EduConnect\\EduConnect\\Services\\AuthService.cs",
-              "RelativeToolTip": "EduConnect\\Services\\AuthService.cs",
-              "ViewState": "AQIAADYAAAAAAAAAAAAYwAAAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-02T14:11:29.814Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 15,
-              "Title": "User.cs",
-              "DocumentMoniker": "D:\\DA\\EduConnect\\EduConnect\\Models\\Auth\\User.cs",
-              "RelativeDocumentMoniker": "EduConnect\\Models\\Auth\\User.cs",
-              "ToolTip": "D:\\DA\\EduConnect\\EduConnect\\Models\\Auth\\User.cs",
-              "RelativeToolTip": "EduConnect\\Models\\Auth\\User.cs",
-              "ViewState": "AQIAAAoAAAAAAAAAAAA5wAAAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-02T14:11:15.671Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 16,
-              "Title": "RefreshToken.cs",
-              "DocumentMoniker": "D:\\DA\\EduConnect\\EduConnect\\Models\\Auth\\RefreshToken.cs",
-              "RelativeDocumentMoniker": "EduConnect\\Models\\Auth\\RefreshToken.cs",
-              "ToolTip": "D:\\DA\\EduConnect\\EduConnect\\Models\\Auth\\RefreshToken.cs",
-              "RelativeToolTip": "EduConnect\\Models\\Auth\\RefreshToken.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-02T14:11:13.665Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "Program.cs",
-              "DocumentMoniker": "D:\\DA\\EduConnect\\EduConnect\\Program.cs",
-              "RelativeDocumentMoniker": "EduConnect\\Program.cs",
-              "ToolTip": "D:\\DA\\EduConnect\\EduConnect\\Program.cs",
-              "RelativeToolTip": "EduConnect\\Program.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAFQAAAA8AAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-02T10:07:12.409Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "launchSettings.json",
-              "DocumentMoniker": "D:\\DA\\EduConnect\\EduConnect.Client\\Properties\\launchSettings.json",
-              "RelativeDocumentMoniker": "EduConnect.Client\\Properties\\launchSettings.json",
-              "ToolTip": "D:\\DA\\EduConnect\\EduConnect.Client\\Properties\\launchSettings.json",
-              "RelativeToolTip": "EduConnect.Client\\Properties\\launchSettings.json",
-              "ViewState": "AQIAAAkAAAAAAAAAAAAAAAAAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2025-11-02T10:25:48.992Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 17,
-              "Title": "PasswordReset.cs",
-              "DocumentMoniker": "D:\\DA\\EduConnect\\EduConnect\\Models\\Auth\\PasswordReset.cs",
-              "RelativeDocumentMoniker": "EduConnect\\Models\\Auth\\PasswordReset.cs",
-              "ToolTip": "D:\\DA\\EduConnect\\EduConnect\\Models\\Auth\\PasswordReset.cs",
-              "RelativeToolTip": "EduConnect\\Models\\Auth\\PasswordReset.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-02T14:11:12.492Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 18,
-              "Title": "EmailVerification.cs",
-              "DocumentMoniker": "D:\\DA\\EduConnect\\EduConnect\\Models\\Auth\\EmailVerification.cs",
-              "RelativeDocumentMoniker": "EduConnect\\Models\\Auth\\EmailVerification.cs",
-              "ToolTip": "D:\\DA\\EduConnect\\EduConnect\\Models\\Auth\\EmailVerification.cs",
-              "RelativeToolTip": "EduConnect\\Models\\Auth\\EmailVerification.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-02T14:11:10.013Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
               "Title": "appsettings.json",
               "DocumentMoniker": "D:\\DA\\EduConnect\\EduConnect\\appsettings.json",
               "RelativeDocumentMoniker": "EduConnect\\appsettings.json",
@@ -358,198 +54,98 @@
               "RelativeToolTip": "EduConnect\\appsettings.json",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2025-11-02T10:08:31.241Z",
+              "WhenOpened": "2025-11-04T15:47:53.734Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 19,
-              "Title": "ApiResponse.cs",
-              "DocumentMoniker": "D:\\DA\\EduConnect\\EduConnect\\Helpers\\ApiResponse.cs",
-              "RelativeDocumentMoniker": "EduConnect\\Helpers\\ApiResponse.cs",
-              "ToolTip": "D:\\DA\\EduConnect\\EduConnect\\Helpers\\ApiResponse.cs",
-              "RelativeToolTip": "EduConnect\\Helpers\\ApiResponse.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-02T14:10:56.837Z",
+              "DocumentIndex": 5,
+              "Title": "tinymce-init.js",
+              "DocumentMoniker": "D:\\DA\\EduConnect\\EduConnect.Client\\wwwroot\\js\\tinymce-init.js",
+              "RelativeDocumentMoniker": "EduConnect.Client\\wwwroot\\js\\tinymce-init.js",
+              "ToolTip": "D:\\DA\\EduConnect\\EduConnect.Client\\wwwroot\\js\\tinymce-init.js",
+              "RelativeToolTip": "EduConnect.Client\\wwwroot\\js\\tinymce-init.js",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAACAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
+              "WhenOpened": "2025-11-04T14:34:13.555Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "TokenService.cs",
-              "DocumentMoniker": "D:\\DA\\EduConnect\\EduConnect\\Services\\TokenService.cs",
-              "RelativeDocumentMoniker": "EduConnect\\Services\\TokenService.cs",
-              "ToolTip": "D:\\DA\\EduConnect\\EduConnect\\Services\\TokenService.cs",
-              "RelativeToolTip": "EduConnect\\Services\\TokenService.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-02T10:08:24.299Z",
+              "DocumentIndex": 4,
+              "Title": "CauHoiEditor.razor",
+              "DocumentMoniker": "D:\\DA\\EduConnect\\EduConnect.Client\\Pages\\HocLieu\\Components\\CauHoiEditor.razor",
+              "RelativeDocumentMoniker": "EduConnect.Client\\Pages\\HocLieu\\Components\\CauHoiEditor.razor",
+              "ToolTip": "D:\\DA\\EduConnect\\EduConnect.Client\\Pages\\HocLieu\\Components\\CauHoiEditor.razor",
+              "RelativeToolTip": "EduConnect.Client\\Pages\\HocLieu\\Components\\CauHoiEditor.razor",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABYAAAAFAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-11-04T13:08:00.763Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 20,
-              "Title": "AppDbContext.cs",
-              "DocumentMoniker": "D:\\DA\\EduConnect\\EduConnect\\Data\\AppDbContext.cs",
-              "RelativeDocumentMoniker": "EduConnect\\Data\\AppDbContext.cs",
-              "ToolTip": "D:\\DA\\EduConnect\\EduConnect\\Data\\AppDbContext.cs",
-              "RelativeToolTip": "EduConnect\\Data\\AppDbContext.cs",
-              "ViewState": "AQIAAHoAAAAAAAAAAAAgwAAAAAAAAAAA",
+              "DocumentIndex": 7,
+              "Title": "CreateCauHoiHocLieuRequest.cs",
+              "DocumentMoniker": "D:\\DA\\EduConnect\\EduConnect.Shared\\DTOs\\HocLieu\\CreateCauHoiHocLieuRequest.cs",
+              "RelativeDocumentMoniker": "EduConnect.Shared\\DTOs\\HocLieu\\CreateCauHoiHocLieuRequest.cs",
+              "ToolTip": "D:\\DA\\EduConnect\\EduConnect.Shared\\DTOs\\HocLieu\\CreateCauHoiHocLieuRequest.cs",
+              "RelativeToolTip": "EduConnect.Shared\\DTOs\\HocLieu\\CreateCauHoiHocLieuRequest.cs",
+              "ViewState": "AQIAAAcAAAAAAAAAAAAzwBIAAAA4AAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-02T14:10:51.398Z",
+              "WhenOpened": "2025-11-04T12:49:11.945Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "CauHoiAnswerList.razor",
+              "DocumentMoniker": "D:\\DA\\EduConnect\\EduConnect.Client\\Pages\\HocLieu\\Components\\CauHoiAnswerList.razor",
+              "RelativeDocumentMoniker": "EduConnect.Client\\Pages\\HocLieu\\Components\\CauHoiAnswerList.razor",
+              "ToolTip": "D:\\DA\\EduConnect\\EduConnect.Client\\Pages\\HocLieu\\Components\\CauHoiAnswerList.razor",
+              "RelativeToolTip": "EduConnect.Client\\Pages\\HocLieu\\Components\\CauHoiAnswerList.razor",
+              "ViewState": "AQIAAB4AAAAAAAAAAAAAADMAAAAvAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-11-04T12:43:30.957Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 21,
-              "Title": "HocLieuCauHoiController.cs",
-              "DocumentMoniker": "D:\\DA\\EduConnect\\EduConnect\\Controllers\\HocLieuCauHoiController.cs",
-              "RelativeDocumentMoniker": "EduConnect\\Controllers\\HocLieuCauHoiController.cs",
-              "ToolTip": "D:\\DA\\EduConnect\\EduConnect\\Controllers\\HocLieuCauHoiController.cs",
-              "RelativeToolTip": "EduConnect\\Controllers\\HocLieuCauHoiController.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-02T14:10:47.238Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 22,
-              "Title": "ExternalAuthController.cs",
-              "DocumentMoniker": "D:\\DA\\EduConnect\\EduConnect\\Controllers\\ExternalAuthController.cs",
-              "RelativeDocumentMoniker": "EduConnect\\Controllers\\ExternalAuthController.cs",
-              "ToolTip": "D:\\DA\\EduConnect\\EduConnect\\Controllers\\ExternalAuthController.cs",
-              "RelativeToolTip": "EduConnect\\Controllers\\ExternalAuthController.cs",
-              "ViewState": "AQIAAH8AAAAAAAAAAAAAAAAAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-02T14:10:40.532Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 23,
-              "Title": "CauHoiHocLieuController.cs",
-              "DocumentMoniker": "D:\\DA\\EduConnect\\EduConnect\\Controllers\\CauHoiHocLieuController.cs",
-              "RelativeDocumentMoniker": "EduConnect\\Controllers\\CauHoiHocLieuController.cs",
-              "ToolTip": "D:\\DA\\EduConnect\\EduConnect\\Controllers\\CauHoiHocLieuController.cs",
-              "RelativeToolTip": "EduConnect\\Controllers\\CauHoiHocLieuController.cs",
-              "ViewState": "AQIAAEMAAAAAAAAAAAAkwAAAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-02T14:10:36.069Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 14,
-              "Title": "CauHoiHocLieu.cs",
-              "DocumentMoniker": "D:\\DA\\EduConnect\\EduConnect\\Models\\HocLieu\\CauHoiHocLieu.cs",
-              "RelativeDocumentMoniker": "EduConnect\\Models\\HocLieu\\CauHoiHocLieu.cs",
-              "ToolTip": "D:\\DA\\EduConnect\\EduConnect\\Models\\HocLieu\\CauHoiHocLieu.cs",
-              "RelativeToolTip": "EduConnect\\Models\\HocLieu\\CauHoiHocLieu.cs",
-              "ViewState": "AQIAAAoAAAAAAAAAAAAowCAAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-02T09:12:36.27Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 24,
-              "Title": "AuthController.cs",
-              "DocumentMoniker": "D:\\DA\\EduConnect\\EduConnect\\Controllers\\AuthController.cs",
-              "RelativeDocumentMoniker": "EduConnect\\Controllers\\AuthController.cs",
-              "ToolTip": "D:\\DA\\EduConnect\\EduConnect\\Controllers\\AuthController.cs",
-              "RelativeToolTip": "EduConnect\\Controllers\\AuthController.cs",
-              "ViewState": "AQIAAPcAAAAAAAAAAADwvwAAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-02T14:10:21.031Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 25,
-              "Title": "launchSettings.json",
-              "DocumentMoniker": "D:\\DA\\EduConnect\\EduConnect\\Properties\\launchSettings.json",
-              "RelativeDocumentMoniker": "EduConnect\\Properties\\launchSettings.json",
-              "ToolTip": "D:\\DA\\EduConnect\\EduConnect\\Properties\\launchSettings.json",
-              "RelativeToolTip": "EduConnect\\Properties\\launchSettings.json",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2025-11-02T14:10:09.419Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 26,
-              "Title": "AuthDtos.cs",
-              "DocumentMoniker": "D:\\DA\\EduConnect\\EduConnect.Shared\\DTOs\\AuthDtos.cs",
-              "RelativeDocumentMoniker": "EduConnect.Shared\\DTOs\\AuthDtos.cs",
-              "ToolTip": "D:\\DA\\EduConnect\\EduConnect.Shared\\DTOs\\AuthDtos.cs",
-              "RelativeToolTip": "EduConnect.Shared\\DTOs\\AuthDtos.cs",
-              "ViewState": "AQIAABoAAAAAAAAAAAAswCoAAAA5AAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-02T10:26:05.541Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 27,
-              "Title": "Program.cs",
-              "DocumentMoniker": "D:\\DA\\EduConnect\\EduConnect.Client\\Program.cs",
-              "RelativeDocumentMoniker": "EduConnect.Client\\Program.cs",
-              "ToolTip": "D:\\DA\\EduConnect\\EduConnect.Client\\Program.cs",
-              "RelativeToolTip": "EduConnect.Client\\Program.cs",
-              "ViewState": "AQIAAAwAAAAAAAAAAAAAAAAAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-02T10:26:01.006Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 28,
-              "Title": "HocLieu.cs",
-              "DocumentMoniker": "D:\\DA\\EduConnect\\EduConnect\\Models\\HocLieu\\HocLieu.cs",
-              "RelativeDocumentMoniker": "EduConnect\\Models\\HocLieu\\HocLieu.cs",
-              "ToolTip": "D:\\DA\\EduConnect\\EduConnect\\Models\\HocLieu\\HocLieu.cs",
-              "RelativeToolTip": "EduConnect\\Models\\HocLieu\\HocLieu.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAACIAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-02T09:15:39.46Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 29,
+              "DocumentIndex": 1,
               "Title": "HocLieuEditor.razor",
               "DocumentMoniker": "D:\\DA\\EduConnect\\EduConnect.Client\\Pages\\HocLieu\\HocLieuEditor.razor",
               "RelativeDocumentMoniker": "EduConnect.Client\\Pages\\HocLieu\\HocLieuEditor.razor",
               "ToolTip": "D:\\DA\\EduConnect\\EduConnect.Client\\Pages\\HocLieu\\HocLieuEditor.razor",
               "RelativeToolTip": "EduConnect.Client\\Pages\\HocLieu\\HocLieuEditor.razor",
-              "ViewState": "AQIAAFYAAAAAAAAAAAAowI0AAAAAAAAA",
+              "ViewState": "AQIAAPAAAAAAAAAAAAAwwAsBAAAtAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-11-02T09:11:54.206Z"
+              "WhenOpened": "2025-11-04T12:42:14.318Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 30,
-              "Title": "HocLieuCreateModal.razor",
-              "DocumentMoniker": "D:\\DA\\EduConnect\\EduConnect.Client\\Pages\\HocLieu\\HocLieuCreateModal.razor",
-              "RelativeDocumentMoniker": "EduConnect.Client\\Pages\\HocLieu\\HocLieuCreateModal.razor",
-              "ToolTip": "D:\\DA\\EduConnect\\EduConnect.Client\\Pages\\HocLieu\\HocLieuCreateModal.razor",
-              "RelativeToolTip": "EduConnect.Client\\Pages\\HocLieu\\HocLieuCreateModal.razor",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAIAAAARAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-11-02T09:11:37.786Z"
+              "DocumentIndex": 6,
+              "Title": "index.html",
+              "DocumentMoniker": "D:\\DA\\EduConnect\\EduConnect.Client\\wwwroot\\index.html",
+              "RelativeDocumentMoniker": "EduConnect.Client\\wwwroot\\index.html",
+              "ToolTip": "D:\\DA\\EduConnect\\EduConnect.Client\\wwwroot\\index.html",
+              "RelativeToolTip": "EduConnect.Client\\wwwroot\\index.html",
+              "ViewState": "AQIAABUAAAAAAAAAAAAswCwAAAAdAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2025-11-04T12:41:43.661Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 31,
-              "Title": "HocLieuList.razor",
-              "DocumentMoniker": "D:\\DA\\EduConnect\\EduConnect.Client\\Pages\\HocLieu\\HocLieuList.razor",
-              "RelativeDocumentMoniker": "EduConnect.Client\\Pages\\HocLieu\\HocLieuList.razor",
-              "ToolTip": "D:\\DA\\EduConnect\\EduConnect.Client\\Pages\\HocLieu\\HocLieuList.razor",
-              "RelativeToolTip": "EduConnect.Client\\Pages\\HocLieu\\HocLieuList.razor",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAUAAAAAAAAA",
+              "DocumentIndex": 2,
+              "Title": "CauHoiPreview.razor",
+              "DocumentMoniker": "D:\\DA\\EduConnect\\EduConnect.Client\\Pages\\HocLieu\\Components\\CauHoiPreview.razor",
+              "RelativeDocumentMoniker": "EduConnect.Client\\Pages\\HocLieu\\Components\\CauHoiPreview.razor",
+              "ToolTip": "D:\\DA\\EduConnect\\EduConnect.Client\\Pages\\HocLieu\\Components\\CauHoiPreview.razor",
+              "RelativeToolTip": "EduConnect.Client\\Pages\\HocLieu\\Components\\CauHoiPreview.razor",
+              "ViewState": "AQIAAAIAAAAAAAAAAAAwwDkAAAAHAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-11-02T09:11:23.472Z"
+              "WhenOpened": "2025-11-03T16:23:57.135Z",
+              "EditorCaption": ""
             }
           ]
         }

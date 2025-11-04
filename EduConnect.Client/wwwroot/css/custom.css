@@ -1,0 +1,15 @@
+﻿/* === FIX TABLE SCROLL BUG IN SB ADMIN 2 === */
+.table-responsive {
+    overflow-x: visible !important;
+    overflow-y: visible !important;
+}
+
+/* Giúp bảng bám full chiều rộng khung */
+.card-body {
+    overflow-x: unset !important;
+}
+
+/* Loại bỏ margin âm có thể gây cuộn ngang */
+body, html {
+    overflow-x: hidden;
+}

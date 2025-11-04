@@ -1,8 +1,8 @@
-﻿using EduConnect.Data;
-using EduConnect.Models.HocLieu;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using EduConnect.Services.Interfaces;
 using EduConnect.Shared.DTOs.HocLieu;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace EduConnect.Controllers
 {
@@ -10,67 +10,59 @@ namespace EduConnect.Controllers
     [Route("api/[controller]")]
     public class HocLieuController : ControllerBase
     {
-        private readonly AppDbContext _context;
-        public HocLieuController(AppDbContext context)
+        private readonly IHocLieuService _service;
+
+        public HocLieuController(IHocLieuService service)
         {
-            _context = context;
+            _service = service;
         }
 
+        // GET api/HocLieu
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<ActionResult<List<HocLieuListDto>>> GetAll(
+            [FromQuery] string? keyword,
+            [FromQuery] string maLoaiHocLieu = "all",
+            [FromQuery] string nguonTao = "all",
+            [FromQuery] bool? laHocLieuTuDo = null,
+            [FromQuery] bool? laHocLieuAn = null)
         {
-            var data = await _context.HocLieus
-                .OrderByDescending(x => x.NgayTao)
-                .Select(x => new HocLieuDto
-                {
-                    MaHocLieu = x.MaHocLieu,
-                    TenHocLieu = x.TenHocLieu,
-                    TheLoai = x.TheLoai,
-                    DaDuyet = x.DaDuyet,
-                    HienThi = x.HienThi,
-                    NgayTao = x.NgayTao
-                })
-                .ToListAsync();
+            var filter = new HocLieuFilterDto
+            {
+                Keyword = keyword,
+                MaLoaiHocLieu = maLoaiHocLieu,
+                NguonTao = nguonTao,
+                LaHocLieuTuDo = laHocLieuTuDo ?? false,
+                LaHocLieuAn = laHocLieuAn ?? false
+            };
 
+            var data = await _service.GetAllAsync(filter);
             return Ok(data);
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(int id)
+        // GET api/HocLieu/5
+        [HttpGet("{id:int}")]
+        public async Task<ActionResult<HocLieuDto>> Get(int id)
         {
-            var h = await _context.HocLieus.FindAsync(id);
-            if (h == null) return NotFound();
-
-            var dto = new HocLieuDto
-            {
-                MaHocLieu = h.MaHocLieu,
-                TenHocLieu = h.TenHocLieu,
-                TheLoai = h.TheLoai,
-                DaDuyet = h.DaDuyet,
-                HienThi = h.HienThi,
-                NgayTao = h.NgayTao
-            };
-
-            return Ok(dto);
+            var hl = await _service.GetByIdAsync(id);
+            if (hl == null) return NotFound();
+            return Ok(hl);
         }
 
+        // POST api/HocLieu
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] CreateHocLieuRequest req)
+        public async Task<ActionResult<HocLieuDto>> Create([FromBody] CreateHocLieuRequest request)
         {
-            var entity = new HocLieu
-            {
-                TenHocLieu = req.TenHocLieu,
-                TheLoai = req.TheLoai,
-                HienThi = true,
-                DaDuyet = false,
-                NgayTao = DateTime.Now,
-                NguoiTao = User?.Identity?.Name ?? "system"
-            };
+            var created = await _service.CreateAsync(request);
+            return Ok(created);
+        }
 
-            _context.HocLieus.Add(entity);
-            await _context.SaveChangesAsync();
-
-            return Ok(new { maHocLieu = entity.MaHocLieu, message = "Thêm học liệu thành công" });
+        // DELETE api/HocLieu/5
+        [HttpDelete("{id:int}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var ok = await _service.DeleteAsync(id);
+            if (!ok) return NotFound();
+            return NoContent();
         }
     }
 }

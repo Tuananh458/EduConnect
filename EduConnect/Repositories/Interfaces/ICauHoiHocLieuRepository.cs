@@ -1,13 +1,15 @@
-﻿using EduConnect.Models.HocLieu;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using EduConnect.Models.HocLieu;
 
 namespace EduConnect.Repositories.Interfaces
 {
     public interface ICauHoiHocLieuRepository
     {
-        Task<IEnumerable<CauHoiHocLieu>> GetAllAsync();
-        Task<IEnumerable<CauHoiHocLieu>> GetByHocLieuAsync(int maHocLieu);
+        Task<List<CauHoiHocLieu>> GetByHocLieuAsync(int hocLieuId);
         Task<CauHoiHocLieu?> GetByIdAsync(int id);
-        Task AddAsync(CauHoiHocLieu entity);
+        Task<CauHoiHocLieu> AddAsync(CauHoiHocLieu entity);
+        Task UpdateAsync(CauHoiHocLieu entity);
         Task DeleteAsync(CauHoiHocLieu entity);
     }
 }

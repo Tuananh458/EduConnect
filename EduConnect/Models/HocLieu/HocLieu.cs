@@ -1,34 +1,42 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json.Serialization;
 
 namespace EduConnect.Models.HocLieu
 {
     public class HocLieu
     {
-        [Key] // 🔑 Khóa chính
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int MaHocLieu { get; set; }
+        [Key]
+        public int Id { get; set; }
 
+        // Tên hiển thị trên UI
         [Required]
         [MaxLength(255)]
         public string TenHocLieu { get; set; } = string.Empty;
 
+        // Mã loại để lọc: TN, DT, LT, ...
         [Required]
-        [MaxLength(100)]
-        public string TheLoai { get; set; } = string.Empty;
+        [MaxLength(20)]
+        public string MaLoaiHocLieu { get; set; } = string.Empty;
 
-        public bool DaDuyet { get; set; } = false;
-        public bool HienThi { get; set; } = true;
+        // Tên loại để hiển thị
+        [MaxLength(255)]
+        public string? TenLoaiHocLieu { get; set; }
 
-        public DateTime NgayTao { get; set; } = DateTime.Now;
+        public DateTime NgayTao { get; set; } = DateTime.UtcNow;
 
-        [MaxLength(100)]
-        public string? NguoiTao { get; set; }
+        // "Tự tạo", "Sao chép"
+        [MaxLength(50)]
+        public string NguonTao { get; set; } = "Tự tạo";
 
-        [JsonIgnore]
-        public ICollection<HocLieuCauHoi> HocLieuCauHois { get; set; } = new HashSet<HocLieuCauHoi>();
+        public bool LaHocLieuTuDo { get; set; } = false;
+        public bool LaHocLieuAn { get; set; } = false;
+
+        // nếu bạn có bảng Khóa học thì chỗ này là FK
+        public int? KhoaHocId { get; set; }
+        public string? TenKhoaHoc { get; set; }
+
+        // quan hệ 1-n câu hỏi
+        public ICollection<CauHoiHocLieu> CauHois { get; set; } = new List<CauHoiHocLieu>();
     }
 }

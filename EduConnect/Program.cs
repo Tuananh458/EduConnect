@@ -56,10 +56,11 @@ namespace EduConnect
             builder.Services.AddScoped<ILopHocRepository, LopHocRepository>();
             builder.Services.AddScoped<ILopHocService, LopHocService>();
 
-            //hoclieu
+            // Repositories
             builder.Services.AddScoped<IHocLieuRepository, HocLieuRepository>();
             builder.Services.AddScoped<ICauHoiHocLieuRepository, CauHoiHocLieuRepository>();
 
+            // Services
             builder.Services.AddScoped<IHocLieuService, HocLieuService>();
             builder.Services.AddScoped<ICauHoiHocLieuService, CauHoiHocLieuService>();
 

@@ -1,12 +1,14 @@
-﻿using EduConnect.Shared.DTOs.HocLieu;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using EduConnect.Shared.DTOs.HocLieu;
 
 namespace EduConnect.Services.Interfaces
 {
     public interface IHocLieuService
     {
-        Task<IEnumerable<HocLieuDto>> GetAllAsync();
+        Task<List<HocLieuListDto>> GetAllAsync(HocLieuFilterDto filter);
         Task<HocLieuDto?> GetByIdAsync(int id);
-        Task<int> CreateAsync(CreateHocLieuRequest request);
+        Task<HocLieuDto> CreateAsync(CreateHocLieuRequest request);
         Task<bool> DeleteAsync(int id);
     }
 }

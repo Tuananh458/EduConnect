@@ -1,0 +1,61 @@
+﻿<div class="vstack gap-2">
+    @foreach (var (answer, index) in Answers.Select((a, i) => (a, i)))
+    {
+        <div class="input-group" @key="answer">
+            <div class="input-group-text bg-white">
+                @if (AllowMultiple)
+                {
+                    <input type="checkbox" class="form-check-input mt-0" @bind="answer.IsCorrect" />
+                }
+                else
+                {
+                    <input type="radio" name="correct" class="form-check-input mt-0"
+                           checked="@answer.IsCorrect"
+                           @onchange="() => MarkCorrect(index)" />
+                }
+            </div>
+            <textarea class="form-control" rows="2"
+                      placeholder="Nhập nội dung đáp án"
+                      @bind="answer.Content"></textarea>
+            <button class="btn btn-outline-danger" @onclick="() => RemoveAnswer(index)">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    }
+
+    <button class="btn btn-link text-primary mt-2" @onclick="AddAnswer">
+        <i class="fas fa-plus-circle me-1"></i> Thêm đáp án
+    </button>
+</div>
+
+@code {
+    [Parameter] public bool AllowMultiple { get; set; }
+    [Parameter] public List<AnswerOption> Answers { get; set; } = new();
+
+    private void AddAnswer()
+    {
+        Answers.Add(new AnswerOption());
+        StateHasChanged();
+    }
+
+    private void RemoveAnswer(int index)
+    {
+        if (index >= 0 && index < Answers.Count && Answers.Count > 1)
+        {
+            Answers.RemoveAt(index);
+            StateHasChanged();
+        }
+    }
+
+    private void MarkCorrect(int index)
+    {
+        for (int i = 0; i < Answers.Count; i++)
+            Answers[i].IsCorrect = (i == index);
+    }
+
+    public class AnswerOption
+    {
+        public string Content { get; set; } = "";
+        public bool IsCorrect { get; set; }
+    }
+}

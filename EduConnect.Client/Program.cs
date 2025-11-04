@@ -7,12 +7,10 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 builder.Services.AddBlazoredLocalStorage();
-builder.Services.AddScoped<LopHocService>();
-//hoclieu
+
+
 builder.Services.AddScoped<HocLieuService>();
 builder.Services.AddScoped<CauHoiHocLieuService>();
-builder.Services.AddScoped<HocLieuCauHoiService>();
-
 
 
 

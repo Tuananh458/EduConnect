@@ -1,41 +1,32 @@
 ﻿<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
-
-    <!-- Sidebar - Brand -->
-    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/">
+    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/dashboard">
         <div class="sidebar-brand-icon rotate-n-15">
             <i class="fas fa-laugh-wink"></i>
         </div>
         <div class="sidebar-brand-text mx-3">EduConnect</div>
     </a>
 
-    <hr class="sidebar-divider my-0">
+    <hr class="sidebar-divider my-0" />
 
-    <!-- Nav Item - Dashboard -->
-    <li class="nav-item">
-        <NavLink class="nav-link" href="/dashboard" Match="NavLinkMatch.All">
+    <li class="nav-item active">
+        <a class="nav-link" href="/dashboard">
             <i class="fas fa-fw fa-tachometer-alt"></i>
             <span>Dashboard</span>
-        </NavLink>
+        </a>
     </li>
 
-    <hr class="sidebar-divider">
+    <hr class="sidebar-divider" />
+
     <div class="sidebar-heading">Modules</div>
 
     <li class="nav-item">
-        <NavLink class="nav-link" href="/question-bank">
-            <i class="fas fa-fw fa-book"></i>
-            <span>Ngân hàng câu hỏi</span>
+        <NavLink href="/lop-hoc" class="nav-link">
+            <i class="fas fa-school"></i> Quản lý lớp học
         </NavLink>
     </li>
 
-    <li class="nav-item">
-        <NavLink class="nav-link" href="/students">
-            <i class="fas fa-fw fa-user-graduate"></i>
-            <span>Học sinh</span>
-        </NavLink>
-    </li>
+    <hr class="sidebar-divider d-none d-md-block" />
 
-    <hr class="sidebar-divider d-none d-md-block">
     <div class="text-center d-none d-md-inline">
         <button class="rounded-circle border-0" id="sidebarToggle"></button>
     </div>

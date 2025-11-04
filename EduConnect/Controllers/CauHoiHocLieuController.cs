@@ -1,8 +1,8 @@
-﻿using EduConnect.Data;
-using EduConnect.Models.HocLieu;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using EduConnect.Services.Interfaces;
 using EduConnect.Shared.DTOs.HocLieu;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace EduConnect.Controllers
 {
@@ -10,83 +10,55 @@ namespace EduConnect.Controllers
     [Route("api/[controller]")]
     public class CauHoiHocLieuController : ControllerBase
     {
-        private readonly AppDbContext _context;
-        public CauHoiHocLieuController(AppDbContext context)
+        private readonly ICauHoiHocLieuService _service;
+
+        public CauHoiHocLieuController(ICauHoiHocLieuService service)
         {
-            _context = context;
+            _service = service;
         }
 
-        // GET api/CauHoiHocLieu
+        // GET api/CauHoiHocLieu?hocLieuId=1
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<ActionResult<List<CauHoiHocLieuDto>>> GetByHocLieu([FromQuery] int hocLieuId)
         {
-            var data = await _context.CauHoiHocLieus
-                .OrderByDescending(x => x.NgayTao)
-                .Select(x => new CauHoiHocLieuDto
-                {
-                    MaCauHoi = x.MaCauHoi,
-                    NoiDung = x.NoiDung,
-                    Loai = x.Loai,
-                    DoKho = x.DoKho,
-                    GiaiThich = x.GiaiThich,
-                    NgayTao = x.NgayTao
-                })
-                .ToListAsync();
-
+            var data = await _service.GetByHocLieuAsync(hocLieuId);
             return Ok(data);
         }
 
-        // GET api/CauHoiHocLieu/byHocLieu/5
-        [HttpGet("byHocLieu/{maHocLieu:int}")]
-        public async Task<IActionResult> GetByHocLieu(int maHocLieu)
+        // GET api/CauHoiHocLieu/5
+        [HttpGet("{id:int}")]
+        public async Task<ActionResult<CauHoiHocLieuDto>> Get(int id)
         {
-            var data = await _context.HocLieuCauHois
-                .Include(x => x.CauHoiHocLieu)
-                .Where(x => x.MaHocLieu == maHocLieu)
-                .Select(x => new CauHoiHocLieuDto
-                {
-                    MaCauHoi = x.CauHoiHocLieu!.MaCauHoi,
-                    NoiDung = x.CauHoiHocLieu.NoiDung,
-                    Loai = x.CauHoiHocLieu.Loai,
-                    DoKho = x.CauHoiHocLieu.DoKho,
-                    GiaiThich = x.CauHoiHocLieu.GiaiThich,
-                    NgayTao = x.CauHoiHocLieu.NgayTao
-                })
-                .ToListAsync();
-
+            var data = await _service.GetByIdAsync(id);
+            if (data == null) return NotFound();
             return Ok(data);
         }
 
         // POST api/CauHoiHocLieu
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] CreateCauHoiHocLieuRequest req)
+        public async Task<ActionResult<CauHoiHocLieuDto>> Create([FromBody] CreateCauHoiHocLieuRequest request)
         {
-            var entity = new CauHoiHocLieu
-            {
-                NoiDung = req.NoiDung,
-                Loai = req.Loai,
-                DoKho = req.DoKho,
-                GiaiThich = req.GiaiThich,
-                NgayTao = DateTime.Now
-            };
+            var created = await _service.CreateAsync(request);
+            return Ok(created);
+        }
 
-            _context.CauHoiHocLieus.Add(entity);
-            await _context.SaveChangesAsync();
+        // PUT api/CauHoiHocLieu/5
+        [HttpPut("{id:int}")]
+        public async Task<IActionResult> Update(int id, [FromBody] CreateCauHoiHocLieuRequest request)
+        {
+            var ok = await _service.UpdateAsync(id, request);
+            if (!ok) return NotFound();
+            return NoContent();
+        }
 
-            // nếu tạo ngay trong một học liệu thì tự gán luôn
-            if (req.MaHocLieu.HasValue)
-            {
-                _context.HocLieuCauHois.Add(new HocLieuCauHoi
-                {
-                    MaHocLieu = req.MaHocLieu.Value,
-                    MaCauHoi = entity.MaCauHoi,
-                    Diem = 1
-                });
-
-                await _context.SaveChangesAsync();
-            }
-
-            return Ok(new { maCauHoi = entity.MaCauHoi, message = "Tạo câu hỏi thành công" });
+        // DELETE api/CauHoiHocLieu/5
+        [HttpDelete("{id:int}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var ok = await _service.DeleteAsync(id);
+            if (!ok) return NotFound();
+            return NoContent();
         }
     }
 }
+

@@ -1,0 +1,30 @@
+﻿@using Microsoft.JSInterop
+@inject IJSRuntime JS
+
+<textarea id="@EditorId"></textarea>
+
+@code {
+    [Parameter] public string EditorId { get; set; } = "question-editor";
+    [Parameter] public string? Content { get; set; }
+    [Parameter] public EventCallback<string> ContentChanged { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JS.InvokeVoidAsync("tinymce.init", new
+            {
+                selector = $"#{EditorId}",
+                height = 300,
+                plugins = "lists link image table code fullscreen",
+                toolbar = "undo redo | styles | bold italic underline | alignleft aligncenter alignright | bullist numlist | image code fullscreen"
+            });
+        }
+    }
+
+    public async Task<string> GetContentAsync()
+    {
+        return await JS.InvokeAsync<string>("tinymce.get", EditorId + ".getContent()");
+    }
+
+}

@@ -1,4 +1,7 @@
-﻿using EduConnect.Models.HocLieu;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using EduConnect.Models.HocLieu;
 using EduConnect.Repositories.Interfaces;
 using EduConnect.Services.Interfaces;
 using EduConnect.Shared.DTOs.HocLieu;
@@ -16,64 +19,101 @@ namespace EduConnect.Services.Implementations
             _hocLieuRepo = hocLieuRepo;
         }
 
-        public async Task<IEnumerable<CauHoiHocLieuDto>> GetAllAsync()
+        public async Task<List<CauHoiHocLieuDto>> GetByHocLieuAsync(int hocLieuId)
         {
-            var data = await _repo.GetAllAsync();
+            var data = await _repo.GetByHocLieuAsync(hocLieuId);
             return data.Select(x => new CauHoiHocLieuDto
             {
-                MaCauHoi = x.MaCauHoi,
+                Id = x.Id,
+                HocLieuId = x.HocLieuId,
                 NoiDung = x.NoiDung,
-                Loai = x.Loai,
+                LoaiCauHoi = x.LoaiCauHoi,
                 DoKho = x.DoKho,
-                GiaiThich = x.GiaiThich,
-                NgayTao = x.NgayTao
-            });
+                Diem = x.Diem,
+                DapAnA = x.DapAnA,
+                DapAnB = x.DapAnB,
+                DapAnC = x.DapAnC,
+                DapAnD = x.DapAnD,
+                DapAnDung = x.DapAnDung
+            }).ToList();
         }
 
-        public async Task<IEnumerable<CauHoiHocLieuDto>> GetByHocLieuAsync(int maHocLieu)
+        public async Task<CauHoiHocLieuDto?> GetByIdAsync(int id)
         {
-            var data = await _repo.GetByHocLieuAsync(maHocLieu);
-            return data.Select(x => new CauHoiHocLieuDto
+            var x = await _repo.GetByIdAsync(id);
+            if (x == null) return null;
+            return new CauHoiHocLieuDto
             {
-                MaCauHoi = x.MaCauHoi,
+                Id = x.Id,
+                HocLieuId = x.HocLieuId,
                 NoiDung = x.NoiDung,
-                Loai = x.Loai,
+                LoaiCauHoi = x.LoaiCauHoi,
                 DoKho = x.DoKho,
-                GiaiThich = x.GiaiThich,
-                NgayTao = x.NgayTao
-            });
+                Diem = x.Diem,
+                DapAnA = x.DapAnA,
+                DapAnB = x.DapAnB,
+                DapAnC = x.DapAnC,
+                DapAnD = x.DapAnD,
+                DapAnDung = x.DapAnDung
+            };
         }
 
-        public async Task<int> CreateAsync(CreateCauHoiHocLieuRequest request)
+        public async Task<CauHoiHocLieuDto> CreateAsync(CreateCauHoiHocLieuRequest request)
         {
+            // đảm bảo học liệu tồn tại
+            var hl = await _hocLieuRepo.GetByIdAsync(request.HocLieuId);
+            if (hl == null)
+                throw new System.Exception("Học liệu không tồn tại");
+
             var entity = new CauHoiHocLieu
             {
+                HocLieuId = request.HocLieuId,
                 NoiDung = request.NoiDung,
-                Loai = request.Loai,
+                LoaiCauHoi = request.LoaiCauHoi,
                 DoKho = request.DoKho,
-                GiaiThich = request.GiaiThich,
-                NgayTao = DateTime.Now
+                Diem = request.Diem,
+                DapAnA = request.DapAnA,
+                DapAnB = request.DapAnB,
+                DapAnC = request.DapAnC,
+                DapAnD = request.DapAnD,
+                DapAnDung = request.DapAnDung
             };
 
-            await _repo.AddAsync(entity);
+            var created = await _repo.AddAsync(entity);
 
-            // Nếu tạo trong học liệu thì gán luôn
-            if (request.MaHocLieu.HasValue)
+            return new CauHoiHocLieuDto
             {
-                var hocLieu = await _hocLieuRepo.GetByIdAsync(request.MaHocLieu.Value);
-                if (hocLieu != null)
-                {
-                    hocLieu.HocLieuCauHois.Add(new HocLieuCauHoi
-                    {
-                        MaHocLieu = hocLieu.MaHocLieu,
-                        MaCauHoi = entity.MaCauHoi,
-                        Diem = 1
-                    });
-                    await _hocLieuRepo.UpdateAsync(hocLieu);
-                }
-            }
+                Id = created.Id,
+                HocLieuId = created.HocLieuId,
+                NoiDung = created.NoiDung,
+                LoaiCauHoi = created.LoaiCauHoi,
+                DoKho = created.DoKho,
+                Diem = created.Diem,
+                DapAnA = created.DapAnA,
+                DapAnB = created.DapAnB,
+                DapAnC = created.DapAnC,
+                DapAnD = created.DapAnD,
+                DapAnDung = created.DapAnDung
+            };
+        }
 
-            return entity.MaCauHoi;
+        public async Task<bool> UpdateAsync(int id, CreateCauHoiHocLieuRequest request)
+        {
+            var entity = await _repo.GetByIdAsync(id);
+            if (entity == null) return false;
+
+            entity.NoiDung = request.NoiDung;
+            entity.LoaiCauHoi = request.LoaiCauHoi;
+            entity.DoKho = request.DoKho;
+            entity.Diem = request.Diem;
+            entity.DapAnA = request.DapAnA;
+            entity.DapAnB = request.DapAnB;
+            entity.DapAnC = request.DapAnC;
+            entity.DapAnD = request.DapAnD;
+            entity.DapAnDung = request.DapAnDung;
+
+            await _repo.UpdateAsync(entity);
+            return true;
         }
 
         public async Task<bool> DeleteAsync(int id)

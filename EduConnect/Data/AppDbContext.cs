@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using EduConnect.Models.School;
-using EduConnect.Models.Quiz;
 using EduConnect.Models.Auth;
 using EduConnect.Models;
 using EduConnect.Models.HocLieu;
+using EduConnect.Models.DanhMuc;
 
 namespace EduConnect.Data
 {
@@ -15,14 +15,13 @@ namespace EduConnect.Data
         }
 
         // ==========================
-        // 🧩 MODULE 1: Ngân hàng câu hỏi
+        // 🧩 MODULE 1: Học liệu
         // ==========================
-        public DbSet<CauHoi> CauHois { get; set; }
-        public DbSet<DapAn> DapAns { get; set; }
-        public DbSet<Chuong> Chuongs { get; set; }
-        public DbSet<ChuDe> ChuDes { get; set; }
-      
-      
+
+
+
+        public DbSet<EduConnect.Models.HocLieu.HocLieu> HocLieus { get; set; }
+        public DbSet<CauHoiHocLieu> CauHoiHocLieus => Set<CauHoiHocLieu>();
 
         // ==========================
         // 🧩 MODULE 2: Xác thực / Tài khoản
@@ -31,11 +30,7 @@ namespace EduConnect.Data
         public DbSet<RefreshToken> RefreshTokens { get; set; }
         public DbSet<EmailVerification> EmailVerifications { get; set; }
         public DbSet<PasswordReset> PasswordResets { get; set; }
-        //HOC LIEU
-        public DbSet<HocLieu> HocLieus { get; set; }
-        public DbSet<CauHoiHocLieu> CauHoiHocLieus { get; set; }
-        public DbSet<DapAnHocLieu> DapAnHocLieus { get; set; }
-        public DbSet<HocLieuCauHoi> HocLieuCauHois { get; set; }
+   
 
         // ==========================
         // 🧩 MODULE 3: Trường học
@@ -88,41 +83,11 @@ namespace EduConnect.Data
                 .WithMany(h => h.LienKetPhuHuynhHocSinhs)
                 .HasForeignKey(l => l.MaHocSinh)
                 .OnDelete(DeleteBehavior.Cascade);
-            // Câu hỏi - Đáp án (1-n)
-            modelBuilder.Entity<CauHoi>()
-                .HasMany(q => q.DapAns)
-                .WithOne(a => a.CauHoi)
-                .HasForeignKey(a => a.MaCauHoi)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            // Chương - Chủ đề (1-n)
-            modelBuilder.Entity<Chuong>()
-                .HasMany(c => c.CauHois)
-                .WithOne(q => q.Chuong)
-                .HasForeignKey(q => q.MaChuong)
-                .OnDelete(DeleteBehavior.SetNull);
-
-            modelBuilder.Entity<ChuDe>()
-                .HasMany(c => c.CauHois)
-                .WithOne(q => q.ChuDe)
-                .HasForeignKey(q => q.MaChuDe)
-                .OnDelete(DeleteBehavior.SetNull);
-
-            //HOC LIEU
-            // khóa chính kép
-            modelBuilder.Entity<HocLieuCauHoi>()
-                .HasKey(x => new { x.MaHocLieu, x.MaCauHoi });
-
-            modelBuilder.Entity<HocLieuCauHoi>()
-                .HasOne(x => x.HocLieu)
-                .WithMany(h => h.HocLieuCauHois)
-                .HasForeignKey(x => x.MaHocLieu)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            modelBuilder.Entity<HocLieuCauHoi>()
-                .HasOne(x => x.CauHoiHocLieu)
-                .WithMany(c => c.HocLieuCauHois)
-                .HasForeignKey(x => x.MaCauHoi)
+            // Quan hệ HocLieu - CauHoiHocLieu: 1-n
+            modelBuilder.Entity<CauHoiHocLieu>()
+                .HasOne(ch => ch.HocLieu)
+                .WithMany(hl => hl.CauHois)
+                .HasForeignKey(ch => ch.HocLieuId)
                 .OnDelete(DeleteBehavior.Cascade);
             // ==========================
             // 🌱 SEED DỮ LIỆU KHỐI HỌC MẶC ĐỊNH

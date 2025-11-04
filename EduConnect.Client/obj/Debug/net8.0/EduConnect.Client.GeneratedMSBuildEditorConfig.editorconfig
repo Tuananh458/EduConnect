@@ -1,0 +1,119 @@
+is_global = true
+build_property.EnableAotAnalyzer = 
+build_property.EnableSingleFileAnalyzer = 
+build_property.EnableTrimAnalyzer = false
+build_property.IncludeAllContentForSelfExtract = 
+build_property.TargetFramework = net8.0
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = 
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = false
+build_property.PlatformNeutralAssembly = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property._SupportedPlatformList = browser
+build_property.RootNamespace = EduConnect.Client
+build_property.RootNamespace = EduConnect.Client
+build_property.ProjectDir = D:\DA\EduConnect\EduConnect.Client\
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = false
+build_property.RazorLangVersion = 8.0
+build_property.SupportLocalizedComponentNames = 
+build_property.GenerateRazorMetadataSourceChecksumAttributes = 
+build_property.MSBuildProjectDirectory = D:\DA\EduConnect\EduConnect.Client
+build_property._RazorSourceGeneratorDebug = 
+
+[D:/DA/EduConnect/EduConnect.Client/App.razor]
+build_metadata.AdditionalFiles.TargetPath = QXBwLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/DA/EduConnect/EduConnect.Client/Layout/AdminLayout.razor]
+build_metadata.AdditionalFiles.TargetPath = TGF5b3V0XEFkbWluTGF5b3V0LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/DA/EduConnect/EduConnect.Client/Layout/AuthLayout.razor]
+build_metadata.AdditionalFiles.TargetPath = TGF5b3V0XEF1dGhMYXlvdXQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/DA/EduConnect/EduConnect.Client/Layout/Footer.razor]
+build_metadata.AdditionalFiles.TargetPath = TGF5b3V0XEZvb3Rlci5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/DA/EduConnect/EduConnect.Client/Layout/Sidebar.razor]
+build_metadata.AdditionalFiles.TargetPath = TGF5b3V0XFNpZGViYXIucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/DA/EduConnect/EduConnect.Client/Layout/Topbar.razor]
+build_metadata.AdditionalFiles.TargetPath = TGF5b3V0XFRvcGJhci5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/DA/EduConnect/EduConnect.Client/Pages/ChangePassword.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ2hhbmdlUGFzc3dvcmQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/DA/EduConnect/EduConnect.Client/Pages/Counter.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ291bnRlci5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/DA/EduConnect/EduConnect.Client/Pages/ForgotPassword.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRm9yZ290UGFzc3dvcmQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/DA/EduConnect/EduConnect.Client/Pages/HocLieu/Components/CauHoiAnswerList.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSG9jTGlldVxDb21wb25lbnRzXENhdUhvaUFuc3dlckxpc3QucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/DA/EduConnect/EduConnect.Client/Pages/HocLieu/Components/CauHoiEditor.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSG9jTGlldVxDb21wb25lbnRzXENhdUhvaUVkaXRvci5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/DA/EduConnect/EduConnect.Client/Pages/HocLieu/Components/CauHoiPreview.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSG9jTGlldVxDb21wb25lbnRzXENhdUhvaVByZXZpZXcucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/DA/EduConnect/EduConnect.Client/Pages/HocLieu/HocLieuEditor.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSG9jTGlldVxIb2NMaWV1RWRpdG9yLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/DA/EduConnect/EduConnect.Client/Pages/HocLieu/HocLieuList.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSG9jTGlldVxIb2NMaWV1TGlzdC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/DA/EduConnect/EduConnect.Client/Pages/Home.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSG9tZS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/DA/EduConnect/EduConnect.Client/Pages/Login.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTG9naW4ucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/DA/EduConnect/EduConnect.Client/Pages/Logout.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTG9nb3V0LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/DA/EduConnect/EduConnect.Client/Pages/LopHoc/LopHocList.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTG9wSG9jXExvcEhvY0xpc3QucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/DA/EduConnect/EduConnect.Client/Pages/Register.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUmVnaXN0ZXIucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/DA/EduConnect/EduConnect.Client/Pages/ResetPassword.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUmVzZXRQYXNzd29yZC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/DA/EduConnect/EduConnect.Client/Pages/Weather.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcV2VhdGhlci5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/DA/EduConnect/EduConnect.Client/_Imports.razor]
+build_metadata.AdditionalFiles.TargetPath = X0ltcG9ydHMucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/DA/EduConnect/EduConnect.Client/Layout/MainLayout.razor]
+build_metadata.AdditionalFiles.TargetPath = TGF5b3V0XE1haW5MYXlvdXQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-905frekh6e
+
+[D:/DA/EduConnect/EduConnect.Client/Layout/NavMenu.razor]
+build_metadata.AdditionalFiles.TargetPath = TGF5b3V0XE5hdk1lbnUucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-lxluoe226x

@@ -1,0 +1,72 @@
+﻿@using EduConnect.Client.Pages.HocLieu.Components
+
+<div class="modal fade show d-block" tabindex="-1" style="background: rgba(0, 0, 0, 0.5); z-index: 2000;">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg rounded-3 overflow-hidden animate-fade-in">
+            <!-- HEADER -->
+            <div class="modal-header bg-primary text-white">
+                <h5 class="mb-0 fw-semibold">Xem thử câu hỏi</h5>
+                <button type="button" class="btn-close btn-close-white" @onclick="Close"></button>
+            </div>
+
+            <!-- BODY -->
+            <div class="modal-body bg-light p-4">
+                <div class="bg-white rounded-3 shadow-sm p-4">
+                    @if (string.IsNullOrWhiteSpace(NoiDung))
+                    {
+                        <div class="text-muted text-center py-3">
+                            <em>Chưa có nội dung câu hỏi để xem thử.</em>
+                        </div>
+                    }
+                    else
+                    {
+                        <h6 class="fw-bold mb-4 text-dark">@((MarkupString)NoiDung)</h6>
+
+                        @if (Answers != null && Answers.Count > 0)
+                        {
+                            @for (int i = 0; i < Answers.Count; i++)
+                            {
+                                var opt = Answers[i];
+                                var label = (char)('A' + i);
+
+                                <div class="border rounded-2 p-2 mb-2 d-flex align-items-start
+                                            @(opt.IsCorrect ? "bg-success-subtle border-success" : "bg-white")"
+                                     style="transition: all 0.2s;">
+                                    <span class="fw-semibold me-2">@label.</span>
+                                    <div>@(new MarkupString(opt.Content ?? ""))</div>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <div class="text-muted fst-italic">Chưa có đáp án nào được tạo.</div>
+                        }
+                    }
+                </div>
+            </div>
+
+            <!-- FOOTER -->
+            <div class="modal-footer bg-white border-top">
+                <button class="btn btn-secondary" @onclick="Close">
+                    <i class="fas fa-times me-1"></i> Đóng
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public string NoiDung { get; set; } = string.Empty;
+
+    [Parameter]
+    public List<CauHoiAnswerList.AnswerOption> Answers { get; set; }
+        = new();
+
+    [Parameter] public EventCallback OnClose { get; set; }
+
+    private async Task Close()
+    {
+        if (OnClose.HasDelegate)
+            await OnClose.InvokeAsync();
+    }
+}
