@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>EduConnect</title>
     <base href="/" />
-  
+
     <!-- ======= FONT & ICONS ======= -->
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
@@ -30,100 +30,18 @@
 
     <!-- ======= BLAZOR COMPONENT STYLES ======= -->
     <link href="EduConnect.Client.styles.css" rel="stylesheet" />
- 
+    <script src="https://cdn.tiny.cloud/1/h8c6s0e14a9erd9wiuspfbml390rplo67yrmikljm9ad7v1d/tinymce/8/tinymce.min.js"
+            referrerpolicy="origin"
+            crossorigin="anonymous"></script>
+
+    <script src="js/tinymce-init.js"></script>
+
 
 </head>
 
 <body>
     <div id="app">Đang tải...</div>
 
-    <!-- TinyMCE (self-hosted) -->
-    <script src="lib/tinymce/tinymce.min.js"></script>
-    <script src="js/tinymce-init.js"></script>
-
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            // Dọn instance cũ (tránh lỗi khi reload component Blazor)
-            if (typeof tinymce !== 'undefined') tinymce.remove();
-
-            // ✅ Khởi tạo TinyMCE
-            tinymce.init({
-                selector: 'textarea.tinymce',     // Áp dụng cho mọi textarea có class này
-                height: 400,
-                menubar: true,
-
-                // ✅ Xác nhận dùng GPLv2+ license (bắt buộc cho self-host)
-                license_key: 'gpl',
-
-                // ✅ Các plugin miễn phí
-                plugins: [
-                    'advlist autolink lists link image charmap preview anchor',
-                    'searchreplace visualblocks code fullscreen',
-                    'insertdatetime media table help wordcount',
-                    'emoticons autoresize paste'
-                ],
-
-                // ✅ Thanh công cụ
-                toolbar:
-                    'undo redo | blocks | bold italic underline forecolor backcolor | ' +
-                    'alignleft aligncenter alignright alignjustify | ' +
-                    'bullist numlist outdent indent | ' +
-                    'image media link | removeformat | preview code fullscreen',
-
-                // ✅ Ẩn logo và quảng cáo
-                branding: false,
-                promotion: false,
-
-                // ✅ Cho phép dán hình ảnh base64
-                paste_data_images: true,
-                automatic_uploads: true,
-                file_picker_types: 'image',
-
-                // ✅ Hàm chọn file ảnh upload thủ công
-                file_picker_callback: function (callback, value, meta) {
-                    var input = document.createElement('input');
-                    input.type = 'file';
-                    input.accept = 'image/*';
-                    input.onchange = function () {
-                        var file = this.files[0];
-                        var reader = new FileReader();
-                        reader.onload = function () {
-                            callback(reader.result, { alt: file.name });
-                        };
-                        reader.readAsDataURL(file);
-                    };
-                    input.click();
-                },
-
-                // ✅ Tự động resize editor theo nội dung
-                autoresize_bottom_margin: 20,
-                min_height: 300,
-
-                // ✅ Ngôn ngữ tiếng Việt (nếu bạn có file vi.js trong langs/)
-                language: 'vi',
-                language_url: 'lib/tinymce/langs/vi.js',
-
-                // ✅ Theme + Skin (nếu muốn dùng giao diện sáng/tối tùy ý)
-                skin: 'oxide',
-                content_css: 'default'
-            });
-        });
-
-        // ✅ Hàm tiện ích để Blazor đọc nội dung TinyMCE
-        window.getTinyContent = function () {
-            return tinymce.activeEditor ? tinymce.activeEditor.getContent() : '';
-        };
-    </script>
-
-
-
-
-
-    <script>
-        window.getTinyContent = function () {
-            return tinymce.activeEditor ? tinymce.activeEditor.getContent() : '';
-        };
-    </script>
 
 
     <!-- ============ GOOGLE SIGN-IN ============ -->

@@ -8,7 +8,7 @@ namespace EduConnect.Shared.DTOs.HocLieu
         public int HocLieuId { get; set; }
 
         [Required, MaxLength(1000)]
-        public string? TieuDe { get; set; }
+        public string TieuDe { get; set; }
 
         public string NoiDung { get; set; } = string.Empty;
 

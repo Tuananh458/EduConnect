@@ -25,91 +25,153 @@
         <button class="btn btn-primary ms-auto"><i class="fas fa-plus me-1"></i> Giao bài</button>
     </div>
 
-    <!-- Danh sách câu hỏi -->
+    <!-- Khu vực 2 cột giống OLM -->
     <div class="card shadow-sm">
         <div class="card-header bg-light fw-semibold">
             <i class="fas fa-layer-group me-1"></i> Tạo nội dung học liệu
         </div>
 
         <div class="card-body">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h6 class="fw-semibold mb-0">Câu hỏi thuộc học liệu: [@hocLieu?.TenHocLieu]</h6>
-                <button class="btn btn-primary" @onclick="ShowAddQuestionModal">
-                    <i class="fas fa-plus"></i> Tạo câu hỏi
-                </button>
-            </div>
-
-            @if (questions == null)
-            {
-                <div class="text-muted text-center p-3">Đang tải dữ liệu...</div>
-            }
-            else if (!questions.Any())
-            {
-                <div class="alert alert-info text-center m-0 p-3">Chưa có câu hỏi nào</div>
-            }
-            else
-            {
-                <div class="list-group">
-                    @foreach (var q in questions)
-                    {
-                        <div class="list-group-item d-flex justify-content-between align-items-center">
-                            <div>
-                                <span class="fw-semibold">@((MarkupString)q.NoiDung)</span>
-                                <div class="text-muted small">Độ khó: @q.DoKho</div>
-                            </div>
+            <div class="row g-3">
+                <!-- CỘT TRÁI: Câu hỏi của bạn -->
+                <div class="col-md-6">
+                    <div class="border rounded-3 shadow-sm bg-white p-3">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h6 class="fw-semibold mb-0">
+                                <i class="fas fa-list text-primary me-1"></i> Câu hỏi của bạn
+                            </h6>
                             <div class="d-flex gap-2">
-                                <button class="btn btn-outline-secondary btn-sm" @onclick="() => PreviewExistingQuestion(q)">
-                                    <i class="fas fa-eye"></i>
+                                <button class="btn btn-primary btn-sm" @onclick="ShowAddQuestionModal">
+                                    <i class="fas fa-plus"></i> Tạo câu hỏi
                                 </button>
-                                <button class="btn btn-outline-danger btn-sm" @onclick="() => DeleteQuestion(q.Id)">
-                                    <i class="fas fa-trash"></i>
+                                <button class="btn btn-outline-danger btn-sm" @onclick="DeleteAllQuestions">
+                                    <i class="fas fa-trash"></i> Xóa tất cả
                                 </button>
                             </div>
                         </div>
-                    }
+
+                        @if (questions == null)
+                        {
+                            <div class="text-muted text-center py-3">Đang tải dữ liệu...</div>
+                        }
+                        else if (!questions.Any())
+                        {
+                            <div class="alert alert-info text-center m-0">Chưa có câu hỏi nào</div>
+                        }
+                        else
+                        {
+                            <div class="list-group list-group-flush">
+                                @foreach (var q in questions)
+                                {
+                                    var selected = selectedQuestions.Any(x => x.Id == q.Id);
+                                    <div class="list-group-item d-flex justify-content-between align-items-start flex-column flex-sm-row gap-2 p-3 @(selected ? "bg-light border-primary" : "")">
+                                        <div class="flex-fill">
+                                            <span class="fw-semibold">@q.TieuDe</span>
+                                            <div class="small text-muted mt-1">
+                                                <i class="fas fa-graduation-cap me-1"></i>@q.DoKho
+                                                <span class="ms-2">| @q.LoaiCauHoi</span>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex gap-2 flex-wrap">
+                                            <button class="btn btn-sm @(selected ? "btn-secondary" : "btn-outline-primary")"
+                                                    @onclick="() => ToggleSelect(q)">
+                                                @(selected ? "Bỏ chọn" : "Chọn")
+                                            </button>
+                                            <button class="btn btn-sm btn-warning text-white" @onclick="() => EditQuestion(q)">
+                                                Sửa
+                                            </button>
+                                            <button class="btn btn-sm btn-danger" @onclick="() => DeleteQuestion(q.Id)">
+                                                Xóa
+                                            </button>
+                                            <button class="btn btn-sm btn-info text-white" @onclick="() => PreviewExistingQuestion(q)">
+                                                Xem thử
+                                            </button>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        }
+                    </div>
                 </div>
-            }
+
+                <!-- CỘT PHẢI: Câu hỏi được chọn -->
+                <div class="col-md-6">
+                    <div class="border rounded-3 shadow-sm bg-white p-3">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h6 class="fw-semibold mb-0">
+                                <i class="fas fa-check-circle text-success me-1"></i> Câu hỏi được chọn (trắc nghiệm)
+                            </h6>
+                            <button class="btn btn-sm btn-outline-danger" @onclick="() => selectedQuestions.Clear()">
+                                Bỏ chọn tất cả
+                            </button>
+                        </div>
+
+                        @if (!selectedQuestions.Any())
+                        {
+                            <div class="text-muted text-center py-3">Chưa chọn câu hỏi nào</div>
+                        }
+                        else
+                        {
+                            <div class="list-group list-group-flush">
+                                @foreach (var q in selectedQuestions)
+                                {
+                                    <div class="list-group-item d-flex justify-content-between align-items-start flex-column flex-sm-row gap-2 p-3 bg-success-subtle">
+                                        <div class="flex-fill">
+                                            <span class="fw-semibold">@q.TieuDe</span>
+                                            <div class="small text-muted mt-1">@q.DoKho</div>
+                                        </div>
+                                        <div class="d-flex gap-2 flex-wrap">
+                                            <button class="btn btn-sm btn-warning text-white" @onclick="() => EditQuestion(q)">Sửa</button>
+                                            <button class="btn btn-sm btn-info text-white" @onclick="() => PreviewExistingQuestion(q)">Xem thử</button>
+                                            <button class="btn btn-sm btn-danger" @onclick="() => ToggleSelect(q)">Xóa</button>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- MODAL: Tạo câu hỏi -->
+    <!-- MODAL: Tạo/Sửa câu hỏi -->
     @if (showAdd)
     {
         <div class="modal fade show d-block" style="background:rgba(0,0,0,.45); z-index:1050;">
             <div class="modal-dialog modal-xl modal-dialog-centered">
                 <div class="modal-content border-0 shadow-lg rounded-3 overflow-hidden">
                     <div class="modal-header bg-white py-3 px-4 border-bottom">
-                        <h5 class="fw-semibold mb-0">Tạo câu hỏi mới</h5>
+                        <h5 class="fw-semibold mb-0">@((isEditing ? "Sửa câu hỏi" : "Tạo câu hỏi mới"))</h5>
                         <div class="ms-auto d-flex align-items-center gap-2">
-                            <a href="https://olm.vn/chu-de/tao-16-dang-cau-hoi-tuong-tac-538356"
-                               target="_blank"
+                            <a href="https://olm.vn/chu-de/tao-16-dang-cau-hoi-tuong-tac-538356" target="_blank"
                                class="btn btn-link text-danger text-decoration-none">Hướng dẫn</a>
                             <button class="btn btn-outline-warning" @onclick="PreviewQuestion">
-                                <i class="fas fa-eye me-1"></i> Xem thử
+                                Xem thử
                             </button>
                             <button class="btn btn-primary" @onclick="SaveQuestion">
-                                <i class="fas fa-save me-1"></i> Lưu
+                                Lưu
                             </button>
                             <button type="button" class="btn-close" @onclick="CloseAddModal"></button>
                         </div>
                     </div>
 
-                    <div class="modal-body p-0 d-flex" style="min-height: 550px;">
+                    <div class="modal-body p-0 d-flex" style="min-height: 550px; max-height: 85vh; overflow: hidden;">
                         <!-- Sidebar -->
-                        <div class="border-end bg-light p-3" style="width: 230px;">
+                        <div class="border-end bg-light p-3" style="width: 230px; overflow-y: auto; max-height: 85vh;">
                             <div class="list-group list-group-flush small">
                                 <button class="list-group-item list-group-item-action active text-start">
                                     <i class="fas fa-list me-2"></i> Trắc nghiệm
                                 </button>
-                                <button class="list-group-item list-group-item-action text-start">Đúng/Sai</button>
-                                <button class="list-group-item list-group-item-action text-start">Điền khuyết</button>
-                                <button class="list-group-item list-group-item-action text-start">Ghép cặp</button>
-                                <button class="list-group-item list-group-item-action text-start">Tự luận</button>
+                                <button class="list-group-item list-group-item-action text-start" disabled>Đúng/Sai</button>
+                                <button class="list-group-item list-group-item-action text-start" disabled>Điền khuyết</button>
+                                <button class="list-group-item list-group-item-action text-start" disabled>Ghép cặp</button>
+                                <button class="list-group-item list-group-item-action text-start" disabled>Tự luận</button>
                             </div>
                         </div>
 
-                        <!-- Nội dung chính -->
-                        <div class="flex-grow-1 bg-white p-4">
+                        <!-- Nội dung chính có thanh cuộn -->
+                        <div class="flex-grow-1 bg-white p-4" style="overflow-y: auto; max-height: 85vh;">
                             <div class="d-flex align-items-center mb-3">
                                 <InputText class="form-control form-control-lg fw-semibold"
                                            @bind-Value="createModel.TieuDe"
@@ -145,6 +207,7 @@
                             </div>
                         </div>
                     </div>
+
                 </div>
             </div>
         </div>
@@ -164,6 +227,8 @@
 
     private HocLieuDto? hocLieu;
     private List<CauHoiHocLieuDto>? questions;
+    private List<CauHoiHocLieuDto> selectedQuestions = new();
+
     private CreateCauHoiHocLieuRequest createModel = new();
     private List<CauHoiAnswerList.AnswerOption> answers = new();
     private CauHoiAnswerList? answerList;
@@ -174,47 +239,109 @@
     private bool multiCorrect = false;
     private string? previewContent;
 
+    // Trạng thái sửa
+    private bool isEditing = false;
+    private int? editingQuestionId = null;
+
     protected override async Task OnInitializedAsync()
     {
         hocLieu = await HocLieuService.GetByIdAsync(HocLieuId);
         questions = await CauHoiService.GetByHocLieuAsync(HocLieuId);
     }
 
-    // ==============================
-    // 1️⃣ Hiển thị modal tạo câu hỏi
-    // ==============================
+    // ====== Chọn / Bỏ chọn ======
+    private void ToggleSelect(CauHoiHocLieuDto question)
+    {
+        var exist = selectedQuestions.FirstOrDefault(x => x.Id == question.Id);
+        if (exist != null) selectedQuestions.Remove(exist);
+        else selectedQuestions.Add(question);
+    }
+
+    // ====== Tạo mới ======
     private async Task ShowAddQuestionModal()
     {
+        isEditing = false;
+        editingQuestionId = null;
+
         createModel = new()
             {
                 HocLieuId = HocLieuId,
                 LoaiCauHoi = "TracNghiem",
                 DoKho = "Nhận biết",
-                Diem = 1
+                Diem = 1,
+                TieuDe = "",
+                NoiDung = ""
             };
 
         answers = new()
-        {
-            new() { Content = "", IsCorrect = false },
-            new() { Content = "", IsCorrect = false },
-            new() { Content = "", IsCorrect = false },
-            new() { Content = "", IsCorrect = false }
-        };
+    {
+        new() { Content = "", IsCorrect = false },
+        new() { Content = "", IsCorrect = false },
+        new() { Content = "", IsCorrect = false },
+        new() { Content = "", IsCorrect = false }
+    };
 
         showAdd = true;
-        await Task.Delay(200);
-        await JS.InvokeVoidAsync("tinyHelper.initTiny", "editor1");
+
+        // Chờ modal xuất hiện hoàn toàn
+        await Task.Delay(600);
+
+        // ✅ Hủy editor cũ (nếu đang mở modal trước đó)
+        await JS.InvokeVoidAsync("tinyHelper.destroyTiny", "editor1");
+
+        // ✅ Tạo Tiny mới
+        await JS.InvokeVoidAsync("tinyHelper.initTiny", "editor1", "");
     }
+
+
+    // ====== Sửa (mở modal với dữ liệu cũ) ======
+    private async Task EditQuestion(CauHoiHocLieuDto q)
+    {
+        isEditing = true;
+        editingQuestionId = q.Id; // ✅ Quan trọng!
+
+        createModel = new()
+            {
+                HocLieuId = HocLieuId,
+                LoaiCauHoi = q.LoaiCauHoi ?? "TracNghiem",
+                DoKho = q.DoKho,
+                Diem = q.Diem,
+                TieuDe = q.TieuDe ?? "",
+                NoiDung = q.NoiDung ?? ""
+            };
+
+        answers = new()
+    {
+        new() { Content = q.DapAnA ?? "", IsCorrect = q.DapAnDung == "A" },
+        new() { Content = q.DapAnB ?? "", IsCorrect = q.DapAnDung == "B" },
+        new() { Content = q.DapAnC ?? "", IsCorrect = q.DapAnDung == "C" },
+        new() { Content = q.DapAnD ?? "", IsCorrect = q.DapAnDung == "D" }
+    };
+
+        showAdd = true;
+
+        // Chờ modal render hoàn tất
+        await Task.Delay(600);
+
+        // ✅ Hủy editor cũ (nếu có)
+        await JS.InvokeVoidAsync("tinyHelper.destroyTiny", "editor1");
+
+        // ✅ Khởi tạo Tiny mới với nội dung cũ
+        await JS.InvokeVoidAsync("tinyHelper.initTiny", "editor1", createModel.NoiDung);
+    }
+
 
     private async Task CloseAddModal()
     {
         await JS.InvokeVoidAsync("tinyHelper.destroyTiny", "editor1");
         showAdd = false;
+        isEditing = false;
+        editingQuestionId = null;
     }
 
-    // ==============================
-    // 2️⃣ Xem thử câu hỏi hiện tại
-    // ==============================
+
+
+    // ====== Xem thử ======
     private async Task PreviewQuestion()
     {
         previewContent = await JS.InvokeAsync<string>("tinyHelper.getContent", "editor1");
@@ -234,9 +361,7 @@
         showPreview = true;
     }
 
-    // ==============================
-    // 3️⃣ Lưu câu hỏi mới
-    // ==============================
+    // ====== Lưu (tạo hoặc cập nhật) ======
     private async Task SaveQuestion()
     {
         createModel.NoiDung = await JS.InvokeAsync<string>("tinyHelper.getContent", "editor1");
@@ -255,22 +380,48 @@
             _ => ""
         };
 
-        await CauHoiService.CreateAsync(createModel);
-        questions = await CauHoiService.GetByHocLieuAsync(HocLieuId);
+        if (isEditing && editingQuestionId.HasValue)
+        {
+            // Đảm bảo bạn có hàm UpdateAsync phù hợp trong service.
+            await CauHoiService.UpdateAsync(editingQuestionId.Value, createModel);
+        }
+        else
+        {
+            await CauHoiService.CreateAsync(createModel);
+        }
 
+        questions = await CauHoiService.GetByHocLieuAsync(HocLieuId);
         await CloseAddModal();
         StateHasChanged();
     }
 
-    // ==============================
-    // 4️⃣ Xóa câu hỏi
-    // ==============================
+    // ====== Xóa ======
     private async Task DeleteQuestion(int id)
     {
         if (await JS.InvokeAsync<bool>("confirm", "Xóa câu hỏi này?"))
         {
             await CauHoiService.DeleteAsync(id);
             questions?.RemoveAll(x => x.Id == id);
+            selectedQuestions.RemoveAll(x => x.Id == id);
         }
     }
+
+    private async Task DeleteAllQuestions()
+    {
+        if (questions == null || !questions.Any()) return;
+        if (await JS.InvokeAsync<bool>("confirm", "Xóa toàn bộ câu hỏi trong học liệu này?"))
+        {
+            foreach (var q in questions.ToList())
+                await CauHoiService.DeleteAsync(q.Id);
+
+            questions.Clear();
+            selectedQuestions.Clear();
+        }
+    }
+    private static string StripHtml(string? html)
+    {
+        if (string.IsNullOrWhiteSpace(html)) return string.Empty;
+        return System.Text.RegularExpressions.Regex.Replace(html, "<.*?>", string.Empty).Trim();
+    }
+
 }

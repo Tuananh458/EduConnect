@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("EduConnect.Shared")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8ecc002bb66d5bab923624f232159f8c61e7bfea")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+07185cafb5fc8ffef137ad2082651183d1a52f7e")]
 [assembly: System.Reflection.AssemblyProductAttribute("EduConnect.Shared")]
 [assembly: System.Reflection.AssemblyTitleAttribute("EduConnect.Shared")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

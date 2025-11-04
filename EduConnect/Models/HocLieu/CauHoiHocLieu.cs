@@ -18,6 +18,8 @@ namespace EduConnect.Models.HocLieu
 
         // Tiêu đề / nội dung câu hỏi
         [Required]
+        public string TieuDe { get; set; }
+        [Required]
         public string NoiDung { get; set; } = string.Empty;
 
         // Loại câu hỏi: TN_1DAPANDUNG, TN_NHIEUDAPANDUNG, DUNGSAI, ...

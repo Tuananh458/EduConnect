@@ -26,6 +26,7 @@ namespace EduConnect.Services.Implementations
             {
                 Id = x.Id,
                 HocLieuId = x.HocLieuId,
+                TieuDe = x.TieuDe,
                 NoiDung = x.NoiDung,
                 LoaiCauHoi = x.LoaiCauHoi,
                 DoKho = x.DoKho,
@@ -46,6 +47,7 @@ namespace EduConnect.Services.Implementations
             {
                 Id = x.Id,
                 HocLieuId = x.HocLieuId,
+                TieuDe = x.TieuDe,
                 NoiDung = x.NoiDung,
                 LoaiCauHoi = x.LoaiCauHoi,
                 DoKho = x.DoKho,
@@ -68,6 +70,7 @@ namespace EduConnect.Services.Implementations
             var entity = new CauHoiHocLieu
             {
                 HocLieuId = request.HocLieuId,
+                TieuDe = request.TieuDe,
                 NoiDung = request.NoiDung,
                 LoaiCauHoi = request.LoaiCauHoi,
                 DoKho = request.DoKho,
@@ -85,6 +88,7 @@ namespace EduConnect.Services.Implementations
             {
                 Id = created.Id,
                 HocLieuId = created.HocLieuId,
+                TieuDe = created.TieuDe,
                 NoiDung = created.NoiDung,
                 LoaiCauHoi = created.LoaiCauHoi,
                 DoKho = created.DoKho,
@@ -102,6 +106,7 @@ namespace EduConnect.Services.Implementations
             var entity = await _repo.GetByIdAsync(id);
             if (entity == null) return false;
 
+            entity.TieuDe = request.TieuDe;
             entity.NoiDung = request.NoiDung;
             entity.LoaiCauHoi = request.LoaiCauHoi;
             entity.DoKho = request.DoKho;
