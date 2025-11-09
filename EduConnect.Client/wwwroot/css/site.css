@@ -61,3 +61,32 @@
     .modal-body::-webkit-scrollbar-thumb:hover {
         background: #999;
     }
+
+.table input.form-control {
+    height: 35px;
+    font-size: 14px;
+    padding: 3px 6px;
+}
+
+.btn-sm {
+    font-size: 13px;
+    padding: 3px 8px;
+}
+
+.input-group .btn {
+    padding: 3px 8px;
+}
+
+.alert-danger {
+    background-color: #ffe5e5;
+    border-color: #f5c2c2;
+}
+.input-group-sm .form-control {
+    height: 32px;
+    font-size: 0.9rem;
+}
+
+.input-group-sm .btn {
+    padding: 0 8px;
+}
+

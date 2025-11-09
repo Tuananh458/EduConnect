@@ -8,8 +8,9 @@ namespace EduConnect.Models.Auth
         public Guid UserId { get; set; } = Guid.NewGuid();
         public string Username { get; set; } = default!;
         public string FullName { get; set; } = default!;
-        public string Email { get; set; } = default!;
+        public string? Email { get; set; } = string.Empty;
         public string? Phone { get; set; }
+        public string? Avatar { get; set; }
         public string PasswordHash { get; set; } = string.Empty;
 
         public string Role { get; set; } = "Student"; // Admin / Teacher / Student / Parent

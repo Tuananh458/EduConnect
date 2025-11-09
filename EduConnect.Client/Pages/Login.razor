@@ -1,10 +1,9 @@
 ﻿@page "/login"
-@using System.Net.Http.Json
-@using Blazored.LocalStorage
-@inject HttpClient Http
+@layout AuthLayout
+@using EduConnect.Client.Services
+@inject AuthService AuthService
 @inject IJSRuntime JS
 @inject NavigationManager Nav
-@inject ILocalStorageService LocalStorage
 
 <div class="register-wrapper">
     <div class="register-left">
@@ -14,116 +13,171 @@
     </div>
 
     <div class="register-right">
-        <h3>Đăng nhập tài khoản</h3>
+        <h3 class="mb-4">Đăng nhập tài khoản</h3>
 
-        <EditForm Model="@loginModel" OnValidSubmit="@HandleLogin">
+        <EditForm Model="@LoginModel" OnValidSubmit="HandleLogin">
             <DataAnnotationsValidator />
             <ValidationSummary />
 
-            <div class="form-group">
-                <InputText @bind-Value="loginModel.EmailOrUsername" placeholder="Tên đăng nhập hoặc email" class="form-control" />
+            <!-- Email / Username -->
+            <div class="form-group mb-3">
+                <InputText @bind-Value="LoginModel.EmailOrUsername"
+                           class="form-control"
+                           placeholder="Tên đăng nhập hoặc email"
+                           disabled="@IsLoading" />
             </div>
 
-            <div class="form-group password-box">
-                <InputText @bind-Value="loginModel.Password"
-                           type="@passwordType"
+            <!-- Mật khẩu -->
+            <div class="form-group password-box mb-3 position-relative">
+                <InputText @bind-Value="LoginModel.Password"
+                           type="@PasswordType"
                            placeholder="Mật khẩu"
-                           class="form-control" />
-                <button type="button" class="eye-btn" @onclick="TogglePassword">
-                    <i class="fa @(passwordType == "password" ? "fa-eye" : "fa-eye-slash")"></i>
+                           class="form-control"
+                           disabled="@IsLoading" />
+                <button type="button" class="eye-btn" @onclick="TogglePassword" disabled="@IsLoading">
+                    <i class="fa @(PasswordType == "password" ? "fa-eye" : "fa-eye-slash")"></i>
                 </button>
             </div>
 
-            <div class="d-flex justify-content-between align-items-center mb-3">
+            <!-- Ghi nhớ + Quên mật khẩu -->
+            <div class="d-flex justify-content-between align-items-center mb-3 small">
                 <div>
-                    <input type="checkbox" id="rememberMe" @bind="rememberMe" />
-                    <label for="rememberMe">Ghi nhớ đăng nhập</label>
+                    <input type="checkbox" id="rememberMe" @bind="RememberMe" disabled="@IsLoading" />
+                    <label for="rememberMe" class="ms-1">Ghi nhớ đăng nhập</label>
                 </div>
-                <a href="/forgot-password" class="text-primary">Quên mật khẩu?</a>
+                <a href="/forgot-password" class="text-primary text-decoration-none">Quên mật khẩu?</a>
             </div>
 
-            <button class="btn btn-primary w-100" type="submit">Đăng nhập</button>
+            <!-- Nút đăng nhập -->
+            <button class="btn btn-primary w-100" type="submit" disabled="@IsLoading">
+                @if (IsLoading)
+                {
+                    <span><i class="fas fa-spinner fa-spin me-2"></i>Đang đăng nhập...</span>
+                }
+                else
+                {
+                    <span>Đăng nhập</span>
+                }
+            </button>
 
             <div class="text-center mt-3">Hoặc</div>
-
             <div id="googleSignInContainer" class="w-100 text-center mt-3"></div>
 
-
             <div class="mt-3 text-center">
-                Chưa có tài khoản? <a href="/register">Đăng ký ngay</a>
+                Chưa có tài khoản? <a href="/register" class="fw-semibold text-primary">Đăng ký ngay</a>
             </div>
 
-            @if (!string.IsNullOrEmpty(message))
+            @if (!string.IsNullOrEmpty(Message))
             {
-                <div class="alert mt-3 @(isSuccess ? "alert-success" : "alert-danger")">
-                    @message
+                <div class="alert mt-3 @(IsSuccess ? "alert-success" : "alert-danger")">
+                    @Message
                 </div>
             }
         </EditForm>
     </div>
 </div>
 
+<style>
+    .register-wrapper {
+        display: flex;
+        height: 100vh;
+        background: #f8f9fc;
+    }
+
+    .register-left {
+        flex: 1;
+        background: #fff;
+        text-align: center;
+        padding: 3rem 2rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        box-shadow: inset -1px 0 0 #e3e6f0;
+    }
+
+        .register-left img {
+            max-width: 300px;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+        }
+
+    .register-right {
+        flex: 1;
+        background: #fff;
+        padding: 4rem 3rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        box-shadow: -1px 0 5px rgba(0,0,0,.05);
+    }
+
+    .password-box {
+        position: relative;
+    }
+
+        .password-box .eye-btn {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #6c757d;
+        }
+
+            .password-box .eye-btn:hover {
+                color: #4e73df;
+            }
+
+    button:disabled {
+        opacity: .7;
+        cursor: not-allowed;
+    }
+
+    .alert {
+        font-size: .9rem;
+        padding: .75rem;
+    }
+</style>
+
 @code {
-    private LoginRequest loginModel = new();
-    private string message = "";
-    private bool isSuccess = false;
-    private string passwordType = "password";
-    private bool rememberMe = false;
+    // ViewModel dùng cho @bind (có set;)
+    private class LoginVm
+    {
+        public string EmailOrUsername { get; set; } = "";
+        public string Password { get; set; } = "";
+    }
+
+    private LoginVm LoginModel = new();
+    private string PasswordType = "password";
+    private bool RememberMe = false;
+    private bool IsLoading = false;
+    private string Message = "";
+    private bool IsSuccess = false;
 
     private void TogglePassword() =>
-        passwordType = passwordType == "password" ? "text" : "password";
+        PasswordType = PasswordType == "password" ? "text" : "password";
 
     private async Task HandleLogin()
     {
-        try
+        IsLoading = true;
+        Message = "";
+        IsSuccess = false;
+
+        // Gọi qua service (AuthService.LoginAsync nhận 2 string)
+        var (ok, msg) = await AuthService.LoginAsync(LoginModel.EmailOrUsername, LoginModel.Password);
+        IsSuccess = ok;
+        Message = msg;
+
+        if (ok)
         {
-            var res = await Http.PostAsJsonAsync("auth/login", loginModel);
-            var raw = await res.Content.ReadAsStringAsync();
-            Console.WriteLine("Raw server response:");
-            Console.WriteLine(raw);
-
-            if (!res.IsSuccessStatusCode)
-            {
-                message = $"❌ {raw}";
-                isSuccess = false;
-                return;
-            }
-
-            var env = System.Text.Json.JsonSerializer.Deserialize<ApiEnvelope<LoginData>>(
-                raw,
-                new System.Text.Json.JsonSerializerOptions
-                    {
-                        PropertyNameCaseInsensitive = true
-                    });
-
-            if (env?.Status?.Equals("success", StringComparison.OrdinalIgnoreCase) == true
-                && env.Data is not null)
-            {
-                if (!string.IsNullOrWhiteSpace(env.Data.Access))
-                {
-                    await LocalStorage.SetItemAsync("access_token", env.Data.Access);
-
-                    if (!string.IsNullOrWhiteSpace(env.Data.Refresh))
-                        await LocalStorage.SetItemAsync("refresh_token", env.Data.Refresh);
-                }
-
-                message = env.Message ?? "🎉 Đăng nhập thành công!";
-                isSuccess = true;
-
-                await Task.Delay(800);
-                Nav.NavigateTo("/");
-            }
-            else
-            {
-                message = $"❌ {(env?.Message ?? "Đăng nhập thất bại")}";
-                isSuccess = false;
-            }
+            await JS.InvokeVoidAsync("console.log", "Đăng nhập thành công!");
+            await Task.Delay(600);
+            Nav.NavigateTo("/", true);
         }
-        catch (Exception ex)
-        {
-            message = $"⚠️ Lỗi kết nối: {ex.Message}";
-            isSuccess = false;
-        }
+
+        IsLoading = false;
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -132,25 +186,5 @@
         {
             await JS.InvokeVoidAsync("loadGoogleSignIn");
         }
-    }
-
-    public class LoginRequest
-    {
-        public string EmailOrUsername { get; set; } = "";
-        public string Password { get; set; } = "";
-    }
-
-    public class ApiEnvelope<T>
-    {
-        public string? Status { get; set; }
-        public string? Message { get; set; }
-        public T? Data { get; set; }
-        public object? Errors { get; set; }
-    }
-
-    public class LoginData
-    {
-        public string Access { get; set; } = "";
-        public string Refresh { get; set; } = "";
     }
 }

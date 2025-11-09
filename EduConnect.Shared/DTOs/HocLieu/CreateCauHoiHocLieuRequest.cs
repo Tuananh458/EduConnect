@@ -19,7 +19,7 @@ namespace EduConnect.Shared.DTOs.HocLieu
         public string DoKho { get; set; } = "Nhận biết";
 
         [Range(0.5, 10)]
-        public decimal Diem { get; set; } = 1;
+        public double Diem { get; set; }
 
         // 🔹 Các đáp án (trắc nghiệm A/B/C/D)
         [MaxLength(255)]

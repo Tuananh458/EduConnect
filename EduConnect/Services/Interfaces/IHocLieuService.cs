@@ -9,6 +9,8 @@ namespace EduConnect.Services.Interfaces
         Task<List<HocLieuListDto>> GetAllAsync(HocLieuFilterDto filter);
         Task<HocLieuDto?> GetByIdAsync(int id);
         Task<HocLieuDto> CreateAsync(CreateHocLieuRequest request);
+        Task<List<CauHoiHocLieuDto>> GetCauHoiTrongHocLieuAsync(int hocLieuId);
+
         Task<bool> DeleteAsync(int id);
     }
 }

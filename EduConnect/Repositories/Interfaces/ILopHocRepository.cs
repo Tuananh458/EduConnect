@@ -12,6 +12,8 @@ namespace EduConnect.Repositories.Interfaces
         Task UpdateAsync(LopHoc entity);
         Task DeleteAsync(LopHoc entity);
         Task<bool> ExistsAsync(int id);
+        Task<bool> AnyAsync(int maKhoiHoc, string tenLopHoc);
+
     }
 }
 

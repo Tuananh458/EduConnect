@@ -1,105 +1,191 @@
 ﻿@page "/register"
-@using System.Net.Http.Json
-@inject HttpClient Http
+@layout AuthLayout
+@using EduConnect.Client.Services
+@inject AuthService AuthService
 @inject IJSRuntime JSRuntime
-
+@inject NavigationManager Nav
 
 <div class="register-wrapper">
+    <!-- Cột trái -->
     <div class="register-left">
         <img src="images/reg.gif" alt="Đăng ký" />
         <h2>ĐĂNG KÝ NGAY</h2>
         <p>Học thử miễn phí cùng EduConnect</p>
     </div>
 
+    <!-- Cột phải -->
     <div class="register-right">
-        <h3>Đăng ký tài khoản</h3>
+        <h3 class="mb-4">Đăng ký tài khoản</h3>
 
         <EditForm Model="@registerModel" OnValidSubmit="@HandleRegister">
             <DataAnnotationsValidator />
             <ValidationSummary />
 
-            <div class="form-group">
-                <InputText @bind-Value="registerModel.FullName" placeholder="Họ và tên" class="form-control" />
+            <div class="form-group mb-3">
+                <InputText @bind-Value="registerModel.FullName" placeholder="Họ và tên" class="form-control" disabled="@isLoading" />
             </div>
 
-            <div class="form-group">
-                <InputText @bind-Value="registerModel.Username" placeholder="Tên đăng nhập" class="form-control" />
+            <div class="form-group mb-3">
+                <InputText @bind-Value="registerModel.Username" placeholder="Tên đăng nhập" class="form-control" disabled="@isLoading" />
             </div>
 
-            <div class="form-group">
-                <InputText @bind-Value="registerModel.Email" placeholder="Email" class="form-control" />
+            <div class="form-group mb-3">
+                <InputText @bind-Value="registerModel.Email" placeholder="Email" class="form-control" disabled="@isLoading" />
             </div>
 
-            <div class="form-group password-box">
+            <div class="form-group password-box mb-3 position-relative">
                 <InputText @bind-Value="registerModel.Password"
                            type="@passwordType"
                            placeholder="Mật khẩu"
-                           class="form-control" />
-                <button type="button" class="eye-btn" @onclick="TogglePassword">
+                           class="form-control"
+                           disabled="@isLoading" />
+                <button type="button" class="eye-btn" @onclick="TogglePassword" disabled="@isLoading">
                     <i class="fa @(passwordType == "password" ? "fa-eye" : "fa-eye-slash")"></i>
                 </button>
             </div>
 
-            <button class="btn btn-primary w-100" type="submit">Đăng ký</button>
+            <button class="btn btn-primary w-100" type="submit" disabled="@isLoading">
+                @if (isLoading)
+                {
+                    <span><i class="fas fa-spinner fa-spin me-2"></i>Đang xử lý...</span>
+                }
+                else
+                {
+                    <span>Đăng ký</span>
+                }
+            </button>
 
             <div class="text-center mt-3">Hoặc</div>
 
-            <div class="btn btn-google w-100 text-center" id="googleSignInContainer">
-                <i class="fa fa-google"></i> Đăng nhập bằng Google
+            <div class="google-signin-wrapper text-center mt-3">
+                <div id="googleSignInContainer"></div>
             </div>
 
 
             <div class="mt-3 text-center">
-                Đã có tài khoản? <a href="/login">Đăng nhập</a>
+                Đã có tài khoản? <a href="/login" class="fw-semibold text-primary">Đăng nhập</a>
             </div>
-        </EditForm>
 
-        @if (!string.IsNullOrEmpty(message))
-        {
-            <div class="alert mt-3 @(isSuccess ? "alert-success" : "alert-danger")">
-                @message
-            </div>
-        }
+            @if (!string.IsNullOrEmpty(message))
+            {
+                <div class="alert mt-3 @(isSuccess ? "alert-success" : "alert-danger")">
+                    @message
+                </div>
+            }
+        </EditForm>
     </div>
 </div>
 
+<style>
+    .register-wrapper {
+        display: flex;
+        height: 100vh;
+        background: #f8f9fc;
+    }
+
+    .register-left {
+        flex: 1;
+        background: #fff;
+        text-align: center;
+        padding: 3rem 2rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        box-shadow: inset -1px 0 0 #e3e6f0;
+    }
+
+        .register-left img {
+            max-width: 300px;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+        }
+
+    .register-right {
+        flex: 1;
+        background: #fff;
+        padding: 4rem 3rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        box-shadow: -1px 0 5px rgba(0,0,0,.05);
+    }
+
+    .password-box {
+        position: relative;
+    }
+
+        .password-box .eye-btn {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #6c757d;
+        }
+
+            .password-box .eye-btn:hover {
+                color: #4e73df;
+            }
+
+    button:disabled {
+        opacity: .7;
+        cursor: not-allowed;
+    }
+
+    .alert {
+        font-size: .9rem;
+        padding: .75rem;
+    }
+
+    .google-signin-wrapper {
+        display: flex;
+        justify-content: center;
+    }
+
+    #googleSignInContainer {
+        display: inline-block;
+        min-width: 240px;
+        height: 40px;
+    }
+
+        #googleSignInContainer iframe {
+            border-radius: 4px !important;
+            box-shadow: 0 1px 3px rgba(0,0,0,.15);
+        }
+
+</style>
+
 @code {
-    private RegisterRequest registerModel = new();
-    private string message = "";
-    private bool isSuccess = false;
+    private RegisterVm registerModel = new();
     private string passwordType = "password";
+    private bool isLoading = false;
+    private bool isSuccess = false;
+    private string message = "";
 
     private void TogglePassword()
-    {
-        passwordType = passwordType == "password" ? "text" : "password";
-    }
+        => passwordType = passwordType == "password" ? "text" : "password";
 
     private async Task HandleRegister()
     {
-        try
-        {
-            var res = await Http.PostAsJsonAsync("auth/register", registerModel);
+        isLoading = true;
+        message = "";
+        isSuccess = false;
 
-            if (res.IsSuccessStatusCode)
-            {
-                isSuccess = true;
-                message = "🎉 Đăng ký thành công!";
-            }
-            else
-            {
-                isSuccess = false;
+        var (ok, msg) = await AuthService.RegisterAsync(registerModel.Username, registerModel.FullName, registerModel.Email, registerModel.Password);
+        isSuccess = ok;
+        message = msg;
 
-                // Đọc phản hồi từ API, ưu tiên message JSON
-                var apiError = await res.Content.ReadFromJsonAsync<ApiError>();
-                message = apiError?.Message ?? "Đăng ký thất bại!";
-            }
-        }
-        catch (Exception ex)
+        if (ok)
         {
-            isSuccess = false;
-            message = $"⚠️ Lỗi kết nối: {ex.Message}";
+            await Task.Delay(800);
+            Nav.NavigateTo("/");
         }
+
+        isLoading = false;
     }
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
@@ -108,17 +194,11 @@
         }
     }
 
-
-    public class RegisterRequest
+    private class RegisterVm
     {
         public string Username { get; set; } = "";
         public string FullName { get; set; } = "";
         public string Email { get; set; } = "";
         public string Password { get; set; } = "";
-    }
-
-    public class ApiError
-    {
-        public string? Message { get; set; }
     }
 }

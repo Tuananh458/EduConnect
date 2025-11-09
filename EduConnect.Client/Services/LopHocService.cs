@@ -12,33 +12,83 @@ namespace EduConnect.Client.Services
             _http = http;
         }
 
+        // ====================== GET ALL ======================
+        // GET: https://localhost:7276/api/LopHoc
         public async Task<List<LopHocDto>> GetAllAsync()
         {
-            return await _http.GetFromJsonAsync<List<LopHocDto>>("LopHoc")
-                   ?? new List<LopHocDto>();
+            try
+            {
+                return await _http.GetFromJsonAsync<List<LopHocDto>>("api/LopHoc")
+                       ?? new List<LopHocDto>();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[LopHocService.GetAllAsync] Error: {ex.Message}");
+                return new List<LopHocDto>();
+            }
         }
 
+        // ====================== GET BY ID ======================
+        // GET: https://localhost:7276/api/LopHoc/{id}
         public async Task<LopHocDto?> GetByIdAsync(int id)
         {
-            return await _http.GetFromJsonAsync<LopHocDto>($"LopHoc/{id}");
+            try
+            {
+                return await _http.GetFromJsonAsync<LopHocDto>($"api/LopHoc/{id}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[LopHocService.GetByIdAsync] Error: {ex.Message}");
+                return null;
+            }
         }
 
+        // ====================== CREATE ======================
+        // POST: https://localhost:7276/api/LopHoc
         public async Task<bool> CreateAsync(CreateLopHocRequest request)
         {
-            var response = await _http.PostAsJsonAsync("LopHoc", request);
-            return response.IsSuccessStatusCode;
+            try
+            {
+                var res = await _http.PostAsJsonAsync("api/LopHoc", request);
+                return res.IsSuccessStatusCode;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[LopHocService.CreateAsync] Error: {ex.Message}");
+                return false;
+            }
         }
 
+        // ====================== UPDATE ======================
+        // PUT: https://localhost:7276/api/LopHoc/{id}
         public async Task<bool> UpdateAsync(UpdateLopHocRequest request)
         {
-            var response = await _http.PutAsJsonAsync($"LopHoc/{request.MaLopHoc}", request);
-            return response.IsSuccessStatusCode;
+            try
+            {
+                var res = await _http.PutAsJsonAsync($"api/LopHoc/{request.MaLopHoc}", request);
+                return res.IsSuccessStatusCode;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[LopHocService.UpdateAsync] Error: {ex.Message}");
+                return false;
+            }
         }
 
+        // ====================== DELETE ======================
+        // DELETE: https://localhost:7276/api/LopHoc/{id}
         public async Task<bool> DeleteAsync(int id)
         {
-            var response = await _http.DeleteAsync($"LopHoc/{id}");
-            return response.IsSuccessStatusCode;
+            try
+            {
+                var res = await _http.DeleteAsync($"api/LopHoc/{id}");
+                return res.IsSuccessStatusCode;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[LopHocService.DeleteAsync] Error: {ex.Message}");
+                return false;
+            }
         }
     }
 }

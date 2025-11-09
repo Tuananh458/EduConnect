@@ -1,0 +1,102 @@
+﻿@page "/hoclieu/lambai/{HocLieuId:int}"
+@layout MainLayout
+@using EduConnect.Client.Services
+@using EduConnect.Shared.DTOs.HocLieu
+@inject HocLieuService HocLieuService
+@inject BaiLamHocLieuService BaiLamHocLieuService
+@inject IJSRuntime JS
+
+<h3 class="fw-bold mb-3 text-primary">🧮 Làm bài trắc nghiệm</h3>
+
+@if (questions == null)
+{
+    <p>Đang tải câu hỏi...</p>
+}
+else if (!questions.Any())
+{
+    <p class="text-muted">Chưa có câu hỏi nào trong học liệu này.</p>
+}
+else
+{
+    <div class="card p-3 shadow-sm">
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Tên học sinh</label>
+            <input class="form-control" @bind="hocSinh" placeholder="Nhập tên của bạn..." />
+        </div>
+
+        <ol class="list-group list-group-numbered">
+            @foreach (var q in questions)
+            {
+                <li class="list-group-item mb-2">
+                    <div class="fw-semibold mb-2">@((MarkupString)q.NoiDung)</div>
+
+                    <div>
+                        @foreach (var option in new[] { "A", "B", "C", "D" })
+                        {
+                            var content = option switch
+                            {
+                                "A" => q.DapAnA,
+                                "B" => q.DapAnB,
+                                "C" => q.DapAnC,
+                                "D" => q.DapAnD,
+                                _ => ""
+                            };
+
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio"
+                                       name="q_@q.Id" value="@option"
+                                       @onchange="(e) => OnChonDapAn(q.Id, option)" />
+                                <label class="form-check-label">@($"{option}. {content}")</label>
+                            </div>
+                        }
+                    </div>
+                </li>
+            }
+        </ol>
+
+        <div class="text-end mt-4">
+            <button class="btn btn-success" @onclick="NopBai">Nộp bài</button>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public int HocLieuId { get; set; }
+
+    private List<CauHoiHocLieuDto>? questions;
+    private string hocSinh = "";
+    private Dictionary<int, string> dapAnChon = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        questions = await HocLieuService.GetCauHoiTrongHocLieu(HocLieuId);
+    }
+
+    private void OnChonDapAn(int cauHoiId, string dapAn)
+    {
+        dapAnChon[cauHoiId] = dapAn;
+    }
+
+    private async Task NopBai()
+    {
+        if (string.IsNullOrWhiteSpace(hocSinh))
+        {
+            await JS.InvokeVoidAsync("alert", "Vui lòng nhập tên học sinh!");
+            return;
+        }
+
+        var req = new BaiLamHocLieuRequest
+            {
+                HocLieuId = HocLieuId,
+                TenHocSinh = hocSinh,
+                CauHoiDaLam = dapAnChon.Select(x => new BaiLamCauHoiItem
+                {
+                    CauHoiId = x.Key,
+                    DapAnChon = x.Value
+                }).ToList()
+            };
+
+        var diem = await BaiLamHocLieuService.NopBaiAsync(req);
+        await JS.InvokeVoidAsync("alert", $"Nộp bài thành công! Tổng điểm: {diem}");
+    }
+}

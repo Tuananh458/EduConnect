@@ -64,5 +64,11 @@ namespace EduConnect.Controllers
             if (!ok) return NotFound();
             return NoContent();
         }
+        [HttpGet("GetCauHoiTrongHocLieu/{hocLieuId:int}")]
+        public async Task<IActionResult> GetCauHoiTrongHocLieu(int hocLieuId)
+        {
+            var cauHois = await _service.GetCauHoiTrongHocLieuAsync(hocLieuId);
+            return Ok(cauHois);
+        }
     }
 }

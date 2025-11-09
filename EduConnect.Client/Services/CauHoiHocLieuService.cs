@@ -21,7 +21,7 @@ namespace EduConnect.Client.Services
         {
             try
             {
-                var data = await _http.GetFromJsonAsync<List<CauHoiHocLieuDto>>($"CauHoiHocLieu?hocLieuId={hocLieuId}");
+                var data = await _http.GetFromJsonAsync<List<CauHoiHocLieuDto>>($"api/CauHoiHocLieu?hocLieuId={hocLieuId}");
                 return data ?? new();
             }
             catch (Exception ex)
@@ -36,7 +36,7 @@ namespace EduConnect.Client.Services
         {
             try
             {
-                return await _http.GetFromJsonAsync<CauHoiHocLieuDto>($"CauHoiHocLieu/{id}");
+                return await _http.GetFromJsonAsync<CauHoiHocLieuDto>($"api/CauHoiHocLieu/{id}");
             }
             catch (Exception ex)
             {
@@ -48,7 +48,7 @@ namespace EduConnect.Client.Services
         // POST: api/CauHoiHocLieu
         public async Task<CauHoiHocLieuDto?> CreateAsync(CreateCauHoiHocLieuRequest dto)
         {
-            var res = await _http.PostAsJsonAsync("CauHoiHocLieu", dto);
+            var res = await _http.PostAsJsonAsync("api/CauHoiHocLieu", dto);
             if (!res.IsSuccessStatusCode)
             {
                 var msg = await res.Content.ReadAsStringAsync();
@@ -61,7 +61,7 @@ namespace EduConnect.Client.Services
         // PUT: api/CauHoiHocLieu/{id}
         public async Task UpdateAsync(int id, CreateCauHoiHocLieuRequest dto)
         {
-            var res = await _http.PutAsJsonAsync($"CauHoiHocLieu/{id}", dto);
+            var res = await _http.PutAsJsonAsync($"api/CauHoiHocLieu/{id}", dto);
             if (!res.IsSuccessStatusCode)
             {
                 var msg = await res.Content.ReadAsStringAsync();
@@ -72,7 +72,7 @@ namespace EduConnect.Client.Services
         // DELETE: api/CauHoiHocLieu/{id}
         public async Task DeleteAsync(int id)
         {
-            var res = await _http.DeleteAsync($"CauHoiHocLieu/{id}");
+            var res = await _http.DeleteAsync($"api/CauHoiHocLieu/{id}");
             if (!res.IsSuccessStatusCode)
             {
                 var msg = await res.Content.ReadAsStringAsync();

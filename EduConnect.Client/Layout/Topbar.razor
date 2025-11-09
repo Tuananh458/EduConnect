@@ -1,37 +1,173 @@
-﻿<nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
-    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
-        <i class="fa fa-bars"></i>
-    </button>
+﻿@using EduConnect.Client.Services
+@using EduConnect.Shared.DTOs.Auth
+@implements IDisposable
+@inject NavigationManager Nav
+@inject UserSessionService Session
+@inject AuthService AuthService
 
-    <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
-        <div class="input-group">
-            <input type="text" class="form-control bg-light border-0 small"
-                   placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2" />
-            <div class="input-group-append">
+@if (!IsInitialized)
+{
+    <!-- Trạng thái tải -->
+    <nav class="navbar navbar-expand navbar-light bg-white topbar shadow-sm mb-3 mt-2">
+        <div class="container-fluid">
+            <span class="text-muted small">🔄 Đang tải thông tin người dùng...</span>
+        </div>
+    </nav>
+}
+else
+{
+    <!-- Thanh topbar chính -->
+    <nav class="navbar navbar-expand navbar-light bg-white topbar shadow-sm mb-3 mt-2">
+        <!-- Logo -->
+        <a class="navbar-brand fw-bold text-primary ms-3" href="/">
+            <i class="fas fa-graduation-cap me-2"></i> EDUCONNECT
+        </a>
+
+        <!-- Thanh tìm kiếm -->
+        <form class="d-none d-sm-inline-block form-inline ms-3 me-auto my-2 my-md-0 mw-100 navbar-search">
+            <div class="input-group">
+                <input type="text" class="form-control bg-light border-0 small" placeholder="Tìm kiếm lớp học, bài tập, học liệu..." />
                 <button class="btn btn-primary" type="button">
                     <i class="fas fa-search fa-sm"></i>
                 </button>
             </div>
-        </div>
-    </form>
+        </form>
 
-    <ul class="navbar-nav ml-auto">
-        <li class="nav-item dropdown no-arrow">
-            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
-               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Admin</span>
-                <img class="img-profile rounded-circle" src="template/img/undraw_profile.svg" />
-            </a>
-            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
-                 aria-labelledby="userDropdown">
-                <a class="dropdown-item" href="#">
-                    <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i> Profile
+        <!-- Bên phải -->
+        <ul class="navbar-nav ms-auto align-items-center">
+            <!-- Tin nhắn -->
+            <li class="nav-item dropdown no-arrow mx-1">
+                <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" data-bs-toggle="dropdown">
+                    <i class="fas fa-envelope fa-fw text-secondary"></i>
+                    <span class="badge bg-danger badge-counter">3+</span>
                 </a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
-                    <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i> Logout
+            </li>
+
+            <!-- Thông báo -->
+            <li class="nav-item dropdown no-arrow mx-1">
+                <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" data-bs-toggle="dropdown">
+                    <i class="fas fa-bell fa-fw text-secondary"></i>
+                    <span class="badge bg-danger badge-counter">5</span>
                 </a>
-            </div>
-        </li>
-    </ul>
-</nav>
+            </li>
+
+            <div class="topbar-divider d-none d-sm-block"></div>
+
+            @if (IsLoggedIn && User is not null)
+            {
+                <!-- Người dùng -->
+                <li class="nav-item dropdown no-arrow">
+                    <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown" data-bs-toggle="dropdown">
+                        <img class="img-profile rounded-circle me-2 shadow-sm border"
+                             src="@($"{User.Avatar ?? "images/default-user.png"}?t={_timestamp}")"
+                             width="36" height="36" alt="Avatar" />
+                        <span class="me-2 d-none d-lg-inline text-gray-600 small fw-semibold">@User.FullName</span>
+                    </a>
+
+                    <ul class="dropdown-menu dropdown-menu-end shadow animated--grow-in" aria-labelledby="userDropdown">
+                        <li>
+                            <a class="dropdown-item" href="/profile">
+                                <i class="fas fa-user fa-sm fa-fw me-2 text-gray-400"></i> Hồ sơ cá nhân
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="/settings">
+                                <i class="fas fa-cogs fa-sm fa-fw me-2 text-gray-400"></i> Cài đặt
+                            </a>
+                        </li>
+                        <li><hr class="dropdown-divider" /></li>
+                        <li>
+                            <button class="dropdown-item text-danger" @onclick="LogoutAsync">
+                                <i class="fas fa-sign-out-alt fa-sm fa-fw me-2 text-danger"></i> Đăng xuất
+                            </button>
+                        </li>
+                    </ul>
+                </li>
+            }
+            else
+            {
+                <!-- Nút đăng nhập -->
+                <li class="nav-item">
+                    <button class="btn btn-outline-primary me-3" @onclick="GoLogin">
+                        <i class="fas fa-sign-in-alt me-1"></i> Đăng nhập
+                    </button>
+                </li>
+            }
+        </ul>
+    </nav>
+
+    <!-- Thanh điều hướng phụ -->
+    <div class="subnav border-top border-light">
+        <div class="container-fluid d-flex flex-wrap justify-content-center gap-3 fw-semibold small text-uppercase text-secondary py-2">
+            <a href="#" class="text-decoration-none text-secondary hover-active">Học bài</a>
+            <a href="#" class="text-decoration-none text-secondary hover-active">Hỏi bài</a>
+            <a href="#" class="text-decoration-none text-secondary hover-active">Kiểm tra</a>
+            <a href="#" class="text-decoration-none text-secondary hover-active">ĐGNL</a>
+            <a href="#" class="text-decoration-none text-secondary hover-active">Thi đấu</a>
+            <a href="#" class="text-decoration-none text-secondary hover-active">Thư viện số</a>
+            <a href="#" class="text-decoration-none text-secondary hover-active">Bài viết</a>
+            <a href="#" class="text-decoration-none text-secondary hover-active">Trang giáo viên</a>
+            <a href="#" class="text-decoration-none text-secondary hover-active">Trợ giúp</a>
+            <a href="#" class="text-decoration-none text-secondary hover-active">Về EduConnect</a>
+        </div>
+    </div>
+}
+
+@code {
+    private UserProfileDto? User;
+    private bool IsLoggedIn;
+    private bool IsInitialized = false;
+    private string _timestamp = DateTime.Now.Ticks.ToString();
+
+    // ============================ INIT ============================
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            // Lắng nghe sự kiện login/logout
+            AuthService.OnLoginStateChanged += HandleLoginStateChanged;
+
+            // Đồng bộ trạng thái login ban đầu
+            await AuthService.LoginSyncAsync();
+            await LoadUserAsync();
+
+            IsInitialized = true;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[Topbar.Init] Lỗi khởi tạo: {ex.Message}");
+        }
+    }
+
+    // ============================ LOAD USER ============================
+    private async Task LoadUserAsync()
+    {
+        IsLoggedIn = AuthService.IsLoggedIn;
+        User = await Session.GetProfileAsync();
+
+        Console.WriteLine($"[Topbar] LoadUserAsync => IsLoggedIn={IsLoggedIn}, Avatar={User?.Avatar}");
+    }
+
+    // ============================ LOGIN STATE EVENT ============================
+    private void HandleLoginStateChanged()
+    {
+        Console.WriteLine("[Topbar] Event fired → Reload user info");
+
+        _ = InvokeAsync(async () =>
+        {
+            await LoadUserAsync();
+            _timestamp = DateTime.Now.Ticks.ToString();
+            StateHasChanged();
+        });
+    }
+
+    // ============================ ACTIONS ============================
+    private void GoLogin() => Nav.NavigateTo("/login");
+    private async Task LogoutAsync() => await AuthService.LogoutAsync();
+
+    // ============================ DISPOSE ============================
+    public void Dispose()
+    {
+        AuthService.OnLoginStateChanged -= HandleLoginStateChanged;
+    }
+}

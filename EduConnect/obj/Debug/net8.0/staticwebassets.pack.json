@@ -1,0 +1,41 @@
+{
+  "Files": [
+    {
+      "Id": "D:\\DA\\EduConnect\\EduConnect\\wwwroot\\uploads\\avatars\\39d3e837-9092-4510-9afe-5209f22c1cb1.JPG",
+      "PackagePath": "staticwebassets\\uploads\\avatars\\39d3e837-9092-4510-9afe-5209f22c1cb1.JPG"
+    },
+    {
+      "Id": "D:\\DA\\EduConnect\\EduConnect\\wwwroot\\uploads\\avatars\\8716c905-34c7-4582-8aaf-4f0e9297e8e0.JPG",
+      "PackagePath": "staticwebassets\\uploads\\avatars\\8716c905-34c7-4582-8aaf-4f0e9297e8e0.JPG"
+    },
+    {
+      "Id": "D:\\DA\\EduConnect\\EduConnect\\wwwroot\\uploads\\avatars\\b8a2365c-9130-4142-948e-7e8742e7f51b.JPG",
+      "PackagePath": "staticwebassets\\uploads\\avatars\\b8a2365c-9130-4142-948e-7e8742e7f51b.JPG"
+    },
+    {
+      "Id": "D:\\DA\\EduConnect\\EduConnect\\wwwroot\\uploads\\avatars\\c335bdec-cded-4378-b48e-7ad78a39cec5.JPG",
+      "PackagePath": "staticwebassets\\uploads\\avatars\\c335bdec-cded-4378-b48e-7ad78a39cec5.JPG"
+    },
+    {
+      "Id": "D:\\DA\\EduConnect\\EduConnect\\wwwroot\\uploads\\avatars\\ee604035-ca1e-4fb2-85d6-327b0e85454d.JPG",
+      "PackagePath": "staticwebassets\\uploads\\avatars\\ee604035-ca1e-4fb2-85d6-327b0e85454d.JPG"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.EduConnect.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.build.EduConnect.props",
+      "PackagePath": "build\\EduConnect.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildMultiTargeting.EduConnect.props",
+      "PackagePath": "buildMultiTargeting\\EduConnect.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildTransitive.EduConnect.props",
+      "PackagePath": "buildTransitive\\EduConnect.props"
+    }
+  ],
+  "ElementsToRemove": []
+}

@@ -1,9 +1,14 @@
 ﻿@page "/hoclieu/editor/{HocLieuId:int}"
+@attribute [Authorize]
+@layout MainLayout
 @using EduConnect.Client.Services
 @using EduConnect.Shared.DTOs.HocLieu
 @using EduConnect.Client.Pages.HocLieu.Components
+@using Microsoft.AspNetCore.Authorization
 @inject HocLieuService HocLieuService
 @inject CauHoiHocLieuService CauHoiService
+@inject HocLieuCauHoiService HocLieuCauHoiService
+
 @inject IJSRuntime JS
 
 <div class="container-fluid p-3">
@@ -133,6 +138,13 @@
                 </div>
             </div>
         </div>
+        <!-- Nút lưu cập nhật -->
+        <div class="text-end mt-3 pe-3">
+            <button class="btn btn-primary" @onclick="SaveHocLieuCauHoi">
+                <i class="fas fa-save me-1"></i> Lưu cập nhật
+            </button>
+        </div>
+ <!-- Kết thúc card shadow-sm -->
     </div>
 
     <!-- MODAL: Tạo/Sửa câu hỏi -->
@@ -422,6 +434,41 @@
     {
         if (string.IsNullOrWhiteSpace(html)) return string.Empty;
         return System.Text.RegularExpressions.Regex.Replace(html, "<.*?>", string.Empty).Trim();
+    }
+    // ====== Lưu danh sách câu hỏi vào học liệu ======
+    private async Task SaveHocLieuCauHoi()
+    {
+        if (!selectedQuestions.Any())
+        {
+            await JS.InvokeVoidAsync("alert", "⚠️ Bạn chưa chọn câu hỏi nào để lưu!");
+            return;
+        }
+
+        var request = new HocLieuCauHoiRequest
+            {
+                HocLieuId = HocLieuId,
+                CauHoiIds = selectedQuestions.Select(x => x.Id).ToList()
+            };
+
+        await HocLieuCauHoiService.SaveAsync(request);
+        await JS.InvokeVoidAsync("alert", "✅ Đã lưu câu hỏi vào học liệu!");
+    }
+
+    // ====== Tải lại danh sách câu hỏi đã lưu khi mở học liệu ======
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var selectedIds = await HocLieuCauHoiService.GetSelectedAsync(HocLieuId);
+            if (selectedIds != null && questions != null)
+            {
+                selectedQuestions = questions
+                    .Where(q => selectedIds.Contains(q.Id))
+                    .ToList();
+
+                StateHasChanged();
+            }
+        }
     }
 
 }

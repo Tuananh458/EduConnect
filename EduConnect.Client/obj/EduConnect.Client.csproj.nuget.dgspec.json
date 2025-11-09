@@ -54,13 +54,25 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
+            "BCrypt.Net-Next": {
+              "target": "Package",
+              "version": "[4.0.3, )"
+            },
             "Blazored.LocalStorage": {
               "target": "Package",
               "version": "[4.5.0, )"
             },
+            "EPPlus": {
+              "target": "Package",
+              "version": "[7.6.0, )"
+            },
             "Google.Apis.Auth": {
               "target": "Package",
               "version": "[1.72.0, )"
+            },
+            "Microsoft.AspNetCore.Components.Authorization": {
+              "target": "Package",
+              "version": "[8.0.21, )"
             },
             "Microsoft.AspNetCore.Components.WebAssembly": {
               "target": "Package",
@@ -74,6 +86,10 @@
             "Microsoft.AspNetCore.WebUtilities": {
               "target": "Package",
               "version": "[8.0.21, )"
+            },
+            "Microsoft.Extensions.Http": {
+              "target": "Package",
+              "version": "[9.0.10, )"
             },
             "Microsoft.NET.ILLink.Tasks": {
               "suppressParent": "All",
@@ -164,6 +180,16 @@
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
+          "dependencies": {
+            "BCrypt.Net-Next": {
+              "target": "Package",
+              "version": "[4.0.3, )"
+            },
+            "EPPlus": {
+              "target": "Package",
+              "version": "[7.6.0, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",

@@ -49,6 +49,10 @@
       "PackagePath": "staticwebassets\\icon-192.png"
     },
     {
+      "Id": "D:\\DA\\EduConnect\\EduConnect.Client\\wwwroot\\images\\default-user.png",
+      "PackagePath": "staticwebassets\\images\\default-user.png"
+    },
+    {
       "Id": "D:\\DA\\EduConnect\\EduConnect.Client\\wwwroot\\images\\login-bg-3.jpg",
       "PackagePath": "staticwebassets\\images\\login-bg-3.jpg"
     },
@@ -63,6 +67,10 @@
     {
       "Id": "D:\\DA\\EduConnect\\EduConnect.Client\\wwwroot\\index.html",
       "PackagePath": "staticwebassets\\index.html"
+    },
+    {
+      "Id": "D:\\DA\\EduConnect\\EduConnect.Client\\wwwroot\\js\\google-login.js",
+      "PackagePath": "staticwebassets\\js\\google-login.js"
     },
     {
       "Id": "D:\\DA\\EduConnect\\EduConnect.Client\\wwwroot\\js\\tinymce-init.js",
@@ -617,16 +625,16 @@
       "PackagePath": "staticwebassets\\template\\gulpfile.js"
     },
     {
+      "Id": "D:\\DA\\EduConnect\\EduConnect.Client\\wwwroot\\template\\img\\avt.svg",
+      "PackagePath": "staticwebassets\\template\\img\\avt.svg"
+    },
+    {
       "Id": "D:\\DA\\EduConnect\\EduConnect.Client\\wwwroot\\template\\img\\undraw_posting_photo.svg",
       "PackagePath": "staticwebassets\\template\\img\\undraw_posting_photo.svg"
     },
     {
       "Id": "D:\\DA\\EduConnect\\EduConnect.Client\\wwwroot\\template\\img\\undraw_profile.svg",
       "PackagePath": "staticwebassets\\template\\img\\undraw_profile.svg"
-    },
-    {
-      "Id": "D:\\DA\\EduConnect\\EduConnect.Client\\wwwroot\\template\\img\\undraw_profile_1.svg",
-      "PackagePath": "staticwebassets\\template\\img\\undraw_profile_1.svg"
     },
     {
       "Id": "D:\\DA\\EduConnect\\EduConnect.Client\\wwwroot\\template\\img\\undraw_profile_2.svg",

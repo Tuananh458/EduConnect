@@ -119,11 +119,16 @@ namespace EduConnect.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Avatar")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(512)
+                        .HasColumnType("nvarchar(512)")
+                        .HasDefaultValue("/template/img/avt.svg");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("FullName")
@@ -157,12 +162,46 @@ namespace EduConnect.Migrations
                     b.HasKey("UserId");
 
                     b.HasIndex("Email")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[Email] IS NOT NULL");
 
                     b.HasIndex("Username")
                         .IsUnique();
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("EduConnect.Models.HocLieu.BaiLamHocLieu", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("HocLieuId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("HocSinhId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("TenHocSinh")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<DateTime>("ThoiGianBatDau")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("ThoiGianNop")
+                        .HasColumnType("datetime2");
+
+                    b.Property<double>("TongDiem")
+                        .HasColumnType("float");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("BaiLamHocLieus");
                 });
 
             modelBuilder.Entity("EduConnect.Models.HocLieu.CauHoiHocLieu", b =>
@@ -189,8 +228,8 @@ namespace EduConnect.Migrations
                         .HasMaxLength(10)
                         .HasColumnType("nvarchar(10)");
 
-                    b.Property<decimal>("Diem")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<double>("Diem")
+                        .HasColumnType("float");
 
                     b.Property<string>("DoKho")
                         .IsRequired()
@@ -221,6 +260,38 @@ namespace EduConnect.Migrations
                     b.HasIndex("HocLieuId");
 
                     b.ToTable("CauHoiHocLieus");
+                });
+
+            modelBuilder.Entity("EduConnect.Models.HocLieu.ChiTietBaiLamHocLieu", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("BaiLamHocLieuId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CauHoiId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("DapAnChon")
+                        .HasMaxLength(5)
+                        .HasColumnType("nvarchar(5)");
+
+                    b.Property<string>("DapAnDung")
+                        .HasMaxLength(5)
+                        .HasColumnType("nvarchar(5)");
+
+                    b.Property<double>("Diem")
+                        .HasColumnType("float");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BaiLamHocLieuId");
+
+                    b.ToTable("ChiTietBaiLamHocLieus");
                 });
 
             modelBuilder.Entity("EduConnect.Models.HocLieu.HocLieu", b =>
@@ -270,6 +341,77 @@ namespace EduConnect.Migrations
                     b.ToTable("HocLieus");
                 });
 
+            modelBuilder.Entity("EduConnect.Models.HocLieu.HocLieuCauHoi", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CauHoiId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("HocLieuId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("NgayThem")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("ThuTu")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CauHoiId");
+
+                    b.HasIndex("HocLieuId");
+
+                    b.ToTable("HocLieuCauHois");
+                });
+
+            modelBuilder.Entity("EduConnect.Models.HocSinh", b =>
+                {
+                    b.Property<int>("MaHocSinh")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("maHocSinh");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MaHocSinh"));
+
+                    b.Property<bool>("LaLopTruong")
+                        .HasColumnType("bit")
+                        .HasColumnName("laLopTruong");
+
+                    b.Property<string>("MaDinhDanh")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("maDinhDanh");
+
+                    b.Property<int>("MaLopHoc")
+                        .HasColumnType("int")
+                        .HasColumnName("maLopHoc");
+
+                    b.Property<DateTime?>("NgaySinh")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("ngaySinh");
+
+                    b.Property<DateTime?>("NgayTao")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("ngayTao");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("userId");
+
+                    b.HasKey("MaHocSinh");
+
+                    b.HasIndex("MaLopHoc");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("HOCSINH");
+                });
+
             modelBuilder.Entity("EduConnect.Models.LopHoc", b =>
                 {
                     b.Property<int>("MaLopHoc")
@@ -299,7 +441,7 @@ namespace EduConnect.Migrations
 
                     b.Property<string>("TenLopHoc")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)")
+                        .HasColumnType("nvarchar(450)")
                         .HasColumnName("tenLopHoc");
 
                     b.Property<string>("TrangThai")
@@ -312,7 +454,8 @@ namespace EduConnect.Migrations
 
                     b.HasIndex("KhoiHocMaKhoiHoc");
 
-                    b.HasIndex("MaKhoiHoc");
+                    b.HasIndex("MaKhoiHoc", "TenLopHoc")
+                        .IsUnique();
 
                     b.ToTable("LOPHOC");
                 });
@@ -359,56 +502,6 @@ namespace EduConnect.Migrations
                     b.HasKey("MaGiaoVien");
 
                     b.ToTable("GIAOVIEN");
-                });
-
-            modelBuilder.Entity("EduConnect.Models.School.HocSinh", b =>
-                {
-                    b.Property<int>("MaHocSinh")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("maHocSinh");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MaHocSinh"));
-
-                    b.Property<string>("DiaChi")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)")
-                        .HasColumnName("diaChi");
-
-                    b.Property<string>("GioiTinh")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)")
-                        .HasColumnName("gioiTinh");
-
-                    b.Property<int>("MaLopHoc")
-                        .HasColumnType("int")
-                        .HasColumnName("maLopHoc");
-
-                    b.Property<int>("MaNguoiDung")
-                        .HasColumnType("int")
-                        .HasColumnName("maNguoiDung");
-
-                    b.Property<DateTime?>("NgayNhapHoc")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("ngayNhapHoc");
-
-                    b.Property<DateTime?>("NgaySinh")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("ngaySinh");
-
-                    b.Property<string>("TrangThai")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)")
-                        .HasColumnName("trangThai");
-
-                    b.HasKey("MaHocSinh");
-
-                    b.HasIndex("MaLopHoc");
-
-                    b.ToTable("HOCSINH");
                 });
 
             modelBuilder.Entity("EduConnect.Models.School.KhoiHoc", b =>
@@ -564,6 +657,55 @@ namespace EduConnect.Migrations
                     b.Navigation("HocLieu");
                 });
 
+            modelBuilder.Entity("EduConnect.Models.HocLieu.ChiTietBaiLamHocLieu", b =>
+                {
+                    b.HasOne("EduConnect.Models.HocLieu.BaiLamHocLieu", "BaiLam")
+                        .WithMany("ChiTietBaiLams")
+                        .HasForeignKey("BaiLamHocLieuId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("BaiLam");
+                });
+
+            modelBuilder.Entity("EduConnect.Models.HocLieu.HocLieuCauHoi", b =>
+                {
+                    b.HasOne("EduConnect.Models.HocLieu.CauHoiHocLieu", "CauHoi")
+                        .WithMany()
+                        .HasForeignKey("CauHoiId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EduConnect.Models.HocLieu.HocLieu", "HocLieu")
+                        .WithMany()
+                        .HasForeignKey("HocLieuId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("CauHoi");
+
+                    b.Navigation("HocLieu");
+                });
+
+            modelBuilder.Entity("EduConnect.Models.HocSinh", b =>
+                {
+                    b.HasOne("EduConnect.Models.LopHoc", "LopHoc")
+                        .WithMany()
+                        .HasForeignKey("MaLopHoc")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EduConnect.Models.Auth.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("LopHoc");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("EduConnect.Models.LopHoc", b =>
                 {
                     b.HasOne("EduConnect.Models.School.GiaoVien", null)
@@ -583,21 +725,10 @@ namespace EduConnect.Migrations
                     b.Navigation("KhoiHoc");
                 });
 
-            modelBuilder.Entity("EduConnect.Models.School.HocSinh", b =>
-                {
-                    b.HasOne("EduConnect.Models.LopHoc", "LopHoc")
-                        .WithMany()
-                        .HasForeignKey("MaLopHoc")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("LopHoc");
-                });
-
             modelBuilder.Entity("EduConnect.Models.School.LienKetPhuHuynhHocSinh", b =>
                 {
-                    b.HasOne("EduConnect.Models.School.HocSinh", "HocSinh")
-                        .WithMany("LienKetPhuHuynhHocSinhs")
+                    b.HasOne("EduConnect.Models.HocSinh", "HocSinh")
+                        .WithMany()
                         .HasForeignKey("MaHocSinh")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -618,6 +749,11 @@ namespace EduConnect.Migrations
                     b.Navigation("RefreshTokens");
                 });
 
+            modelBuilder.Entity("EduConnect.Models.HocLieu.BaiLamHocLieu", b =>
+                {
+                    b.Navigation("ChiTietBaiLams");
+                });
+
             modelBuilder.Entity("EduConnect.Models.HocLieu.HocLieu", b =>
                 {
                     b.Navigation("CauHois");
@@ -626,11 +762,6 @@ namespace EduConnect.Migrations
             modelBuilder.Entity("EduConnect.Models.School.GiaoVien", b =>
                 {
                     b.Navigation("LopHocsChuNhiem");
-                });
-
-            modelBuilder.Entity("EduConnect.Models.School.HocSinh", b =>
-                {
-                    b.Navigation("LienKetPhuHuynhHocSinhs");
                 });
 
             modelBuilder.Entity("EduConnect.Models.School.KhoiHoc", b =>

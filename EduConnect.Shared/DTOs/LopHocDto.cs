@@ -9,6 +9,8 @@ namespace EduConnect.Shared.DTOs
 
         [Required(ErrorMessage = "Tên lớp không được để trống")]
         public string TenLopHoc { get; set; } = string.Empty;
+        public string TenLopDayDu => $"{MaKhoiHoc}{TenLopHoc}";
+
 
         [Required(ErrorMessage = "Phải chọn khối học")]
         public int MaKhoiHoc { get; set; }
