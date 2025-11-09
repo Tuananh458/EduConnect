@@ -1,6 +1,7 @@
 D:\DA\EduConnect\EduConnect.Shared\bin\Debug\net8.0\EduConnect.Shared.deps.json
 D:\DA\EduConnect\EduConnect.Shared\bin\Debug\net8.0\EduConnect.Shared.dll
 D:\DA\EduConnect\EduConnect.Shared\bin\Debug\net8.0\EduConnect.Shared.pdb
+D:\DA\EduConnect\EduConnect.Shared\obj\Debug\net8.0\EduConnect.Shared.csproj.AssemblyReference.cache
 D:\DA\EduConnect\EduConnect.Shared\obj\Debug\net8.0\EduConnect.Shared.GeneratedMSBuildEditorConfig.editorconfig
 D:\DA\EduConnect\EduConnect.Shared\obj\Debug\net8.0\EduConnect.Shared.AssemblyInfoInputs.cache
 D:\DA\EduConnect\EduConnect.Shared\obj\Debug\net8.0\EduConnect.Shared.AssemblyInfo.cs

@@ -1,6 +1,9 @@
 ﻿@page "/hoclieu"
+@attribute [Authorize]
+@layout MainLayout
 @using EduConnect.Shared.DTOs.HocLieu
 @using EduConnect.Client.Services
+@using Microsoft.AspNetCore.Authorization
 @inject HocLieuService HocLieuService
 @inject IJSRuntime JS
 @inject NavigationManager NavManager

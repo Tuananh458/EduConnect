@@ -4,10 +4,11 @@
     {
         public int Id { get; set; }
         public int HocLieuId { get; set; }
+        public string TieuDe { get; set; }
         public string NoiDung { get; set; } = string.Empty;
         public string LoaiCauHoi { get; set; } = "TN_1DAPANDUNG";
         public string DoKho { get; set; } = "Nhận biết";
-        public decimal Diem { get; set; } = 1m;
+        public double Diem { get; set; }
         public string? DapAnA { get; set; }
         public string? DapAnB { get; set; }
         public string? DapAnC { get; set; }

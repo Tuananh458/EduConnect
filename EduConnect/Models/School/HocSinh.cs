@@ -1,8 +1,9 @@
-﻿using System;
+﻿using EduConnect.Models.Auth;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace EduConnect.Models.School
+namespace EduConnect.Models
 {
     [Table("HOCSINH")]
     public class HocSinh
@@ -11,31 +12,30 @@ namespace EduConnect.Models.School
         [Column("maHocSinh")]
         public int MaHocSinh { get; set; }
 
-        [Column("maNguoiDung")]
-        public int MaNguoiDung { get; set; }
+        [Required]
+        [Column("userId")]
+        public Guid UserId { get; set; }
 
+        [Required]
         [Column("maLopHoc")]
         public int MaLopHoc { get; set; }
 
-        [ForeignKey("MaLopHoc")]
-        public LopHoc LopHoc { get; set; }
+        [Column("maDinhDanh")]
+        public string? MaDinhDanh { get; set; }
 
         [Column("ngaySinh")]
         public DateTime? NgaySinh { get; set; }
 
-        [Column("gioiTinh"), MaxLength(10)]
-        public string GioiTinh { get; set; }
+        [Column("laLopTruong")]
+        public bool LaLopTruong { get; set; } = false;
 
-        [Column("diaChi"), MaxLength(255)]
-        public string DiaChi { get; set; }
+        [Column("ngayTao")]
+        public DateTime? NgayTao { get; set; } = DateTime.UtcNow;
 
-        [Column("ngayNhapHoc")]
-        public DateTime? NgayNhapHoc { get; set; }
+        [ForeignKey(nameof(UserId))]
+        public User? User { get; set; }
 
-        [Column("trangThai"), MaxLength(20)]
-        public string TrangThai { get; set; } = "Đang học";
-
-        // 🔗 Navigation
-        public ICollection<LienKetPhuHuynhHocSinh> LienKetPhuHuynhHocSinhs { get; set; }
+        [ForeignKey(nameof(MaLopHoc))]
+        public LopHoc? LopHoc { get; set; }
     }
 }

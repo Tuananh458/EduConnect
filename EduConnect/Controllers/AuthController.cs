@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.WebUtilities;
 using Google.Apis.Auth;
 using Microsoft.SqlServer.Server;
 using EduConnect.Shared.DTOs;
+using EduConnect.Shared.DTOs.Auth;
 
 namespace EduConnect.Controllers
 {
@@ -67,14 +68,23 @@ namespace EduConnect.Controllers
                 // ✅ Xác thực token từ Google
                 var payload = await GoogleJsonWebSignature.ValidateAsync(req.IdToken);
 
-                // Kiểm tra xem user đã tồn tại chưa
+                // 🔍 Tìm user theo email
                 var user = await _db.Users.FirstOrDefaultAsync(u => u.Email == payload.Email);
 
                 if (user == null)
                 {
+                    // ✅ Tạo username duy nhất (tránh trùng)
+                    var baseUsername = payload.Email.Split('@')[0];
+                    var username = baseUsername;
+                    int count = 1;
+                    while (await _db.Users.AnyAsync(u => u.Username == username))
+                    {
+                        username = $"{baseUsername}{count++}";
+                    }
+
                     user = new User
                     {
-                        Username = payload.Email.Split('@')[0],
+                        Username = username,
                         FullName = payload.Name ?? payload.Email,
                         Email = payload.Email,
                         AuthProvider = "Google",
@@ -87,6 +97,7 @@ namespace EduConnect.Controllers
                     await _db.SaveChangesAsync();
                 }
 
+                // ✅ Sinh Access/Refresh Token
                 var (access, _) = _tokens.CreateAccessToken(user);
                 var refresh = _tokens.CreateRefreshToken();
 
@@ -111,7 +122,13 @@ namespace EduConnect.Controllers
             {
                 return Unauthorized(new { status = "error", message = "Google token không hợp lệ" });
             }
+            catch (Exception ex)
+            {
+                // ⚠️ Ghi log cụ thể để dễ debug
+                return StatusCode(500, new { status = "error", message = "Lỗi xử lý Google login", detail = ex.Message });
+            }
         }
+
         // ============================
         // 🧩 Đăng ký
         // ============================
@@ -251,5 +268,125 @@ namespace EduConnect.Controllers
 
             return Ok(ApiResponse.Success(message: "Đổi mật khẩu thành công"));
         }
+
+
+        // ============================
+        // 🧩 Lấy hồ sơ
+        // ============================
+        [Authorize]
+        [HttpGet("me")]
+        public async Task<IActionResult> Me()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId == null)
+                return Unauthorized(ApiResponse.Error("Không xác định được người dùng."));
+
+            var profile = await _auth.GetProfileAsync(Guid.Parse(userId));
+            return Ok(ApiResponse.Success(profile));
+        }
+
+        // ============================
+        // ✏️ Cập nhật hồ sơ
+        // ============================
+        [Authorize]
+        [HttpPut("profile")]
+        public async Task<IActionResult> UpdateProfile([FromBody] UpdateProfileDto dto)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            await _auth.UpdateProfileAsync(Guid.Parse(userId!), dto);
+            return Ok(ApiResponse.Success(message: "Cập nhật thành công"));
+        }
+
+        // ============================
+        // 📤 Upload Avatar Local
+        // ============================
+        [Authorize]
+        [HttpPost("upload-avatar")]
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> UploadAvatar(IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+                return BadRequest(ApiResponse.Error("File không hợp lệ"));
+
+            var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+            var user = await _db.Users.FindAsync(userId);
+            if (user == null) return NotFound(ApiResponse.Error("Không tìm thấy user"));
+
+            // 📂 Thư mục lưu
+            var folder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "avatars");
+            Directory.CreateDirectory(folder);
+
+            // 🔖 Tên file
+            var ext = Path.GetExtension(file.FileName);
+            var filename = $"{userId}{ext}";
+            var path = Path.Combine(folder, filename);
+
+            // 💾 Ghi file
+            using (var stream = new FileStream(path, FileMode.Create))
+                await file.CopyToAsync(stream);
+
+            // ✅ Trả về URL tuyệt đối (để Blazor load đúng domain của API)
+            var baseUrl = $"{Request.Scheme}://{Request.Host}";
+            var avatarUrl = $"{baseUrl}/uploads/avatars/{filename}";
+
+            user.Avatar = avatarUrl;
+            await _db.SaveChangesAsync();
+
+            return Ok(ApiResponse.Success(new { avatar = avatarUrl }, "Đổi avatar thành công"));
+        }
+
+        // ============================
+        // 🔁 Làm mới Access Token
+        // ============================
+        [AllowAnonymous]
+        [HttpPost("refresh")]
+        public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequest req)
+        {
+            if (string.IsNullOrWhiteSpace(req.RefreshToken))
+                return BadRequest(ApiResponse.Error("Thiếu refresh token."));
+
+            // 🔍 Tìm refresh token trong DB
+            var tokenEntity = await _db.RefreshTokens
+                .Include(x => x.User)
+                .FirstOrDefaultAsync(x => x.Token == req.RefreshToken);
+
+            // ❌ Không tồn tại hoặc đã hết hạn
+            if (tokenEntity == null || !tokenEntity.IsActive)
+                return Unauthorized(ApiResponse.Error("Refresh token không hợp lệ hoặc đã hết hạn."));
+
+            var user = tokenEntity.User;
+            if (user == null)
+                return Unauthorized(ApiResponse.Error("Không tìm thấy người dùng."));
+
+            // ✅ Vô hiệu hóa token cũ (để tránh reuse)
+            tokenEntity.RevokedAt = DateTime.UtcNow;
+
+            // ✅ Sinh token mới
+            var (access, _) = _tokens.CreateAccessToken(user);
+            var refresh = _tokens.CreateRefreshToken();
+
+            _db.RefreshTokens.Add(new RefreshToken
+            {
+                UserId = user.UserId,
+                Token = refresh,
+                ExpiresAt = DateTime.UtcNow.AddDays(
+                    int.Parse(_cfg["Jwt:RefreshTokenDays"] ?? "7")
+                )
+            });
+
+            await _db.SaveChangesAsync();
+
+            var data = new TokenResponse(access, refresh);
+            return Ok(ApiResponse.Success(data, "Làm mới token thành công"));
+
+        }
+
+        // DTO yêu cầu
+        public class RefreshTokenRequest
+        {
+            public string RefreshToken { get; set; } = string.Empty;
+        }
+
+
     }
 }

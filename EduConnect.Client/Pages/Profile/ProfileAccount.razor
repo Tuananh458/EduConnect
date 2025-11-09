@@ -1,0 +1,224 @@
+﻿@page "/profile"
+@attribute [Authorize]
+@using EduConnect.Client.Services
+@inject AuthService Auth
+@inject UserSessionService Session
+@inject NavigationManager Nav
+@inject HttpClient Http
+@using EduConnect.Shared.DTOs.Auth
+@using Microsoft.AspNetCore.Authorization
+@using System.Text.Json
+@using static EduConnect.Client.Services.AuthService
+@inject UserSessionService Session
+@inject AuthService Auth
+@inject IJSRuntime JS
+
+
+
+<h5 class="fw-bold mb-3 mt-3">
+    <i class="fas fa-user me-2"></i> Thông tin tài khoản
+</h5>
+
+@if (model == null)
+{
+    <p>Đang tải...</p>
+}
+else
+{
+    <div class="card shadow-sm p-4">
+        <div class="row g-4">
+
+            <!-- Tên hiển thị -->
+            <div class="col-md-6">
+                <label class="form-label fw-semibold">Tên hiển thị:</label>
+                <input class="form-control" @bind="edit.FullName" />
+            </div>
+
+            <!-- Tên đăng nhập -->
+            <div class="col-md-6">
+                <label class="form-label fw-semibold">Tên đăng nhập:</label>
+                <input class="form-control bg-light" value="@model.Username" disabled />
+            </div>
+
+            <!-- Email -->
+            <div class="col-md-6">
+                <label class="form-label fw-semibold">Email:</label>
+                <div class="input-group">
+                    <input class="form-control bg-light" value="@model.Email" disabled />
+                    <button class="btn btn-outline-danger btn-sm">Xác thực tài khoản</button>
+                </div>
+            </div>
+
+            <!-- Số điện thoại -->
+            <div class="col-md-6">
+                <label class="form-label fw-semibold">Số điện thoại:</label>
+                <div class="input-group">
+                    <input class="form-control bg-light" placeholder="Chưa liên kết" disabled />
+                    <button class="btn btn-outline-danger btn-sm">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Email phụ huynh -->
+            <div class="col-md-6">
+                <label class="form-label fw-semibold">Email phụ huynh:</label>
+                <div class="input-group">
+                    <input class="form-control bg-light" placeholder="Chưa có" disabled />
+                    <button class="btn btn-outline-success btn-sm">
+                        <i class="fas fa-check"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Đổi mật khẩu -->
+            <div class="col-md-6">
+                <label class="form-label fw-semibold">Mật khẩu:</label>
+                <div class="input-group">
+                    <input type="password" class="form-control bg-light" value="********" disabled />
+                    <button class="btn btn-outline-primary btn-sm" @onclick="GoChangePassword">
+                        <i class="fas fa-pen"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Avatar -->
+            <div class="col-12 d-flex align-items-center mt-3">
+                <img src="@($"{model.Avatar}?t={DateTime.Now.Ticks}")" class="rounded me-3 avatar-img" />
+                <div>
+                    <InputFile OnChange="UploadAvatar" accept="image/*" class="form-control" />
+                </div>
+            </div>
+
+            <div class="col-12 text-start mt-3">
+                <button class="btn btn-primary px-4" @onclick="SaveProfile">Cập nhật</button>
+            </div>
+
+        </div>
+    </div>
+}
+
+@code {
+    UserProfileDto? model;
+    UpdateProfileDto edit = new();
+    IBrowserFile? file;
+    private IBrowserFile? avatarFile;
+
+    protected override async Task OnInitializedAsync()
+    {
+        model = await Auth.GetProfileAsync();
+        if (model != null)
+        {
+            edit.FullName = model.FullName;
+            edit.Avatar = model.Avatar;
+        }
+    }
+    private async Task UploadAvatar(InputFileChangeEventArgs e)
+    {
+        var file = e.File;
+        if (file == null) return;
+
+        try
+        {
+            var content = new MultipartFormDataContent();
+            var stream = file.OpenReadStream(5_000_000);
+            var fileContent = new StreamContent(stream);
+            fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(file.ContentType);
+            content.Add(fileContent, "file", file.Name);
+
+            var tokens = await Session.GetTokensAsync();
+            Http.DefaultRequestHeaders.Authorization =
+                new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", tokens.Access);
+
+            var res = await Http.PostAsync("api/auth/upload-avatar", content);
+
+            if (res.IsSuccessStatusCode)
+            {
+                var json = await res.Content.ReadFromJsonAsync<ApiEnvelope<JsonElement>>();
+                string? avatarUrl = null;
+
+                if (json?.Data.ValueKind == JsonValueKind.Object &&
+                    json.Data.TryGetProperty("avatar", out var avatarProp))
+                {
+                    avatarUrl = avatarProp.GetString();
+                }
+
+                Console.WriteLine($"[Avatar Upload OK] {avatarUrl}");
+
+                // ✅ Chỉ cập nhật tạm trong form, chưa lưu vào session
+                if (!string.IsNullOrEmpty(avatarUrl))
+                {
+                    edit.Avatar = avatarUrl;
+                    model!.Avatar = avatarUrl;
+                    StateHasChanged(); // chỉ để hiển thị trước ảnh
+                }
+            }
+            else
+            {
+                Console.WriteLine($"[Avatar Upload Fail] {res.StatusCode}");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[Avatar Upload Error] {ex.Message}");
+        }
+    }
+
+
+
+
+    async Task SaveProfile()
+    {
+        var success = await Auth.UpdateProfileAsync(edit);
+
+        if (success)
+        {
+            // ✅ Cập nhật session và thông báo topbar ở đây
+            model!.FullName = edit.FullName;
+            model.Avatar = edit.Avatar;
+            await Session.SetProfileAsync(model);
+            Auth.NotifyLoginStateChanged();
+
+            await JS.InvokeVoidAsync("Swal.fire", new
+            {
+                title = "Thành công!",
+                text = "Cập nhật hồ sơ thành công!",
+                icon = "success",
+                confirmButtonColor = "#3085d6"
+            });
+        }
+        else
+        {
+            await JS.InvokeVoidAsync("Swal.fire", new
+            {
+                title = "Lỗi!",
+                text = "Không thể cập nhật hồ sơ.",
+                icon = "error",
+                confirmButtonColor = "#d33"
+            });
+        }
+    }
+
+
+
+    async Task ReloadProfile()
+    {
+        model = await Auth.GetProfileAsync();
+        if (model != null)
+            await Session.SetProfileAsync(model);
+
+        Auth.NotifyLoginStateChanged();
+        StateHasChanged();
+    }
+
+    void GoChangePassword() => Nav.NavigateTo("/change-password");
+}
+
+<style>
+    .avatar-img {
+        width: 70px;
+        height: 70px;
+        object-fit: cover;
+        border: 1px solid #ddd;
+    }
+</style>

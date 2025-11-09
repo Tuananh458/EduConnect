@@ -19,20 +19,30 @@ namespace EduConnect.Services
 
         public (string accessToken, DateTime expiresAt) CreateAccessToken(User user)
         {
+            if (user == null)
+                throw new ArgumentNullException(nameof(user), "User object cannot be null when creating token.");
+
+            // Đảm bảo không null để tránh lỗi ArgumentNullException
+            var userId = user.UserId.ToString();
+            var username = user.Username;
+            var email = user.Email ?? string.Empty;
+            var role = user.Role ?? "User"; // Mặc định "User" nếu chưa có
+
             var jwt = _cfg.GetSection("Jwt");
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwt["Key"]!));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwt["Key"] ?? throw new Exception("Missing Jwt:Key in configuration")));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var claims = new[]
             {
-                new Claim(JwtRegisteredClaimNames.Sub, user.UserId.ToString()),
-                new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
-                new Claim(ClaimTypes.Name, user.Username),
-                new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.Role, user.Role)
+                new Claim(JwtRegisteredClaimNames.Sub, userId),
+                new Claim(ClaimTypes.NameIdentifier, userId),
+                new Claim(ClaimTypes.Name, username),
+                new Claim(ClaimTypes.Email, email),
+                new Claim(ClaimTypes.Role, role)
             };
 
-            var expires = DateTime.UtcNow.AddMinutes(int.Parse(jwt["AccessTokenMinutes"]!));
+            var expiresMinutes = int.TryParse(jwt["AccessTokenMinutes"], out var minutes) ? minutes : 60;
+            var expires = DateTime.UtcNow.AddMinutes(minutes);
 
             var token = new JwtSecurityToken(
                 issuer: jwt["Issuer"],
@@ -42,7 +52,8 @@ namespace EduConnect.Services
                 signingCredentials: creds
             );
 
-            return (new JwtSecurityTokenHandler().WriteToken(token), expires);
+            var accessToken = new JwtSecurityTokenHandler().WriteToken(token);
+            return (accessToken, expires);
         }
 
         public string CreateRefreshToken()

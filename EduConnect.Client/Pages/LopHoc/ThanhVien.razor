@@ -1,0 +1,371 @@
+﻿@page "/lophoc/{MaLopHoc:int}/thanhvien"
+@attribute [Authorize]
+@layout MainLayout
+@using EduConnect.Client.Services
+@using EduConnect.Shared.DTOs.HocSinh
+@using EduConnect.Shared.DTOs
+@using System.Net.Http.Json
+@using Microsoft.AspNetCore.Authorization
+@inject HttpClient Http
+@inject HocSinhService HocSinhService
+@inject LopHocService LopHocService
+@inject IJSRuntime JS
+
+<div class="container-fluid px-3 py-2">
+    <h4 class="fw-bold mb-4 text-primary">
+        Lớp: @tenLop
+    </h4>
+
+    <!-- Thanh menu chức năng -->
+    <div class="d-flex flex-wrap gap-2 mb-3">
+        <button class="btn btn-danger" @onclick="DeleteSelected" disabled="@(!selectedIds.Any())">
+            <i class="fas fa-trash"></i> Xoá hàng loạt
+        </button>
+
+        <button class="btn btn-warning"><i class="fas fa-undo"></i> Khôi phục</button>
+        <button class="btn btn-warning text-white"><i class="fas fa-key"></i> Thiết lập mật khẩu mới</button>
+        <button class="btn btn-info text-white"><i class="fas fa-sync"></i> Reset thứ tự thành viên</button>
+        <button class="btn btn-danger"><i class="fas fa-user-edit"></i> Đổi tiền tố tên đăng nhập</button>
+        <button class="btn btn-primary" @onclick="ShowAddRow"><i class="fas fa-user-plus"></i> Tạo nhanh danh sách học sinh</button>
+        <button class="btn btn-outline-primary" @onclick="()=>showImport=true">
+            <i class="fas fa-file-import"></i> Import danh sách học sinh
+        </button>
+
+        <button class="btn btn-warning text-dark"><i class="fas fa-user-friends"></i> Thêm (chuyển) học sinh vào lớp</button>
+        <button class="btn btn-secondary"><i class="fas fa-filter"></i> Lọc học sinh</button>
+        <button class="btn btn-success"><i class="fas fa-user"></i> Mời thành viên</button>
+        <button class="btn btn-info"><i class="fas fa-database"></i> Đồng bộ với cơ sở dữ liệu ngành</button>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div></div>
+        <button class="btn btn-warning text-white">
+            <i class="fas fa-download"></i> Tải danh sách
+        </button>
+    </div>
+
+    <!-- Bảng danh sách học sinh -->
+    <div class="table-responsive">
+        <table class="table table-bordered align-middle text-center">
+            <thead class="table-light">
+                <tr>
+                    <th style="width:40px;">
+                        <input type="checkbox" @onchange="ToggleSelectAll" />
+                    </th>
+
+                    <th style="width:50px;">STT</th>
+                    <th style="min-width:180px;">Họ và tên</th>
+                    <th style="min-width:180px;">Tên đăng nhập</th>
+                    <th style="min-width:140px;">Mật khẩu</th>
+                    <th style="min-width:150px;">Mã định danh</th>
+                    <th style="min-width:150px;">Ngày sinh</th>
+                    <th style="min-width:100px;">Ngày tạo</th>
+                    <th style="width:100px;">Lớp trưởng</th>
+                    <th style="width:80px;">Khóa</th>
+                    <th style="min-width:140px;">Hành động</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Hàng thêm mới -->
+                @if (isAdding)
+                {
+                    <tr>
+                        <td></td>
+                        <td>0</td>
+                        <td><input class="form-control" @bind="newStudent.HoVaTen" placeholder="Họ và tên" /></td>
+                        <td><input class="form-control" @bind="newStudent.TenDangNhap" placeholder="Tên đăng nhập" /></td>
+                        <td><input class="form-control" @bind="newStudent.MatKhau" placeholder="Mật khẩu" /></td>
+                        <td><input class="form-control" @bind="newStudent.MaDinhDanh" placeholder="Mã định danh" /></td>
+                        <td><input type="date" class="form-control" @bind="newStudent.NgaySinh" /></td>
+                        <td>@DateTime.Now.ToString("dd-MM-yyyy")</td>
+                        <td><input type="checkbox" /></td>
+                        <td><input type="checkbox" /></td>
+                        <td>
+                            <button class="btn btn-primary btn-sm me-1" @onclick="SaveNewStudent">Lưu</button>
+                            <button class="btn btn-secondary btn-sm" @onclick="CancelAdd">Hủy</button>
+                        </td>
+                    </tr>
+                }
+
+                <!-- Danh sách học sinh -->
+                @if (hocSinhs != null && hocSinhs.Any())
+                {
+                    @foreach (var (hs, index) in hocSinhs.Select((v, i) => (v, i)))
+                    {
+                        <tr>
+                            <td>
+                                <input type="checkbox" checked="@IsSelected(hs.MaHocSinh)"
+                                       @onchange="e => ToggleSelection(hs.MaHocSinh, e)" />
+                            </td>
+
+                            <td>@(index + 1)</td>
+
+                            @if (editId == hs.MaHocSinh)
+                            {
+                                <td><input class="form-control" @bind="editModel.HoVaTen" /></td>
+                                <td><input class="form-control" @bind="editModel.TenDangNhap" /></td>
+                                <td><input class="form-control" type="password" @bind="editModel.MatKhau" /></td>
+                                <td><input class="form-control" @bind="editModel.MaDinhDanh" /></td>
+                                <td><input class="form-control" type="date" @bind="editModel.NgaySinh" /></td>
+                                <td>@hs.NgayTao?.ToString("dd/MM/yyyy")</td>
+                                <td><input type="checkbox" @bind="editModel.LaLopTruong" /></td>
+                                <td><input type="checkbox" /></td>
+                                <td>
+                                    <button class="btn btn-success btn-sm me-1" @onclick="() => SaveEdit(hs.MaHocSinh)">Lưu</button>
+                                    <button class="btn btn-secondary btn-sm" @onclick="CancelEdit">Hủy</button>
+                                </td>
+                            }
+                            else
+                            {
+                                <td>@hs.HoVaTen</td>
+                                <td>@hs.TenDangNhap</td>
+                                <td>
+                                    <div class="input-group input-group-sm">
+                                        <input class="form-control text-center"
+                                               type="@GetPasswordInputType(hs.MaHocSinh)"
+                                               value="@hs.MatKhau"
+                                               readonly />
+                                        <button class="btn btn-outline-secondary" type="button" @onclick="() => TogglePasswordVisibility(hs.MaHocSinh)">
+                                            <i class="fas @(IsPasswordVisible(hs.MaHocSinh) ? "fa-eye-slash" : "fa-eye")"></i>
+                                        </button>
+                                    </div>
+                                </td>
+
+                                <td>@hs.MaDinhDanh</td>
+                                <td>@hs.NgaySinh?.ToString("dd/MM/yyyy")</td>
+                                <td>@hs.NgayTao?.ToString("dd/MM/yyyy")</td>
+                                <td><input type="checkbox" disabled checked="@hs.LaLopTruong" /></td>
+                                <td><input type="checkbox" /></td>
+                                <td>
+                                    <div class="btn-group">
+                                        <button class="btn btn-sm btn-light border dropdown-toggle" data-bs-toggle="dropdown">
+                                            <i class="fas fa-ellipsis-v"></i>
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-end">
+                                            <li>
+                                                <button class="dropdown-item" type="button" @onclick="() => EditRow(hs)">
+                                                    ✏️ Sửa
+                                                </button>
+                                            </li>
+                                            <li>
+                                                <button class="dropdown-item text-danger" type="button" @onclick="() => Delete(hs.MaHocSinh)">
+                                                    🗑️ Xóa
+                                                </button>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </td>
+
+                            }
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr><td colspan="11" class="text-center text-muted py-3">Chưa có học sinh nào trong lớp.</td></tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@if (showImport)
+{
+    <HocSinhImport MaLopHoc="MaLopHoc" OnCompleted="OnImportDone" />
+}
+
+
+@code {
+    [Parameter] public int MaLopHoc { get; set; }
+    private List<HocSinhDto>? hocSinhs;
+    private CreateHocSinhRequest newStudent = new();
+    private UpdateHocSinhRequest editModel = new();
+    private bool isAdding = false;
+    private int? editId;
+    private string tenLop = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadData();
+    }
+
+    private async Task LoadData()
+    {
+        var lop = await LopHocService.GetByIdAsync(MaLopHoc);
+        if (lop != null)
+        {
+            tenLop = lop?.TenLopDayDu ?? $"Mã lớp {MaLopHoc}";
+        }
+        else
+        {
+            tenLop = $"Mã lớp {MaLopHoc}";
+        }
+
+        hocSinhs = await HocSinhService.GetByLopAsync(MaLopHoc);
+        StateHasChanged();
+    }
+
+
+    private void ShowAddRow()
+    {
+        isAdding = true;
+        newStudent = new CreateHocSinhRequest { MaLopHoc = MaLopHoc };
+    }
+
+    private void CancelAdd() => isAdding = false;
+
+    private async Task SaveNewStudent()
+    {
+        if (string.IsNullOrWhiteSpace(newStudent.HoVaTen) || string.IsNullOrWhiteSpace(newStudent.TenDangNhap))
+        {
+            await JS.InvokeVoidAsync("alert", "Vui lòng nhập đầy đủ Họ tên và Tên đăng nhập!");
+            return;
+        }
+
+        var ok = await HocSinhService.CreateAsync(newStudent);
+        if (ok)
+        {
+            await JS.InvokeVoidAsync("alert", "✅ Đã thêm học sinh!");
+            isAdding = false;
+            await LoadData();
+        }
+        else
+        {
+            await JS.InvokeVoidAsync("alert", "❌ Lỗi khi thêm học sinh!");
+        }
+    }
+
+    private void EditRow(HocSinhDto hs)
+    {
+        editId = hs.MaHocSinh;
+        editModel = new UpdateHocSinhRequest
+            {
+                MaHocSinh = hs.MaHocSinh,
+                MaLopHoc = MaLopHoc,
+                HoVaTen = hs.HoVaTen,
+                TenDangNhap = hs.TenDangNhap,
+                MaDinhDanh = hs.MaDinhDanh,
+                NgaySinh = hs.NgaySinh,
+                LaLopTruong = hs.LaLopTruong
+            };
+    }
+
+    private void CancelEdit() => editId = null;
+
+    private async Task SaveEdit(int id)
+    {
+        var ok = await HocSinhService.UpdateAsync(editModel);
+        if (ok)
+        {
+            await JS.InvokeVoidAsync("alert", "✅ Cập nhật thành công!");
+            editId = null;
+            await LoadData();
+        }
+        else
+        {
+            await JS.InvokeVoidAsync("alert", "❌ Cập nhật thất bại!");
+        }
+    }
+
+    private async Task Delete(int id)
+    {
+        var confirm = await JS.InvokeAsync<bool>("confirm", "Bạn có chắc muốn xoá học sinh này?");
+        if (!confirm) return;
+
+        var ok = await HocSinhService.DeleteAsync(id);
+        if (ok)
+        {
+            await JS.InvokeVoidAsync("alert", "🗑️ Đã xóa học sinh!");
+            await LoadData();
+        }
+        else
+        {
+            await JS.InvokeVoidAsync("alert", "❌ Xóa thất bại!");
+        }
+    }
+
+    // Lưu trạng thái ẩn/hiện từng hàng học sinh
+    private Dictionary<int, bool> passwordVisible = new();
+
+    // Hàm kiểm tra trạng thái hiển thị
+    private bool IsPasswordVisible(int id)
+    {
+        return passwordVisible.ContainsKey(id) && passwordVisible[id];
+    }
+
+    // Hàm đổi trạng thái hiển thị
+    private void TogglePasswordVisibility(int id)
+    {
+        if (passwordVisible.ContainsKey(id))
+            passwordVisible[id] = !passwordVisible[id];
+        else
+            passwordVisible[id] = true;
+    }
+
+    // Hàm chọn type input dựa theo trạng thái
+    private string GetPasswordInputType(int id)
+    {
+        return IsPasswordVisible(id) ? "text" : "password";
+    }
+
+
+    private bool showImport = false;
+    private async Task OnImportDone()
+    {
+        showImport = false;
+        await LoadData();
+    }
+
+    //xoa hang loat
+    // ==================== XÓA HÀNG LOẠT ====================
+    private HashSet<int> selectedIds = new();
+
+    private void ToggleSelection(int id, ChangeEventArgs e)
+    {
+        bool isChecked = e?.Value is bool b && b;
+        if (isChecked) selectedIds.Add(id);
+        else selectedIds.Remove(id);
+    }
+
+    private void ToggleSelectAll(ChangeEventArgs e)
+    {
+        bool selectAll = e?.Value is bool b && b;
+        selectedIds.Clear();
+        if (selectAll && hocSinhs != null)
+            selectedIds = hocSinhs.Select(h => h.MaHocSinh).ToHashSet();
+    }
+
+    private bool IsSelected(int id) => selectedIds.Contains(id);
+
+    private async Task DeleteSelected()
+    {
+        if (!selectedIds.Any())
+        {
+            await JS.InvokeVoidAsync("alert", "⚠️ Vui lòng chọn ít nhất 1 học sinh!");
+            return;
+        }
+
+        var confirm = await JS.InvokeAsync<bool>("confirm", $"Bạn có chắc muốn xóa {selectedIds.Count} học sinh?");
+        if (!confirm) return;
+
+        var request = new HttpRequestMessage(HttpMethod.Delete, "api/hocsinh/batch")
+            {
+                Content = JsonContent.Create(selectedIds.ToList())
+            };
+
+        var res = await Http.SendAsync(request);
+        if (res.IsSuccessStatusCode)
+        {
+            await JS.InvokeVoidAsync("alert", "🗑️ Đã xóa thành công!");
+            selectedIds.Clear();
+            await LoadData();
+        }
+        else
+        {
+            var msg = await res.Content.ReadAsStringAsync();
+            await JS.InvokeVoidAsync("alert", "❌ Xóa thất bại: " + msg);
+        }
+    }
+
+
+}

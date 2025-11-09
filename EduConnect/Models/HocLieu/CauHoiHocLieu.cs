@@ -18,6 +18,8 @@ namespace EduConnect.Models.HocLieu
 
         // Tiêu đề / nội dung câu hỏi
         [Required]
+        public string TieuDe { get; set; }
+        [Required]
         public string NoiDung { get; set; } = string.Empty;
 
         // Loại câu hỏi: TN_1DAPANDUNG, TN_NHIEUDAPANDUNG, DUNGSAI, ...
@@ -29,7 +31,7 @@ namespace EduConnect.Models.HocLieu
         public string DoKho { get; set; } = "Nhận biết";
 
         // Điểm cho câu hỏi này
-        public decimal Diem { get; set; } = 1m;
+        public double Diem { get; set; }
 
         // 4 đáp án cơ bản giống bạn đang làm giao diện
         public string? DapAnA { get; set; }

@@ -57,5 +57,12 @@ namespace EduConnect.Repositories.Implementations
                                  .AnyAsync(x => x.MaLopHoc == id)
                                  .ConfigureAwait(false);
         }
+        public async Task<bool> AnyAsync(int maKhoiHoc, string tenLopHoc)
+        {
+            return await _context.Set<LopHoc>()
+                                 .AnyAsync(x => x.MaKhoiHoc == maKhoiHoc && x.TenLopHoc == tenLopHoc)
+                                 .ConfigureAwait(false);
+        }
+
     }
 }

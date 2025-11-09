@@ -53,11 +53,19 @@ namespace EduConnect.Services.Implementations
 
         public async Task CreateAsync(CreateLopHocRequest request)
         {
+            if (request == null)
+                throw new ArgumentNullException(nameof(request));
+
             var tenLops = request.TenLopHoc
                 .Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 
             foreach (var ten in tenLops)
             {
+                // 🔍 Kiểm tra lớp trùng trong cùng khối
+                var existed = await _repo.AnyAsync(request.MaKhoiHoc, ten);
+                if (existed)
+                    throw new InvalidOperationException($"Lớp {ten} đã tồn tại trong khối này!");
+
                 var newClass = new LopHoc
                 {
                     TenLopHoc = ten,
@@ -70,6 +78,8 @@ namespace EduConnect.Services.Implementations
                 await _repo.AddAsync(newClass).ConfigureAwait(false);
             }
         }
+
+
 
         public async Task UpdateAsync(UpdateLopHocRequest request)
         {

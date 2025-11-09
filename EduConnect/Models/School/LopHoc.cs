@@ -1,4 +1,5 @@
 ﻿using EduConnect.Models.School;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -6,6 +7,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace EduConnect.Models
 {
     [Table("LOPHOC")]
+    [Index(nameof(MaKhoiHoc), nameof(TenLopHoc), IsUnique = true)]
     public class LopHoc
     {
         [Key]

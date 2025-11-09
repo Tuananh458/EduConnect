@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("EduConnect.Client")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8ecc002bb66d5bab923624f232159f8c61e7bfea")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5c35de3c8bb571f49c1bb731f8e2ff73974f57a9")]
 [assembly: System.Reflection.AssemblyProductAttribute("EduConnect.Client")]
 [assembly: System.Reflection.AssemblyTitleAttribute("EduConnect.Client")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

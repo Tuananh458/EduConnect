@@ -11,6 +11,8 @@ using EduConnect.Repositories.Interfaces;
 using EduConnect.Repositories.Implementations;
 using EduConnect.Services.Implementations;
 using EduConnect.Services.Interfaces;
+using OfficeOpenXml;
+using System.ComponentModel;
 
 namespace EduConnect
 {
@@ -19,6 +21,15 @@ namespace EduConnect
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+
+            // ✅ Cấu hình License EPPlus 7.6.0 (NonCommercial)
+            OfficeOpenXml.ExcelPackage.LicenseContext = OfficeOpenXml.LicenseContext.NonCommercial;
+
+
+
+
+
 
             // 1️⃣ Add services
             builder.Services.AddControllers();
@@ -59,10 +70,16 @@ namespace EduConnect
             // Repositories
             builder.Services.AddScoped<IHocLieuRepository, HocLieuRepository>();
             builder.Services.AddScoped<ICauHoiHocLieuRepository, CauHoiHocLieuRepository>();
+            builder.Services.AddScoped<IHocLieuCauHoiRepository, HocLieuCauHoiRepository>();
+            builder.Services.AddScoped<IHocSinhRepository, HocSinhRepository>();
+            
+
 
             // Services
             builder.Services.AddScoped<IHocLieuService, HocLieuService>();
             builder.Services.AddScoped<ICauHoiHocLieuService, CauHoiHocLieuService>();
+            builder.Services.AddScoped<IHocLieuCauHoiService, HocLieuCauHoiService>();
+            builder.Services.AddScoped<IHocSinhService, HocSinhService>();
 
 
 
@@ -138,10 +155,10 @@ namespace EduConnect
                 });
             });
             builder.Services.AddControllers()
-    .AddJsonOptions(o =>
-    {
-        o.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
-    });
+            .AddJsonOptions(o =>
+            {
+                o.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+            });
 
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen(c =>
@@ -160,13 +177,33 @@ namespace EduConnect
             }
 
             app.UseHttpsRedirection();
+
+            // ✅ Tự tạo thư mục lưu ảnh nếu chưa có
+            var uploadDir = Path.Combine(app.Environment.ContentRootPath, "wwwroot", "uploads", "avatars");
+            if (!Directory.Exists(uploadDir))
+            {
+                Directory.CreateDirectory(uploadDir);
+            }
+
+            // ✅ Cho phép truy cập file tĩnh và thêm CORS header cho Blazor Client (7089)
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                OnPrepareResponse = ctx =>
+                {
+                    ctx.Context.Response.Headers.Append("Access-Control-Allow-Origin", "https://localhost:7089");
+                    ctx.Context.Response.Headers.Append("Access-Control-Allow-Credentials", "true");
+                }
+            });
+
             app.UseCors("AllowClient");
             app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllers();
             app.MapHub<NotifyHub>("/hub/notify");
+
             app.Run();
+
         }
     }
 }
