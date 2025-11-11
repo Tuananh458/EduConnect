@@ -38,7 +38,7 @@
 
         <div class="card-body">
             <div class="row g-3">
-                <!-- CỘT TRÁI: Câu hỏi của bạn -->
+                <!-- 🟦 CỘT TRÁI: Câu hỏi của bạn -->
                 <div class="col-md-6">
                     <div class="border rounded-3 shadow-sm bg-white p-3">
                         <div class="d-flex justify-content-between align-items-center mb-3">
@@ -69,15 +69,23 @@
                                 @foreach (var q in questions)
                                 {
                                     var selected = selectedQuestions.Any(x => x.Id == q.Id);
-                                    <div class="list-group-item d-flex justify-content-between align-items-start flex-column flex-sm-row gap-2 p-3 @(selected ? "bg-light border-primary" : "")">
-                                        <div class="flex-fill">
-                                            <span class="fw-semibold">@q.TieuDe</span>
-                                            <div class="small text-muted mt-1">
+                                    <div class="list-group-item p-3 rounded-2 mb-2 shadow-sm @(selected ? "bg-light border-primary" : "")">
+                                        <div class="flex-fill mb-2">
+                                            <div class="fw-semibold text-dark">
+                                                @(!string.IsNullOrEmpty(q.TieuDe) ? q.TieuDe : $"Câu hỏi {q.Id}")
+                                            </div>
+
+                                            <div class="text-secondary small mt-1">
+                                                @((MarkupString)(q.NoiDung ?? ""))
+                                            </div>
+
+                                            <div class="small text-muted mt-2">
                                                 <i class="fas fa-graduation-cap me-1"></i>@q.DoKho
                                                 <span class="ms-2">| @q.LoaiCauHoi</span>
                                             </div>
                                         </div>
-                                        <div class="d-flex gap-2 flex-wrap">
+
+                                        <div class="d-flex gap-2 flex-wrap mt-2">
                                             <button class="btn btn-sm @(selected ? "btn-secondary" : "btn-outline-primary")"
                                                     @onclick="() => ToggleSelect(q)">
                                                 @(selected ? "Bỏ chọn" : "Chọn")
@@ -99,7 +107,7 @@
                     </div>
                 </div>
 
-                <!-- CỘT PHẢI: Câu hỏi được chọn -->
+                <!-- 🟩 CỘT PHẢI: Câu hỏi được chọn -->
                 <div class="col-md-6">
                     <div class="border rounded-3 shadow-sm bg-white p-3">
                         <div class="d-flex justify-content-between align-items-center mb-3">
@@ -120,12 +128,23 @@
                             <div class="list-group list-group-flush">
                                 @foreach (var q in selectedQuestions)
                                 {
-                                    <div class="list-group-item d-flex justify-content-between align-items-start flex-column flex-sm-row gap-2 p-3 bg-success-subtle">
-                                        <div class="flex-fill">
-                                            <span class="fw-semibold">@q.TieuDe</span>
-                                            <div class="small text-muted mt-1">@q.DoKho</div>
+                                    <div class="list-group-item p-3 rounded-2 mb-2 shadow-sm bg-success-subtle">
+                                        <div class="flex-fill mb-2">
+                                            <div class="fw-semibold text-dark">
+                                                @(!string.IsNullOrEmpty(q.TieuDe) ? q.TieuDe : $"Câu hỏi {q.Id}")
+                                            </div>
+
+                                            <div class="text-secondary small mt-1">
+                                                @((MarkupString)(q.NoiDung ?? ""))
+                                            </div>
+
+                                            <div class="small text-muted mt-2">
+                                                <i class="fas fa-graduation-cap me-1"></i>@q.DoKho
+                                                <span class="ms-2">| @q.LoaiCauHoi</span>
+                                            </div>
                                         </div>
-                                        <div class="d-flex gap-2 flex-wrap">
+
+                                        <div class="d-flex gap-2 flex-wrap mt-2">
                                             <button class="btn btn-sm btn-warning text-white" @onclick="() => EditQuestion(q)">Sửa</button>
                                             <button class="btn btn-sm btn-info text-white" @onclick="() => PreviewExistingQuestion(q)">Xem thử</button>
                                             <button class="btn btn-sm btn-danger" @onclick="() => ToggleSelect(q)">Xóa</button>
@@ -138,6 +157,7 @@
                 </div>
             </div>
         </div>
+
         <!-- Nút lưu cập nhật -->
         <div class="text-end mt-3 pe-3">
             <button class="btn btn-primary" @onclick="SaveHocLieuCauHoi">
@@ -438,12 +458,6 @@
     // ====== Lưu danh sách câu hỏi vào học liệu ======
     private async Task SaveHocLieuCauHoi()
     {
-        if (!selectedQuestions.Any())
-        {
-            await JS.InvokeVoidAsync("alert", "⚠️ Bạn chưa chọn câu hỏi nào để lưu!");
-            return;
-        }
-
         var request = new HocLieuCauHoiRequest
             {
                 HocLieuId = HocLieuId,
@@ -451,24 +465,29 @@
             };
 
         await HocLieuCauHoiService.SaveAsync(request);
-        await JS.InvokeVoidAsync("alert", "✅ Đã lưu câu hỏi vào học liệu!");
+
+        if (selectedQuestions.Any())
+            await JS.InvokeVoidAsync("alert", "✅ Đã lưu câu hỏi vào học liệu!");
+        else
+            await JS.InvokeVoidAsync("alert", "✅ Đã xoá toàn bộ câu hỏi khỏi học liệu!");
     }
+
 
     // ====== Tải lại danh sách câu hỏi đã lưu khi mở học liệu ======
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            var selectedIds = await HocLieuCauHoiService.GetSelectedAsync(HocLieuId);
-            if (selectedIds != null && questions != null)
-            {
-                selectedQuestions = questions
-                    .Where(q => selectedIds.Contains(q.Id))
-                    .ToList();
+            // 🟢 Gọi API trả về danh sách câu hỏi đã lưu trong học liệu
+            var savedQuestions = await HocLieuService.GetCauHoiTrongHocLieuAsync(HocLieuId);
 
+            if (savedQuestions != null)
+            {
+                selectedQuestions = savedQuestions;
                 StateHasChanged();
             }
         }
     }
+
 
 }

@@ -1,15 +1,14 @@
 ﻿using System.Net;
-using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Threading;
-using System.Threading.Tasks;
+using System.Net.Http.Json;
 
 namespace EduConnect.Client.Services
 {
     /// <summary>
-    /// HttpMessageHandler tự động gắn JWT và tự refresh khi hết hạn (401).
+    /// Gắn Bearer token cho mọi request.
+    /// Nếu 401, thử refresh 1 lần rồi gửi lại.
     /// </summary>
-    public class AuthMessageHandler : DelegatingHandler
+    public sealed class AuthMessageHandler : DelegatingHandler
     {
         private readonly UserSessionService _session;
 
@@ -20,51 +19,85 @@ namespace EduConnect.Client.Services
 
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            // ===== 1️⃣ Gắn access token hiện tại =====
-            var token = await _session.GetAccessTokenAsync();
-            if (!string.IsNullOrWhiteSpace(token))
-                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            // 1) Gắn access token hiện tại (nếu có)
+            await AttachAccessTokenAsync(request);
 
-            // ===== 2️⃣ Gửi request gốc =====
+            // 2) Gửi request lần 1
             var response = await base.SendAsync(request, cancellationToken);
 
-            // ===== 3️⃣ Nếu 401, thử refresh token =====
+            // 3) Nếu 401 và có refresh token → thử refresh 1 lần
             if (response.StatusCode == HttpStatusCode.Unauthorized)
             {
-                // Tránh vòng lặp vô hạn nếu refresh thất bại
-                response.Dispose();
-
-                bool refreshed = await _session.TryRefreshTokenAsync();
-                if (refreshed)
+                var tokens = await _session.GetTokensAsync();
+                if (!string.IsNullOrWhiteSpace(tokens.Refresh))
                 {
-                    var newToken = await _session.GetAccessTokenAsync();
-                    if (string.IsNullOrEmpty(newToken))
-                        return response;
-
-                    // ✅ Clone request (do HttpContent chỉ đọc 1 lần)
-                    var clonedRequest = await CloneHttpRequestAsync(request);
-                    clonedRequest.Headers.Authorization = new AuthenticationHeaderValue("Bearer", newToken);
-
-                    // 🔁 Gửi lại request sau khi refresh thành công
-                    response = await base.SendAsync(clonedRequest, cancellationToken);
+                    var refreshed = await TryRefreshAsync(cancellationToken);
+                    if (refreshed)
+                    {
+                        // Gắn lại token mới và gửi lại request
+                        response.Dispose();
+                        var clone = await CloneRequestAsync(request);
+                        await AttachAccessTokenAsync(clone);
+                        return await base.SendAsync(clone, cancellationToken);
+                    }
+                    else
+                    {
+                        // Refresh thất bại → đăng xuất sạch
+                        await _session.LogoutAsync();
+                    }
                 }
             }
 
             return response;
         }
 
-        /// <summary>
-        /// Clone lại HttpRequestMessage (phòng trường hợp content đã bị tiêu thụ).
-        /// </summary>
-        private static async Task<HttpRequestMessage> CloneHttpRequestAsync(HttpRequestMessage request)
+        private async Task AttachAccessTokenAsync(HttpRequestMessage request)
+        {
+            var (access, _) = await _session.GetTokensAsync();
+            if (!string.IsNullOrWhiteSpace(access))
+            {
+                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", access);
+            }
+        }
+
+        private async Task<bool> TryRefreshAsync(CancellationToken ct)
+        {
+            try
+            {
+                var (_, refresh) = await _session.GetTokensAsync();
+                if (string.IsNullOrWhiteSpace(refresh)) return false;
+
+                using var refreshRequest = new HttpRequestMessage(HttpMethod.Post, "api/auth/refresh")
+                {
+                    Content = new StringContent($$"""{"refreshToken":"{{refresh}}"}""", System.Text.Encoding.UTF8, "application/json")
+                };
+
+                // Gửi refresh bằng chính HttpClient (qua same handler chain)
+                var refreshResponse = await base.SendAsync(refreshRequest, ct);
+                if (!refreshResponse.IsSuccessStatusCode) return false;
+
+                var envelope = await refreshResponse.Content.ReadFromJsonAsync<ApiEnvelope<TokenResponse>>();
+                if (envelope?.Data == null) return false;
+
+                await _session.SetTokensAsync(envelope.Data.Access, envelope.Data.Refresh);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        // Clone request để gửi lại (không dùng lại instance cũ)
+        private static async Task<HttpRequestMessage> CloneRequestAsync(HttpRequestMessage request)
         {
             var clone = new HttpRequestMessage(request.Method, request.RequestUri);
 
-            // Clone headers
+            // Copy headers
             foreach (var header in request.Headers)
                 clone.Headers.TryAddWithoutValidation(header.Key, header.Value);
 
-            // Clone content
+            // Copy content (nếu có)
             if (request.Content != null)
             {
                 var ms = new MemoryStream();
@@ -76,7 +109,16 @@ namespace EduConnect.Client.Services
                     clone.Content.Headers.TryAddWithoutValidation(header.Key, header.Value);
             }
 
+            // Properties/options
+            clone.Version = request.Version;
+#if NET7_0_OR_GREATER
+            clone.VersionPolicy = request.VersionPolicy;
+#endif
             return clone;
         }
+
+        // Khớp với định dạng API envelope phía client đang dùng
+        private sealed record ApiEnvelope<T>(string? Status, string? Message, T? Data);
+        private sealed record TokenResponse(string Access, string Refresh);
     }
 }

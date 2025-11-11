@@ -1,9 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using EduConnect.Models.School;
-using EduConnect.Models.Auth;
-using EduConnect.Models;
 using EduConnect.Models.HocLieu;
-using EduConnect.Models.DanhMuc;
+using EduConnect.Models;
 
 namespace EduConnect.Data
 {
@@ -15,33 +13,26 @@ namespace EduConnect.Data
         }
 
         // ==========================
-        // 🧩 MODULE 1: Học liệu
+        // 🧩 MODULE 1: HỌC LIỆU
         // ==========================
-
-
-
-        public DbSet<EduConnect.Models.HocLieu.HocLieu> HocLieus { get; set; }
-        public DbSet<CauHoiHocLieu> CauHoiHocLieus => Set<CauHoiHocLieu>();
+        public DbSet<HocLieu> HocLieus { get; set; }
+        public DbSet<CauHoiHocLieu> CauHoiHocLieus { get; set; }
         public DbSet<HocLieuCauHoi> HocLieuCauHois { get; set; }
-
         public DbSet<BaiLamHocLieu> BaiLamHocLieus { get; set; }
-        public DbSet<ChiTietBaiLamHocLieu> ChiTietBaiLamHocLieus { get; set; }
+        public DbSet<BaiLamChiTiet> BaiLamChiTiets { get; set; }
 
+        // ==========================
+        // 🧩 MODULE 2: XÁC THỰC / TÀI KHOẢN
+        // ==========================
+        public DbSet<NguoiDung> NguoiDungs { get; set; }
+        public DbSet<TokenLamMoi> TokenLamMois { get; set; }
+        public DbSet<DatLaiMatKhau> DatLaiMatKhaus { get; set; }
+        public DbSet<XacThucEmail> XacThucEmails { get; set; }
 
 
         // ==========================
-        // 🧩 MODULE 2: Xác thực / Tài khoản
+        // 🧩 MODULE 3: TRƯỜNG HỌC
         // ==========================
-        public DbSet<User> Users { get; set; }
-        public DbSet<RefreshToken> RefreshTokens { get; set; }
-        public DbSet<EmailVerification> EmailVerifications { get; set; }
-        public DbSet<PasswordReset> PasswordResets { get; set; }
-   
-
-        // ==========================
-        // 🧩 MODULE 3: Trường học
-        // ==========================
-
         public DbSet<KhoiHoc> KhoiHocs { get; set; }
         public DbSet<LopHoc> LopHocs { get; set; }
         public DbSet<HocSinh> HocSinhs { get; set; }
@@ -50,90 +41,140 @@ namespace EduConnect.Data
         public DbSet<LienKetPhuHuynhHocSinh> LienKetPhuHuynhHocSinhs { get; set; }
 
         // ==========================
-        // ⚙️ Cấu hình quan hệ & seed data
+        // ⚙️ CẤU HÌNH QUAN HỆ
         // ==========================
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            // ----- User <-> RefreshToken (1-n)
-            modelBuilder.Entity<User>()
-                .HasMany(u => u.RefreshTokens)
-                .WithOne(r => r.User)
-                .HasForeignKey(r => r.UserId)
+            // =====================================
+            // 🔐 NGUOIDUNG - TOKEN
+            // =====================================
+            modelBuilder.Entity<NguoiDung>()
+                .HasMany(u => u.TokenLamMois)
+                .WithOne(r => r.NguoiDung)
+                .HasForeignKey(r => r.MaNguoiDung)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // 🔒 Unique constraint cho Auth
-            modelBuilder.Entity<User>()
-                .HasIndex(u => u.Username).IsUnique();
-            modelBuilder.Entity<User>()
+            modelBuilder.Entity<NguoiDung>()
+                .HasIndex(u => u.TenDangNhap).IsUnique();
+
+            modelBuilder.Entity<NguoiDung>()
                 .HasIndex(u => u.Email).IsUnique();
-            // ✅ Cấu hình Avatar
-            modelBuilder.Entity<User>()
-                .Property(u => u.Avatar)
+
+            modelBuilder.Entity<NguoiDung>()
+                .Property(u => u.AnhDaiDien)
                 .HasMaxLength(512)
                 .HasDefaultValue("/template/img/avt.svg");
-            // hocsinh
-            modelBuilder.Entity<HocSinh>()
-                .HasOne(h => h.LopHoc)
-                .WithMany()                     // nếu bạn có List<HocSinh> trong LopHoc thì WithMany(l => l.DanhSachHocSinh)
-                .HasForeignKey(h => h.MaLopHoc)
-                .OnDelete(DeleteBehavior.Cascade);
 
+            // =====================================
+            // 🧩 QUAN HỆ TRƯỜNG HỌC
+            // =====================================
+
+            // ⚙️ Học sinh - Người dùng
             modelBuilder.Entity<HocSinh>()
-                .HasOne(h => h.User)
+                .HasOne(h => h.NguoiDung)
                 .WithMany()
-                .HasForeignKey(h => h.UserId)
-                .OnDelete(DeleteBehavior.Cascade);
-            // ----- KhoiHoc <-> LopHoc (1-n)
+                .HasForeignKey(h => h.MaNguoiDung)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            // ⚙️ Giáo viên - Người dùng
+            modelBuilder.Entity<GiaoVien>()
+                .HasOne(g => g.NguoiDung)
+                .WithMany()
+                .HasForeignKey(g => g.MaNguoiDung)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            // ⚙️ Phụ huynh - Người dùng
+            modelBuilder.Entity<PhuHuynh>()
+                .HasOne(p => p.NguoiDung)
+                .WithMany()
+                .HasForeignKey(p => p.MaNguoiDung)
+                .OnDelete(DeleteBehavior.NoAction);
+
+       
+            // ⚙️ Lớp học - Khối học
             modelBuilder.Entity<LopHoc>()
                 .HasOne(l => l.KhoiHoc)
                 .WithMany()
                 .HasForeignKey(l => l.MaKhoiHoc)
+                .OnDelete(DeleteBehavior.Restrict);
+            // ⚙️ Lớp học - Người tạo (Người dùng)
+            modelBuilder.Entity<LopHoc>()
+                 .HasOne(l => l.NguoiTao)
+                 .WithMany()
+                 .HasForeignKey(l => l.NguoiTaoId)
+                 .OnDelete(DeleteBehavior.Restrict);
+            // ⚙️ Quan hệ 1 giáo viên - nhiều lớp chủ nhiệm
+            modelBuilder.Entity<LopHoc>()
+                .HasOne(l => l.GiaoVienChuNhiem)
+                .WithMany(gv => gv.LopChuNhiems)
+                .HasForeignKey(l => l.MaGiaoVienChuNhiem)
+                .OnDelete(DeleteBehavior.SetNull);
+
+
+            // ⚙️ Học sinh - Lớp học
+            modelBuilder.Entity<HocSinh>()
+                .HasOne(h => h.LopHoc)
+                .WithMany()
+                .HasForeignKey(h => h.MaLopHoc)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            
-            // ==========================
-            // 🧩 MODULE: Học liệu và Câu hỏi học liệu
-            // ===============================================
+            // ⚙️ Liên kết Phụ huynh - Học sinh
+            modelBuilder.Entity<LienKetPhuHuynhHocSinh>()
+                .HasOne(lk => lk.PhuHuynh)
+                .WithMany(p => p.LienKetPhuHuynhHocSinhs)
+                .HasForeignKey(lk => lk.MaPhuHuynh)
+                .OnDelete(DeleteBehavior.Cascade);
 
-            // Quan hệ HocLieu - CauHoiHocLieu (1-n)
+            modelBuilder.Entity<LienKetPhuHuynhHocSinh>()
+                .HasOne(lk => lk.HocSinh)
+                .WithMany()
+                .HasForeignKey(lk => lk.MaHocSinh)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // =====================================
+            // 🧩 QUAN HỆ HỌC LIỆU
+            // =====================================
             modelBuilder.Entity<CauHoiHocLieu>()
                 .HasOne(ch => ch.HocLieu)
                 .WithMany(hl => hl.CauHois)
                 .HasForeignKey(ch => ch.HocLieuId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<CauHoiHocLieu>()
-                .Property(c => c.Diem)
-                .HasColumnType("float");
             modelBuilder.Entity<BaiLamHocLieu>()
-                .Property(b => b.TongDiem)
-                .HasColumnType("float");
-            modelBuilder.Entity<ChiTietBaiLamHocLieu>()
-                .Property(c => c.Diem)
-                .HasColumnType("float");
+                .HasOne(b => b.HocLieu)
+                .WithMany(hl => hl.BaiLams)
+                .HasForeignKey(b => b.HocLieuId)
+                .OnDelete(DeleteBehavior.Restrict);
 
+            modelBuilder.Entity<BaiLamHocLieu>()
+                .HasOne(b => b.HocSinh)
+                .WithMany()
+                .HasForeignKey(b => b.HocSinhId)
+                .OnDelete(DeleteBehavior.Cascade);
 
-            // Quan hệ HocLieu - HocLieuCauHoi (1-n)
+            modelBuilder.Entity<BaiLamChiTiet>()
+                .HasOne(ct => ct.BaiLamHocLieu)
+                .WithMany(b => b.ChiTiets)
+                .HasForeignKey(ct => ct.MaBaiLam)
+                .OnDelete(DeleteBehavior.Cascade);
+
             modelBuilder.Entity<HocLieuCauHoi>()
                 .HasOne(hch => hch.HocLieu)
-                .WithMany()
+                .WithMany(hl => hl.HocLieuCauHois)
                 .HasForeignKey(hch => hch.HocLieuId)
-                .OnDelete(DeleteBehavior.NoAction); // ⚠️ Đổi sang NoAction (tuyệt đối an toàn)
+                .OnDelete(DeleteBehavior.NoAction);
 
-            // Quan hệ CauHoiHocLieu - HocLieuCauHoi (1-n)
             modelBuilder.Entity<HocLieuCauHoi>()
                 .HasOne(hch => hch.CauHoi)
                 .WithMany()
                 .HasForeignKey(hch => hch.CauHoiId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-
-            // ==========================
-            // 🌱 SEED DỮ LIỆU KHỐI HỌC MẶC ĐỊNH
-            // ==========================
+            // =====================================
+            // 🌱 SEED DỮ LIỆU KHỐI HỌC
+            // =====================================
             modelBuilder.Entity<KhoiHoc>().HasData(
                 new KhoiHoc { MaKhoiHoc = 10, TenKhoiHoc = "Khối 10" },
                 new KhoiHoc { MaKhoiHoc = 11, TenKhoiHoc = "Khối 11" },

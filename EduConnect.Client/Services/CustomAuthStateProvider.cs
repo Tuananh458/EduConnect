@@ -1,48 +1,74 @@
 ﻿using System.Security.Claims;
 using System.Text.Json;
-using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components.Authorization;
 
 namespace EduConnect.Client.Services
 {
     public class CustomAuthStateProvider : AuthenticationStateProvider
     {
-        private readonly ILocalStorageService _localStorage;
         private readonly UserSessionService _session;
-        private const string AccessKey = "access_token";
 
-        public CustomAuthStateProvider(ILocalStorageService localStorage, UserSessionService session)
+        public CustomAuthStateProvider(UserSessionService session)
         {
-            _localStorage = localStorage;
             _session = session;
         }
 
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
-            // 🟢 Đọc token từ session service (ưu tiên token mới nhất)
+            // 🟢 Lấy access token từ session
             var token = await _session.GetAccessTokenAsync();
             if (string.IsNullOrWhiteSpace(token))
+            {
+                // Chưa đăng nhập
                 return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
+            }
+
+            try
+            {
+                // 🟢 Giải mã claim trong token JWT
+                var identity = new ClaimsIdentity(ParseClaimsFromJwt(token), "jwt");
+                var user = new ClaimsPrincipal(identity);
+                return new AuthenticationState(user);
+            }
+            catch
+            {
+                // Token lỗi → đăng xuất
+                await _session.LogoutAsync();
+                return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
+            }
+        }
+
+        // ✅ Khi user login (Google / thường)
+        public async Task MarkUserAsAuthenticated()
+        {
+            // Đảm bảo token đã lưu xong trước khi đọc
+            await Task.Delay(100); // đợi một nhịp nhỏ để sync storage
+
+            var token = await _session.GetAccessTokenAsync();
+            if (string.IsNullOrWhiteSpace(token))
+            {
+                NotifyAuthenticationStateChanged(
+                    Task.FromResult(new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()))));
+                return;
+            }
 
             var identity = new ClaimsIdentity(ParseClaimsFromJwt(token), "jwt");
             var user = new ClaimsPrincipal(identity);
-            return new AuthenticationState(user);
+            NotifyAuthenticationStateChanged(Task.FromResult(new AuthenticationState(user)));
+
+            Console.WriteLine("[AuthStateProvider] User marked as authenticated.");
         }
 
-        // ✅ Gọi khi user login
-        public async Task MarkUserAsAuthenticated()
-        {
-            var state = await GetAuthenticationStateAsync();
-            NotifyAuthenticationStateChanged(Task.FromResult(state));
-        }
-
-        // ✅ Gọi khi user logout
+        // ✅ Khi user logout
         public void MarkUserAsLoggedOut()
         {
             var anonymous = new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
             NotifyAuthenticationStateChanged(Task.FromResult(anonymous));
+
+            Console.WriteLine("[AuthStateProvider] User logged out.");
         }
 
+        // ✅ Giải mã claim từ JWT
         private static IEnumerable<Claim> ParseClaimsFromJwt(string jwt)
         {
             var claims = new List<Claim>();
@@ -57,7 +83,8 @@ namespace EduConnect.Client.Services
             }
 
             var jsonBytes = Convert.FromBase64String(payload);
-            var keyValuePairs = JsonSerializer.Deserialize<Dictionary<string, object>>(System.Text.Encoding.UTF8.GetString(jsonBytes));
+            var json = System.Text.Encoding.UTF8.GetString(jsonBytes);
+            var keyValuePairs = JsonSerializer.Deserialize<Dictionary<string, object>>(json);
             if (keyValuePairs == null) return claims;
 
             foreach (var kvp in keyValuePairs)
@@ -66,8 +93,8 @@ namespace EduConnect.Client.Services
                 {
                     if (kvp.Value is JsonElement je && je.ValueKind == JsonValueKind.Array)
                     {
-                        foreach (var r in je.EnumerateArray())
-                            claims.Add(new Claim(ClaimTypes.Role, r.ToString()));
+                        foreach (var role in je.EnumerateArray())
+                            claims.Add(new Claim(ClaimTypes.Role, role.ToString()));
                     }
                     else
                     {

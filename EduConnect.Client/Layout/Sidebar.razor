@@ -1,4 +1,9 @@
-﻿<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+﻿@using EduConnect.Client.Services
+@inject UserSessionService Session
+
+<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+
+    <!-- 🔹 Logo -->
     <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/dashboard">
         <div class="sidebar-brand-icon rotate-n-15">
             <i class="fas fa-laugh-wink"></i>
@@ -8,28 +13,59 @@
 
     <hr class="sidebar-divider my-0" />
 
-    <li class="nav-item active">
-        <a class="nav-link" href="/dashboard">
+    <!-- Dashboard -->
+    <li class="nav-item">
+        <NavLink href="/dashboard" class="nav-link" Match="NavLinkMatch.All">
             <i class="fas fa-fw fa-tachometer-alt"></i>
             <span>Dashboard</span>
-        </a>
+        </NavLink>
     </li>
 
     <hr class="sidebar-divider" />
-
     <div class="sidebar-heading">Modules</div>
 
-    <li class="nav-item">
-        <NavLink href="/lop-hoc" class="nav-link">
-            <i class="fas fa-school"></i> Quản lý lớp học
-        </NavLink>
-    </li>
-    <li class="nav-item">
-        <NavLink href="/hoclieu" class="nav-link">
-            <i class="fas fa-book-open"></i> Quản lý học liệu
-        </NavLink>
-    </li>
+    <!-- ===========================
+         🏫 DANH MỤC LỚP HỌC
+         =========================== -->
+    @if (role == "HocSinh" || role == "GiaoVien" || role == "Admin")
+    {
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLopHoc"
+               aria-expanded="false" aria-controls="collapseLopHoc">
+                <i class="fas fa-school"></i>
+                <span>Lớp học</span>
+            </a>
+            <div id="collapseLopHoc" class="collapse" data-bs-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <h6 class="collapse-header">Danh mục lớp học:</h6>
 
+                    <!-- Lớp học của tôi -->
+                    <NavLink href="/lop-cua-toi" class="collapse-item">
+                        <i class="fas fa-user-graduate me-2 text-primary"></i> Lớp học của tôi
+                    </NavLink>
+
+                    <!-- Quản lý lớp học -->
+                    @if (role == "GiaoVien" || role == "Admin")
+                    {
+                        <NavLink href="/lop-hoc" class="collapse-item">
+                            <i class="fas fa-chalkboard-teacher me-2 text-info"></i> Quản lý lớp học
+                        </NavLink>
+                    }
+                </div>
+            </div>
+        </li>
+    }
+
+    <!-- 📚 Quản lý học liệu -->
+    @if (role == "GiaoVien" || role == "Admin")
+    {
+        <li class="nav-item">
+            <NavLink href="/hoclieu" class="nav-link">
+                <i class="fas fa-book-open"></i>
+                <span>Quản lý học liệu</span>
+            </NavLink>
+        </li>
+    }
 
     <hr class="sidebar-divider d-none d-md-block" />
 
@@ -37,3 +73,13 @@
         <button class="rounded-circle border-0" id="sidebarToggle"></button>
     </div>
 </ul>
+
+@code {
+    private string? role;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var profile = await Session.GetProfileAsync();
+        role = profile?.Role; // "HocSinh" | "GiaoVien" | "Admin"
+    }
+}

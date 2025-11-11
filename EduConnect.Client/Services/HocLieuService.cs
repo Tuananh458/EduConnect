@@ -148,5 +148,21 @@ namespace EduConnect.Client.Services
                 return new List<CauHoiHocLieuDto>();
             }
         }
+        public async Task<List<CauHoiHocLieuDto>> GetCauHoiTrongHocLieuAsync(int hocLieuId)
+        {
+            try
+            {
+                var result = await _http.GetFromJsonAsync<List<CauHoiHocLieuDto>>(
+                    $"api/HocLieu/GetCauHoiTrongHocLieu/{hocLieuId}"
+                );
+
+                return result ?? new List<CauHoiHocLieuDto>();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[HocLieuService] Lỗi khi tải câu hỏi trong học liệu: {ex.Message}");
+                return new List<CauHoiHocLieuDto>();
+            }
+        }
     }
 }

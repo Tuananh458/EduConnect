@@ -31,8 +31,21 @@ namespace EduConnect.Models
         [Column("ngayTao")]
         public DateTime? NgayTao { get; set; }
 
-        // Optional: liên kết tới bảng KHOIHOC (nếu có)
+        [Column("nguoiTaoId")]
+        public Guid? NguoiTaoId { get; set; }  
+
+        // 🔗 Khóa ngoại tới người dùng
+        [ForeignKey(nameof(NguoiTaoId))]
+        public NguoiDung? NguoiTao { get; set; }
+
+        // 🔗 Khóa ngoại tới KHOIHOC
         [ForeignKey("MaKhoiHoc")]
         public KhoiHoc? KhoiHoc { get; set; }
+
+        [Column("maGiaoVienChuNhiem")]
+        public int? MaGiaoVienChuNhiem { get; set; }
+
+        [ForeignKey(nameof(MaGiaoVienChuNhiem))]
+        public GiaoVien? GiaoVienChuNhiem { get; set; }
     }
 }

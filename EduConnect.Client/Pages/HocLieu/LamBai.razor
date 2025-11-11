@@ -1,0 +1,93 @@
+﻿@page "/bailamhoclieus/dethi/{hocLieuId:int}"
+@using EduConnect.Client.Services
+@using EduConnect.Shared.DTOs.HocLieu
+@inject BaiLamHocLieuService BaiLamService
+@inject UserSessionService Session
+@inject IJSRuntime JS
+
+<h3 class="fw-bold text-primary mb-3">🧮 Làm bài trắc nghiệm</h3>
+
+@if (deThi is null)
+{
+    <p>Đang tải đề thi...</p>
+}
+else
+{
+    <div class="card shadow-sm p-4">
+        <div class="mb-3">
+            <div class="small text-muted">
+                Học liệu: <b>@deThi.TenHocLieu</b> (ID: @deThi.HocLieuId)
+            </div>
+        </div>
+
+        @foreach (var q in deThi.CauHoi)
+        {
+            <div class="mb-4 border-bottom pb-3">
+                <p class="fw-semibold">@($"{q.ThuTu}. {q.NoiDung}")</p>
+
+                <div class="ms-3">
+                    @foreach (var opt in new[] { ("A", q.DapAnA), ("B", q.DapAnB), ("C", q.DapAnC), ("D", q.DapAnD) })
+                    {
+                        if (!string.IsNullOrWhiteSpace(opt.Item2))
+                        {
+                            var rid = $"{q.Id}_{opt.Item1}";
+                            <div class="form-check">
+                                <input class="form-check-input"
+                                       type="radio"
+                                       id="@rid"
+                                       name="@($"cau_{q.Id}")"
+                                       value="@opt.Item1"
+                                       @onchange="() => Chon(q.Id, opt.Item1)" />
+                                <label class="form-check-label" for="@rid">@opt.Item2</label>
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+        }
+
+        <button class="btn btn-success px-4" @onclick="NopBai">📤 Nộp bài</button>
+    </div>
+}
+
+@code {
+    [Parameter] public int HocLieuId { get; set; }
+
+    private DeThiHocLieuDto? deThi;
+    private NopBaiRequest nop = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Lấy đề thi
+        deThi = await BaiLamService.GetDeThiAsync(HocLieuId);
+        var hocSinhId = await Session.GetHocSinhIdAsync();
+        // Khởi tạo request
+        nop = new NopBaiRequest
+            {
+                HocLieuId = HocLieuId,
+                HocSinhId = hocSinhId ?? 0,
+                CauTraLoi = new()
+            };
+    }
+
+    void Chon(int cauHoiId, string dapAn)
+    {
+        var existing = nop.CauTraLoi.FirstOrDefault(x => x.CauHoiId == cauHoiId);
+        if (existing is null)
+            nop.CauTraLoi.Add(new CauTraLoiDto { CauHoiId = cauHoiId, DapAnChon = dapAn });
+        else
+            existing.DapAnChon = dapAn;
+    }
+
+    async Task NopBai()
+    {
+        Console.WriteLine($"HocLieu={nop.HocLieuId}, HocSinh={nop.HocSinhId}, CauTraLoi={nop.CauTraLoi.Count}");
+        Console.WriteLine(System.Text.Json.JsonSerializer.Serialize(nop));
+
+        var ok = await BaiLamService.NopBaiAsync(nop);
+        if (ok)
+            await JS.InvokeVoidAsync("Swal.fire", "🎉 Thành công", "Nộp bài thành công!", "success");
+        else
+            await JS.InvokeVoidAsync("Swal.fire", "⚠️ Lỗi", "Không thể nộp bài.", "error");
+    }
+}

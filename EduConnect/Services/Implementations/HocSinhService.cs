@@ -3,9 +3,9 @@ using EduConnect.Services.Interfaces;
 using EduConnect.Models;
 using EduConnect.Shared.DTOs.HocSinh;
 using EduConnect.Data;
-using EduConnect.Models.Auth;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using EduConnect.Shared.DTOs.LopHoc;
 
 namespace EduConnect.Services.Implementations
 {
@@ -28,10 +28,10 @@ namespace EduConnect.Services.Implementations
             return list.Select(h => new HocSinhDto
             {
                 MaHocSinh = h.MaHocSinh,
-                UserId = h.UserId,
+                MaNguoiDung = h.MaNguoiDung,
                 MaLopHoc = h.MaLopHoc,
-                HoVaTen = h.User?.FullName ?? "",
-                TenDangNhap = h.User?.Username ?? "",
+                HoVaTen = h.NguoiDung?.HoTen ?? "",
+                TenDangNhap = h.NguoiDung?.TenDangNhap ?? "",
                 MaDinhDanh = h.MaDinhDanh,
                 NgaySinh = h.NgaySinh,
                 LaLopTruong = h.LaLopTruong,
@@ -41,27 +41,26 @@ namespace EduConnect.Services.Implementations
 
         public async Task<bool> CreateAsync(CreateHocSinhRequest req)
         {
-            // 🔹 Kiểm tra trùng username trước
-            if (await _context.Users.AnyAsync(u => u.Username == req.TenDangNhap))
+            if (await _context.NguoiDungs.AnyAsync(u => u.TenDangNhap == req.TenDangNhap))
                 throw new InvalidOperationException("Tên đăng nhập đã tồn tại.");
 
-            var user = new User
+            var nguoiDung = new NguoiDung
             {
-                Username = req.TenDangNhap,
-                FullName = req.HoVaTen,
-                Role = "Student",
-                Email = $"{req.TenDangNhap}@student.local", // tránh lỗi NOT NULL
-                PasswordHash = _hasher.HashPassword(null!, req.MatKhau),
-                MustChangePassword = true,
-                Status = 1
+                TenDangNhap = req.TenDangNhap,
+                HoTen = req.HoVaTen,
+                VaiTro = "HocSinh",
+                Email = $"{req.TenDangNhap}@student.local",
+                MatKhauHash = _hasher.HashPassword(null!, req.MatKhau),
+                PhaiDoiMatKhau = true,
+                TrangThai = 1
             };
 
-            await _context.Users.AddAsync(user);
+            await _context.NguoiDungs.AddAsync(nguoiDung);
             await _context.SaveChangesAsync();
 
             var hocSinh = new HocSinh
             {
-                UserId = user.UserId,
+                MaNguoiDung = nguoiDung.MaNguoiDung,
                 MaLopHoc = req.MaLopHoc,
                 MaDinhDanh = req.MaDinhDanh,
                 NgaySinh = req.NgaySinh,
@@ -85,14 +84,14 @@ namespace EduConnect.Services.Implementations
             var hocSinh = await _context.HocSinhs.FindAsync(req.MaHocSinh);
             if (hocSinh == null) return false;
 
-            var user = await _context.Users.FindAsync(hocSinh.UserId);
-            if (user == null) return false;
+            var nguoiDung = await _context.NguoiDungs.FindAsync(hocSinh.MaNguoiDung);
+            if (nguoiDung == null) return false;
 
-            user.FullName = req.HoVaTen;
-            user.Username = req.TenDangNhap;
+            nguoiDung.HoTen = req.HoVaTen;
+            nguoiDung.TenDangNhap = req.TenDangNhap;
 
             if (!string.IsNullOrWhiteSpace(req.MatKhau))
-                user.PasswordHash = _hasher.HashPassword(null!, req.MatKhau);
+                nguoiDung.MatKhauHash = _hasher.HashPassword(null!, req.MatKhau);
 
             hocSinh.MaDinhDanh = req.MaDinhDanh;
             hocSinh.NgaySinh = req.NgaySinh;
@@ -101,10 +100,8 @@ namespace EduConnect.Services.Implementations
             await _context.SaveChangesAsync();
             return true;
         }
-        // ==============================
-        // 🚀 IMPORT DANH SÁCH HỌC SINH
-        // ==============================
 
+        // 🚀 IMPORT DANH SÁCH HỌC SINH
         public async Task<ImportConfirmResult> ConfirmImportAsync(ImportConfirmRequest req)
         {
             var result = new ImportConfirmResult();
@@ -113,32 +110,30 @@ namespace EduConnect.Services.Implementations
             {
                 try
                 {
-                    // kiểm tra User hoặc HocSinh đã tồn tại
-                    var existUser = await _context.Users.FirstOrDefaultAsync(u => u.Username == hs.TenDangNhap);
+                    var existUser = await _context.NguoiDungs.FirstOrDefaultAsync(u => u.TenDangNhap == hs.TenDangNhap);
                     var existHS = await _context.HocSinhs
-                        .Include(h => h.User)
-                        .FirstOrDefaultAsync(h => h.MaDinhDanh == hs.MaDinhDanh || (h.User != null && h.User.Username == hs.TenDangNhap));
+                        .Include(h => h.NguoiDung)
+                        .FirstOrDefaultAsync(h => h.MaDinhDanh == hs.MaDinhDanh || (h.NguoiDung != null && h.NguoiDung.TenDangNhap == hs.TenDangNhap));
 
                     if (existUser == null && existHS == null)
                     {
-                        // tạo mới tài khoản học sinh
-                        var user = new User
+                        var nguoiDung = new NguoiDung
                         {
-                            Username = hs.TenDangNhap,
-                            FullName = hs.HoVaTen,
+                            TenDangNhap = hs.TenDangNhap,
+                            HoTen = hs.HoVaTen,
                             Email = $"{hs.TenDangNhap}@student.local",
-                            Role = "Student",
-                            Status = 1,
-                            MustChangePassword = true,
-                            PasswordHash = _hasher.HashPassword(null!, hs.MatKhau)
+                            VaiTro = "HocSinh",
+                            TrangThai = 1,
+                            PhaiDoiMatKhau = true,
+                            MatKhauHash = _hasher.HashPassword(null!, hs.MatKhau)
                         };
 
-                        await _context.Users.AddAsync(user);
+                        await _context.NguoiDungs.AddAsync(nguoiDung);
                         await _context.SaveChangesAsync();
 
                         var newHS = new HocSinh
                         {
-                            UserId = user.UserId,
+                            MaNguoiDung = nguoiDung.MaNguoiDung,
                             MaLopHoc = req.MaLopHoc,
                             MaDinhDanh = hs.MaDinhDanh,
                             NgaySinh = hs.NgaySinh,
@@ -150,14 +145,12 @@ namespace EduConnect.Services.Implementations
                     }
                     else if (req.Action == "addToClass" && existHS != null)
                     {
-                        // thêm học sinh đã có vào lớp hiện tại
                         existHS.MaLopHoc = req.MaLopHoc;
                         await _repo.UpdateAsync(existHS);
                         result.AddedToClass++;
                     }
                     else if (req.Action == "transferToClass" && existHS != null)
                     {
-                        // chuyển lớp
                         existHS.MaLopHoc = req.MaLopHoc;
                         await _repo.UpdateAsync(existHS);
                         result.Transferred++;
@@ -177,9 +170,7 @@ namespace EduConnect.Services.Implementations
             return result;
         }
 
-        // =======================================
-        // 🚧 (Tùy chọn) Sinh trước danh sách demo
-        // =======================================
+        // 🚧 Tạo preview danh sách import
         public async Task<ImportPreviewResponse> GeneratePreviewAsync(IFormFile file, int maLopHoc, string? prefix = null, string? defaultPassword = null)
         {
             var response = new ImportPreviewResponse { MaLopHoc = maLopHoc, Prefix = prefix };
@@ -203,7 +194,7 @@ namespace EduConnect.Services.Implementations
                 while ((line = reader.ReadLine()) != null)
                 {
                     row++;
-                    if (row == 1) continue; // bỏ header
+                    if (row == 1) continue;
                     var cols = line.Split(',', ';', '\t');
                     if (cols.Length < 5) continue;
 
@@ -230,7 +221,6 @@ namespace EduConnect.Services.Implementations
                 }
             }
 
-            // Kiểm tra hợp lệ
             foreach (var x in list)
             {
                 var errs = new List<string>();
@@ -276,7 +266,61 @@ namespace EduConnect.Services.Implementations
             return ids.Count;
         }
 
+        public async Task<HocSinhDto?> GetByUserIdAsync(Guid maNguoiDung)
+        {
+            var hs = await _context.HocSinhs
+                .Include(h => h.NguoiDung)
+                .FirstOrDefaultAsync(h => h.MaNguoiDung == maNguoiDung);
 
+            if (hs == null) return null;
 
+            return new HocSinhDto
+            {
+                MaHocSinh = hs.MaHocSinh,
+                HoVaTen = hs.NguoiDung.HoTen,
+                MaLopHoc = hs.MaLopHoc
+            };
+        }
+        public async Task<LopHocChiTietDto?> GetLopHocCuaToiAsync(Guid maNguoiDung)
+        {
+            // 🔹 1. Tìm học sinh theo mã người dùng
+            var hocSinh = await _context.HocSinhs
+                .Include(h => h.LopHoc)
+                    .ThenInclude(l => l.KhoiHoc)
+                .Include(h => h.LopHoc)
+                    .ThenInclude(l => l.GiaoVienChuNhiem)
+                        .ThenInclude(gv => gv.NguoiDung)
+                .FirstOrDefaultAsync(h => h.MaNguoiDung == maNguoiDung);
+
+            if (hocSinh == null || hocSinh.LopHoc == null)
+                return null;
+
+            // 🔹 2. Lấy danh sách học sinh cùng lớp
+            var dsCungLop = await _context.HocSinhs
+                .Include(h => h.NguoiDung)
+                .Where(h => h.MaLopHoc == hocSinh.MaLopHoc)
+                .Select(h => new HocSinhTrongLopDto
+                {
+                    MaHocSinh = h.MaHocSinh,
+                    HoVaTen = h.NguoiDung.HoTen,
+                    LaLopTruong = h.LaLopTruong
+                })
+                .ToListAsync();
+
+            // 🔹 3. Ghép dữ liệu chi tiết lớp học
+            var lop = hocSinh.LopHoc;
+
+            return new LopHocChiTietDto
+            {
+                MaLopHoc = lop.MaLopHoc,
+                TenLopHoc = lop.TenLopHoc,
+                TenKhoiHoc = lop.KhoiHoc?.TenKhoiHoc ?? "",
+                SiSo = dsCungLop.Count,
+                TenGiaoVienChuNhiem = lop.GiaoVienChuNhiem?.NguoiDung?.HoTen,
+                EmailGiaoVien = lop.GiaoVienChuNhiem?.NguoiDung?.Email,
+                AvatarGiaoVien = lop.GiaoVienChuNhiem?.NguoiDung?.AnhDaiDien,
+                DanhSachHocSinh = dsCungLop
+            };
+        }
     }
 }

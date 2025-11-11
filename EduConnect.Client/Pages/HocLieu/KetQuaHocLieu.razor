@@ -1,0 +1,51 @@
+﻿@page "/hoclieu/ketqua/{HocLieuId:int}"
+@using EduConnect.Client.Services
+@using EduConnect.Shared.DTOs.HocLieu
+@inject BaiLamHocLieuService BaiLamService
+
+<h3 class="fw-bold text-primary mb-3">📊 Bảng điểm học liệu</h3>
+
+@if (ds is null)
+{
+    <p>Đang tải...</p>
+}
+else if (!ds.Any())
+{
+    <div class="alert alert-info">Chưa có bài nộp.</div>
+}
+else
+{
+    <table class="table table-hover align-middle">
+        <thead class="table-light">
+            <tr>
+                <th>#</th>
+                <th>Họ tên</th>
+                <th>Email</th>
+                <th>Điểm</th>
+                <th>Nộp lúc</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var row in ds.Select((x, i) => new { x, i }))
+            {
+                <tr>
+                    <td>@(row.i + 1)</td>
+                    <td>@row.x.TenHocSinh</td>
+                    <td>@row.x.Email</td>
+                    <td>@((row.x.Diem ?? 0).ToString("0.00"))</td>
+                    <td>@row.x.ThoiGianNop?.ToLocalTime().ToString("HH:mm dd/MM/yyyy")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    [Parameter] public int HocLieuId { get; set; }
+    private IEnumerable<BaiLamHocLieuDto>? ds;
+
+    protected override async Task OnInitializedAsync()
+    {
+        ds = await BaiLamService.GetKetQuaHocLieuAsync(HocLieuId);
+    }
+}

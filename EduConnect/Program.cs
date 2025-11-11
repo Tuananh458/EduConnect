@@ -72,7 +72,10 @@ namespace EduConnect
             builder.Services.AddScoped<ICauHoiHocLieuRepository, CauHoiHocLieuRepository>();
             builder.Services.AddScoped<IHocLieuCauHoiRepository, HocLieuCauHoiRepository>();
             builder.Services.AddScoped<IHocSinhRepository, HocSinhRepository>();
-            
+            builder.Services.AddScoped<IBaiLamHocLieuRepository, BaiLamHocLieuRepository>();
+           
+
+
 
 
             // Services
@@ -80,6 +83,8 @@ namespace EduConnect
             builder.Services.AddScoped<ICauHoiHocLieuService, CauHoiHocLieuService>();
             builder.Services.AddScoped<IHocLieuCauHoiService, HocLieuCauHoiService>();
             builder.Services.AddScoped<IHocSinhService, HocSinhService>();
+            builder.Services.AddScoped<IBaiLamHocLieuService, BaiLamHocLieuService>();
+
 
 
 
@@ -110,36 +115,27 @@ namespace EduConnect
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             })
-            .AddJwtBearer(options =>
-            {
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuer = true,
-                    ValidIssuer = jwt["Issuer"],
+             .AddJwtBearer(options =>
+             {
+                 options.TokenValidationParameters = new TokenValidationParameters
+                 {
+                     ValidateIssuer = true,
+                     ValidIssuer = jwt["Issuer"],
 
-                    ValidateAudience = true,
-                    ValidAudience = jwt["Audience"],
+                     ValidateAudience = true,
+                     ValidAudience = jwt["Audience"],
 
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = key,
+                     ValidateIssuerSigningKey = true,
+                     IssuerSigningKey = key,
 
-                    ValidateLifetime = true,
-                    ClockSkew = TimeSpan.FromSeconds(30)
-                };
-            })
-            .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme)
-            .AddGoogle(opt =>
-            {
-                opt.ClientId = auth["Google:ClientId"]!;
-                opt.ClientSecret = auth["Google:ClientSecret"]!;
-                opt.CallbackPath = "/external-login/google-callback";
-            })
-            .AddMicrosoftAccount(opt =>
-            {
-                opt.ClientId = auth["Microsoft:ClientId"]!;
-                opt.ClientSecret = auth["Microsoft:ClientSecret"]!;
-                opt.CallbackPath = "/external-login/microsoft-callback";
-            });
+                     ValidateLifetime = true,
+                     RequireExpirationTime = true,
+                     ClockSkew = TimeSpan.FromSeconds(30)
+                 };
+                 options.SaveToken = true;
+             });
+
+
 
             builder.Services.AddAuthorization();
 
@@ -158,6 +154,7 @@ namespace EduConnect
             .AddJsonOptions(o =>
             {
                 o.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+                o.JsonSerializerOptions.DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull;
             });
 
             builder.Services.AddEndpointsApiExplorer();

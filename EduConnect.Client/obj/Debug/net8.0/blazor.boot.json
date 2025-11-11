@@ -1,7 +1,7 @@
 {
   "mainAssemblyName": "EduConnect.Client",
   "resources": {
-    "hash": "sha256-tD6fxIeVY6sid67HG9pwQos4yD5V4XEn8ysIaIdLtrc=",
+    "hash": "sha256-QJFNaFMzHamtLvIcazHLEtq7M7v8oLj10soNbryGhlY=",
     "jsModuleNative": {
       "dotnet.native.8.0.4.59ctmg1jj2.js": "sha256-ju0+XWE0ihz554eKEj0HQ8Opa61xpbUIaX5/MNo8we4="
     },
@@ -231,12 +231,12 @@
       "mscorlib.wasm": "sha256-VCfYgt1mcjITabSTosCDVZ+68ea3Z7kakTFaLNLG+18=",
       "netstandard.wasm": "sha256-YOZxxR9PM3Dltcijfb0Q4FD39DkWZbZ1e2ScbZDvWJ4=",
       "System.Private.CoreLib.wasm": "sha256-NrT1QkAzVU//2wgK9vXdq77lCGvLJ4IOZ+Aegesyanc=",
-      "EduConnect.Shared.wasm": "sha256-HwBAPycd625YA1dAy0xJ6TYDLA++DosZ3esoHGLiOgs=",
-      "EduConnect.Client.wasm": "sha256-hqSvxIevxsm8pJTrfPsu42S7AQx2iBXEmFE7iQ1S17k="
+      "EduConnect.Shared.wasm": "sha256-og/bviajYWzzNPkzU/jU/jjFjCbAa4LaYVQ/biv0L7s=",
+      "EduConnect.Client.wasm": "sha256-ZeGH5BWxSIwh9h4uB8lTPY7J5C98hgZCw4p19fkXOC8="
     },
     "pdb": {
-      "EduConnect.Shared.pdb": "sha256-ZHc9/TFJHkKjQbhsmrEZk72jdOl3jVyavtmuKqoWjtY=",
-      "EduConnect.Client.pdb": "sha256-NPlLdXT0y4+TenW0cfje2AcGkbJrX0aEEc1Zm3J9W28="
+      "EduConnect.Shared.pdb": "sha256-2hBNI3xEKpXL8KUP3JflDUTDz8LRKIc51Zt8bCixvp8=",
+      "EduConnect.Client.pdb": "sha256-q5ZMHmsm4itHEsSecWRC1tLatI7nlOoMRoe6zVxEa9s="
     }
   },
   "cacheBootResources": true,

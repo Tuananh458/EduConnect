@@ -1,4 +1,5 @@
 ﻿using EduConnect.Shared.DTOs.HocSinh;
+using EduConnect.Shared.DTOs.LopHoc;
 using System.Net.Http.Json;
 
 namespace EduConnect.Client.Services
@@ -73,6 +74,26 @@ namespace EduConnect.Client.Services
             {
                 Console.WriteLine($"[HocSinhService.DeleteAsync] Error: {ex.Message}");
                 return false;
+            }
+        }
+
+        // ====================== LỚP CỦA TÔI ======================
+        // GET: https://localhost:7276/api/HocSinh/lop-cua-toi
+        public async Task<LopHocChiTietDto?> GetLopCuaToiAsync()
+        {
+            try
+            {
+                return await _http.GetFromJsonAsync<LopHocChiTietDto>("api/HocSinh/lop-cua-toi");
+            }
+            catch (HttpRequestException ex)
+            {
+                Console.WriteLine($"[HocSinhService.GetLopCuaToiAsync] Network Error: {ex.Message}");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[HocSinhService.GetLopCuaToiAsync] Error: {ex.Message}");
+                return null;
             }
         }
     }

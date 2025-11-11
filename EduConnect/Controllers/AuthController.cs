@@ -5,13 +5,12 @@ using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using EduConnect.Data;
-using EduConnect.Models.Auth;
+using EduConnect.Models;
 using EduConnect.Services;
 using EduConnect.Helpers;
 using EduConnect.Hubs;
 using Microsoft.AspNetCore.WebUtilities;
 using Google.Apis.Auth;
-using Microsoft.SqlServer.Server;
 using EduConnect.Shared.DTOs;
 using EduConnect.Shared.DTOs.Auth;
 
@@ -47,9 +46,6 @@ namespace EduConnect.Controllers
             _hub = hub;
         }
 
-        // ============================
-        // 🔹 Helper xử lý lỗi model
-        // ============================
         private IActionResult ValidationError()
         {
             var errors = ModelState
@@ -59,75 +55,140 @@ namespace EduConnect.Controllers
 
             return BadRequest(ApiResponse.Error("Dữ liệu không hợp lệ", errors));
         }
+
+        // ============================
+        // 🧩 Đăng nhập Google
+        // ============================
         [AllowAnonymous]
         [HttpPost("google-login")]
         public async Task<IActionResult> GoogleLogin([FromBody] GoogleLoginRequest req)
         {
             try
             {
-                // ✅ Xác thực token từ Google
-                var payload = await GoogleJsonWebSignature.ValidateAsync(req.IdToken);
-
-                // 🔍 Tìm user theo email
-                var user = await _db.Users.FirstOrDefaultAsync(u => u.Email == payload.Email);
-
-                if (user == null)
+                var settings = new GoogleJsonWebSignature.ValidationSettings
                 {
-                    // ✅ Tạo username duy nhất (tránh trùng)
+                    Audience = new[] { _cfg["Auth:Google:ClientId"] }
+                };
+                var payload = await GoogleJsonWebSignature.ValidateAsync(req.IdToken, settings);
+
+                var nguoiDung = await _db.NguoiDungs.FirstOrDefaultAsync(u => u.Email == payload.Email);
+
+                if (nguoiDung == null)
+                {
                     var baseUsername = payload.Email.Split('@')[0];
                     var username = baseUsername;
                     int count = 1;
-                    while (await _db.Users.AnyAsync(u => u.Username == username))
-                    {
+                    while (await _db.NguoiDungs.AnyAsync(u => u.TenDangNhap == username))
                         username = $"{baseUsername}{count++}";
-                    }
 
-                    user = new User
+                    nguoiDung = new NguoiDung
                     {
-                        Username = username,
-                        FullName = payload.Name ?? payload.Email,
+                        TenDangNhap = username,
+                        HoTen = payload.Name ?? payload.Email,
                         Email = payload.Email,
-                        AuthProvider = "Google",
-                        Status = 1,
-                        Role = "Student",
-                        PasswordHash = "" // Không cần mật khẩu
+                        NguonXacThuc = "Google",
+                        TrangThai = 1,
+                        VaiTro = "HocSinh",
+                        MatKhauHash = string.Empty
                     };
 
-                    _db.Users.Add(user);
+                    _db.NguoiDungs.Add(nguoiDung);
+                    await _db.SaveChangesAsync();
+
+                    // 🧩 Tạo bản ghi phụ tương ứng theo vai trò
+                    switch (nguoiDung.VaiTro.ToLower())
+                    {
+                        case "hocsinh":
+                        case "student":
+                            if (!await _db.HocSinhs.AnyAsync(h => h.MaNguoiDung == nguoiDung.MaNguoiDung))
+                                _db.HocSinhs.Add(new HocSinh
+                                {
+                                    MaNguoiDung = nguoiDung.MaNguoiDung,
+                                    NgayTao = DateTime.UtcNow
+                                });
+                            break;
+
+                        case "giaovien":
+                        case "teacher":
+                            if (!await _db.GiaoViens.AnyAsync(g => g.MaNguoiDung == nguoiDung.MaNguoiDung))
+                                _db.GiaoViens.Add(new GiaoVien
+                                {
+                                    MaNguoiDung = nguoiDung.MaNguoiDung,
+                                    NgayTao = DateTime.UtcNow
+                                });
+                            break;
+
+                        case "phuhuynh":
+                        case "parent":
+                            if (!await _db.PhuHuynhs.AnyAsync(p => p.MaNguoiDung == nguoiDung.MaNguoiDung))
+                                _db.PhuHuynhs.Add(new PhuHuynh
+                                {
+                                    MaNguoiDung = nguoiDung.MaNguoiDung,
+                                    NgayTao = DateTime.UtcNow
+                                });
+                            break;
+
+                        default:
+                            _db.HocSinhs.Add(new HocSinh
+                            {
+                                MaNguoiDung = nguoiDung.MaNguoiDung,
+                                NgayTao = DateTime.UtcNow
+                            });
+                            break;
+                    }
+
+                    await _db.SaveChangesAsync();
+                }
+                else
+                {
+                    // ✅ Nếu user đã có rồi, đảm bảo vẫn có record phụ
+                    switch (nguoiDung.VaiTro.ToLower())
+                    {
+                        case "hocsinh":
+                        case "student":
+                            if (!await _db.HocSinhs.AnyAsync(h => h.MaNguoiDung == nguoiDung.MaNguoiDung))
+                                _db.HocSinhs.Add(new HocSinh { MaNguoiDung = nguoiDung.MaNguoiDung, NgayTao = DateTime.UtcNow });
+                            break;
+                        case "giaovien":
+                        case "teacher":
+                            if (!await _db.GiaoViens.AnyAsync(g => g.MaNguoiDung == nguoiDung.MaNguoiDung))
+                                _db.GiaoViens.Add(new GiaoVien { MaNguoiDung = nguoiDung.MaNguoiDung, NgayTao = DateTime.UtcNow });
+                            break;
+                        case "phuhuynh":
+                        case "parent":
+                            if (!await _db.PhuHuynhs.AnyAsync(p => p.MaNguoiDung == nguoiDung.MaNguoiDung))
+                                _db.PhuHuynhs.Add(new PhuHuynh { MaNguoiDung = nguoiDung.MaNguoiDung, NgayTao = DateTime.UtcNow });
+                            break;
+                    }
+
                     await _db.SaveChangesAsync();
                 }
 
-                // ✅ Sinh Access/Refresh Token
-                var (access, _) = _tokens.CreateAccessToken(user);
+                // 🔐 Sinh token đăng nhập
+                var (access, _) = _tokens.CreateAccessToken(nguoiDung);
                 var refresh = _tokens.CreateRefreshToken();
 
-                var days = int.Parse(_cfg["Jwt:RefreshTokenDays"]!);
-                _db.RefreshTokens.Add(new RefreshToken
+                var days = int.Parse(_cfg["Jwt:RefreshTokenDays"] ?? "7");
+                _db.TokenLamMois.Add(new TokenLamMoi
                 {
-                    UserId = user.UserId,
+                    MaNguoiDung = nguoiDung.MaNguoiDung,
                     Token = refresh,
                     ExpiresAt = DateTime.UtcNow.AddDays(days)
                 });
                 await _db.SaveChangesAsync();
 
-                return Ok(new
-                {
-                    status = "success",
-                    message = "Đăng nhập Google thành công",
-                    access,
-                    refresh
-                });
+                return Ok(ApiResponse.Success(new TokenResponse(access, refresh), "Đăng nhập Google thành công"));
             }
             catch (InvalidJwtException)
             {
-                return Unauthorized(new { status = "error", message = "Google token không hợp lệ" });
+                return Unauthorized(ApiResponse.Error("Google token không hợp lệ"));
             }
             catch (Exception ex)
             {
-                // ⚠️ Ghi log cụ thể để dễ debug
-                return StatusCode(500, new { status = "error", message = "Lỗi xử lý Google login", detail = ex.Message });
+                return StatusCode(500, ApiResponse.Error("Lỗi xử lý Google login", ex.Message));
             }
         }
+
 
         // ============================
         // 🧩 Đăng ký
@@ -141,10 +202,21 @@ namespace EduConnect.Controllers
 
             try
             {
-                var (access, refresh) = await _auth.RegisterAsync(req.Username, req.FullName, req.Email, req.Password);
+                var (access, refresh) = await _auth.RegisterAsync(
+                    req.Username,
+                    req.FullName,
+                    req.Email,
+                    req.Password,
+                    req.Role
+                );
 
-                await _hub.Clients.All.SendAsync("Notify", new { type = "info", message = $"Tài khoản {req.Username} vừa đăng ký thành công" });
-                return Ok(ApiResponse.Success(new { access, refresh }, "Đăng ký thành công"));
+                await _hub.Clients.All.SendAsync("Notify", new
+                {
+                    type = "info",
+                    message = $"Tài khoản {req.Username} vừa đăng ký thành công"
+                });
+
+                return Ok(ApiResponse.Success(new TokenResponse(access, refresh), "Đăng ký thành công"));
             }
             catch (InvalidOperationException ex)
             {
@@ -165,7 +237,7 @@ namespace EduConnect.Controllers
             try
             {
                 var (access, refresh) = await _auth.LoginAsync(req.EmailOrUsername, req.Password);
-                return Ok(ApiResponse.Success(new { access, refresh }, "Đăng nhập thành công"));
+                return Ok(ApiResponse.Success(new TokenResponse(access, refresh), "Đăng nhập thành công"));
             }
             catch (UnauthorizedAccessException ex)
             {
@@ -183,30 +255,36 @@ namespace EduConnect.Controllers
             if (!ModelState.IsValid)
                 return ValidationError();
 
-            var user = await _db.Users.FirstOrDefaultAsync(u => u.Email == req.Email);
-            if (user == null)
+            var nguoiDung = await _db.NguoiDungs.FirstOrDefaultAsync(u => u.Email == req.Email);
+            if (nguoiDung == null)
                 return Ok(ApiResponse.Success(message: "Nếu email tồn tại, hướng dẫn đã được gửi."));
+
             var token = WebEncoders.Base64UrlEncode(Guid.NewGuid().ToByteArray());
-            var pr = new PasswordReset
+            var datLai = new DatLaiMatKhau
             {
-                UserId = user.UserId,
+                MaNguoiDung = nguoiDung.MaNguoiDung,
                 Token = token,
                 ExpiresAt = DateTime.UtcNow.AddMinutes(30)
             };
 
-            _db.PasswordResets.Add(pr);
+            _db.DatLaiMatKhaus.Add(datLai);
             await _db.SaveChangesAsync();
 
             var frontend = _cfg["Mail:FrontendBaseUrl"];
-            var link = $"{frontend}/reset-password?token={Uri.EscapeDataString(token)}&email={Uri.EscapeDataString(user.Email)}";
+            var link = $"{frontend}/reset-password?token={Uri.EscapeDataString(token)}&email={Uri.EscapeDataString(nguoiDung.Email)}";
 
-            await _email.SendAsync(user.Email, "[EduConnect] Đặt lại mật khẩu",
-                $"<p>Chào {user.FullName},</p><p>Bấm vào liên kết để đặt lại mật khẩu:</p><p><a href='{link}'>Đặt lại mật khẩu</a></p>");
+            await _email.SendAsync(nguoiDung.Email, "[EduConnect] Đặt lại mật khẩu",
+                $"<p>Chào {nguoiDung.HoTen},</p><p>Bấm vào liên kết để đặt lại mật khẩu:</p><p><a href='{link}'>Đặt lại mật khẩu</a></p>");
 
-            await _hub.Clients.All.SendAsync("Notify", new { type = "info", message = $"Người dùng {user.Email} yêu cầu đặt lại mật khẩu" });
+            await _hub.Clients.All.SendAsync("Notify", new
+            {
+                type = "info",
+                message = $"Người dùng {nguoiDung.Email} yêu cầu đặt lại mật khẩu"
+            });
 
             return Ok(ApiResponse.Success(message: "Nếu email tồn tại, hướng dẫn đã được gửi."));
         }
+
         // ============================
         // 🔹 Đặt lại mật khẩu
         // ============================
@@ -217,26 +295,24 @@ namespace EduConnect.Controllers
             if (!ModelState.IsValid)
                 return ValidationError();
 
-            var user = await _db.Users.FirstOrDefaultAsync(u => u.Email == req.Email);
-            if (user == null)
+            var nguoiDung = await _db.NguoiDungs.FirstOrDefaultAsync(u => u.Email == req.Email);
+            if (nguoiDung == null)
                 return BadRequest(ApiResponse.Error("Email không hợp lệ"));
 
-            // ✅ Không decode token nữa — so sánh trực tiếp
-            var pr = await _db.PasswordResets
-                .Where(x => x.UserId == user.UserId && x.Token == req.Token && !x.Used && x.ExpiresAt >= DateTime.UtcNow)
+            var pr = await _db.DatLaiMatKhaus
+                .Where(x => x.MaNguoiDung == nguoiDung.MaNguoiDung && x.Token == req.Token && !x.Used && x.ExpiresAt >= DateTime.UtcNow)
                 .OrderByDescending(x => x.CreatedAt)
                 .FirstOrDefaultAsync();
 
             if (pr == null)
                 return BadRequest(ApiResponse.Error("Token không hợp lệ hoặc đã hết hạn"));
 
-            user.PasswordHash = _hasher.HashPassword(null!, req.NewPassword);
+            nguoiDung.MatKhauHash = _hasher.HashPassword(null!, req.NewPassword);
             pr.Used = true;
             await _db.SaveChangesAsync();
 
             return Ok(ApiResponse.Success(message: "Đặt lại mật khẩu thành công"));
         }
-
 
         // ============================
         // 🔹 Đổi mật khẩu
@@ -248,27 +324,30 @@ namespace EduConnect.Controllers
             if (!ModelState.IsValid)
                 return ValidationError();
 
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (userId == null)
+            var id = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (id == null)
                 return Unauthorized(ApiResponse.Error("Không xác định được người dùng."));
 
-            var uid = Guid.Parse(userId);
-            var user = await _db.Users.FirstOrDefaultAsync(u => u.UserId == uid);
-            if (user == null)
+            var guid = Guid.Parse(id);
+            var nguoiDung = await _db.NguoiDungs.FirstOrDefaultAsync(u => u.MaNguoiDung == guid);
+            if (nguoiDung == null)
                 return NotFound(ApiResponse.Error("Không tìm thấy người dùng."));
 
-            var verify = _hasher.VerifyHashedPassword(null!, user.PasswordHash, req.OldPassword);
-            if (verify != PasswordVerificationResult.Success && verify != PasswordVerificationResult.SuccessRehashNeeded)
+            var verify = _hasher.VerifyHashedPassword(null!, nguoiDung.MatKhauHash, req.OldPassword);
+            if (verify != PasswordVerificationResult.Success)
                 return BadRequest(ApiResponse.Error("Mật khẩu cũ không đúng"));
 
-            user.PasswordHash = _hasher.HashPassword(null!, req.NewPassword);
+            nguoiDung.MatKhauHash = _hasher.HashPassword(null!, req.NewPassword);
             await _db.SaveChangesAsync();
 
-            await _hub.Clients.User(userId).SendAsync("Notify", new { type = "success", message = "Bạn đã đổi mật khẩu thành công" });
+            await _hub.Clients.User(id).SendAsync("Notify", new
+            {
+                type = "success",
+                message = "Bạn đã đổi mật khẩu thành công"
+            });
 
             return Ok(ApiResponse.Success(message: "Đổi mật khẩu thành công"));
         }
-
 
         // ============================
         // 🧩 Lấy hồ sơ
@@ -277,11 +356,11 @@ namespace EduConnect.Controllers
         [HttpGet("me")]
         public async Task<IActionResult> Me()
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (userId == null)
+            var id = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (id == null)
                 return Unauthorized(ApiResponse.Error("Không xác định được người dùng."));
 
-            var profile = await _auth.GetProfileAsync(Guid.Parse(userId));
+            var profile = await _auth.GetProfileAsync(Guid.Parse(id));
             return Ok(ApiResponse.Success(profile));
         }
 
@@ -292,13 +371,13 @@ namespace EduConnect.Controllers
         [HttpPut("profile")]
         public async Task<IActionResult> UpdateProfile([FromBody] UpdateProfileDto dto)
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            await _auth.UpdateProfileAsync(Guid.Parse(userId!), dto);
+            var id = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            await _auth.UpdateProfileAsync(Guid.Parse(id!), dto);
             return Ok(ApiResponse.Success(message: "Cập nhật thành công"));
         }
 
         // ============================
-        // 📤 Upload Avatar Local
+        // 📤 Upload Avatar
         // ============================
         [Authorize]
         [HttpPost("upload-avatar")]
@@ -308,28 +387,24 @@ namespace EduConnect.Controllers
             if (file == null || file.Length == 0)
                 return BadRequest(ApiResponse.Error("File không hợp lệ"));
 
-            var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-            var user = await _db.Users.FindAsync(userId);
-            if (user == null) return NotFound(ApiResponse.Error("Không tìm thấy user"));
+            var id = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+            var nguoiDung = await _db.NguoiDungs.FindAsync(id);
+            if (nguoiDung == null) return NotFound(ApiResponse.Error("Không tìm thấy người dùng"));
 
-            // 📂 Thư mục lưu
             var folder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "avatars");
             Directory.CreateDirectory(folder);
 
-            // 🔖 Tên file
             var ext = Path.GetExtension(file.FileName);
-            var filename = $"{userId}{ext}";
+            var filename = $"{id}{ext}";
             var path = Path.Combine(folder, filename);
 
-            // 💾 Ghi file
-            using (var stream = new FileStream(path, FileMode.Create))
+            await using (var stream = new FileStream(path, FileMode.Create))
                 await file.CopyToAsync(stream);
 
-            // ✅ Trả về URL tuyệt đối (để Blazor load đúng domain của API)
             var baseUrl = $"{Request.Scheme}://{Request.Host}";
             var avatarUrl = $"{baseUrl}/uploads/avatars/{filename}";
 
-            user.Avatar = avatarUrl;
+            nguoiDung.AnhDaiDien = avatarUrl;
             await _db.SaveChangesAsync();
 
             return Ok(ApiResponse.Success(new { avatar = avatarUrl }, "Đổi avatar thành công"));
@@ -345,48 +420,37 @@ namespace EduConnect.Controllers
             if (string.IsNullOrWhiteSpace(req.RefreshToken))
                 return BadRequest(ApiResponse.Error("Thiếu refresh token."));
 
-            // 🔍 Tìm refresh token trong DB
-            var tokenEntity = await _db.RefreshTokens
-                .Include(x => x.User)
+            var tokenEntity = await _db.TokenLamMois
+                .Include(x => x.NguoiDung)
                 .FirstOrDefaultAsync(x => x.Token == req.RefreshToken);
 
-            // ❌ Không tồn tại hoặc đã hết hạn
             if (tokenEntity == null || !tokenEntity.IsActive)
-                return Unauthorized(ApiResponse.Error("Refresh token không hợp lệ hoặc đã hết hạn."));
+                return Unauthorized(ApiResponse.Error("Token không hợp lệ hoặc đã hết hạn."));
 
-            var user = tokenEntity.User;
-            if (user == null)
+            var nguoiDung = tokenEntity.NguoiDung;
+            if (nguoiDung == null)
                 return Unauthorized(ApiResponse.Error("Không tìm thấy người dùng."));
 
-            // ✅ Vô hiệu hóa token cũ (để tránh reuse)
             tokenEntity.RevokedAt = DateTime.UtcNow;
 
-            // ✅ Sinh token mới
-            var (access, _) = _tokens.CreateAccessToken(user);
+            var (access, _) = _tokens.CreateAccessToken(nguoiDung);
             var refresh = _tokens.CreateRefreshToken();
 
-            _db.RefreshTokens.Add(new RefreshToken
+            _db.TokenLamMois.Add(new TokenLamMoi
             {
-                UserId = user.UserId,
+                MaNguoiDung = nguoiDung.MaNguoiDung,
                 Token = refresh,
-                ExpiresAt = DateTime.UtcNow.AddDays(
-                    int.Parse(_cfg["Jwt:RefreshTokenDays"] ?? "7")
-                )
+                ExpiresAt = DateTime.UtcNow.AddDays(int.Parse(_cfg["Jwt:RefreshTokenDays"] ?? "7"))
             });
 
             await _db.SaveChangesAsync();
 
-            var data = new TokenResponse(access, refresh);
-            return Ok(ApiResponse.Success(data, "Làm mới token thành công"));
-
+            return Ok(ApiResponse.Success(new TokenResponse(access, refresh), "Làm mới token thành công"));
         }
 
-        // DTO yêu cầu
         public class RefreshTokenRequest
         {
             public string RefreshToken { get; set; } = string.Empty;
         }
-
-
     }
 }

@@ -25,6 +25,17 @@ namespace EduConnect.Repositories.Implementations
                                  .ConfigureAwait(false);
         }
 
+        public async Task<IEnumerable<LopHoc>> GetAllByNguoiTaoAsync(Guid nguoiTaoId)
+        {
+            return await _context.Set<LopHoc>()
+                                 .Include(x => x.KhoiHoc)
+                                 .Where(x => x.NguoiTaoId == nguoiTaoId)
+                                 .OrderByDescending(x => x.NgayTao)
+                                 .ToListAsync()
+                                 .ConfigureAwait(false);
+        }
+
+
         public async Task<LopHoc?> GetByIdAsync(int id)
         {
             return await _context.Set<LopHoc>()

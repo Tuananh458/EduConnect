@@ -1,0 +1,44 @@
+﻿@page "/hoclieu/ketqualambai/{BaiLamId:int}"
+@using EduConnect.Client.Services
+@using EduConnect.Shared.DTOs.HocLieu
+@inject BaiLamHocLieuService BaiLamService
+
+<h3 class="fw-bold text-primary mb-3">📋 Kết quả bài làm</h3>
+
+@if (ketQua is null)
+{
+    <p>Đang tải...</p>
+}
+else
+{
+    <div class="card shadow-sm p-4">
+        <div class="row mb-3">
+            <div class="col-md-3"><b>Mã bài làm:</b> @ketQua.BaiLamId</div>
+            <div class="col-md-3"><b>Học liệu:</b> @ketQua.HocLieuId</div>
+            <div class="col-md-3"><b>Điểm:</b> @((ketQua.Diem ?? 0).ToString("0.00"))</div>
+            <div class="col-md-3"><b>Nộp lúc:</b> @ketQua.ThoiGianNop?.ToLocalTime().ToString("HH:mm dd/MM/yyyy")</div>
+        </div>
+
+        @foreach (var item in ketQua.CauTraLoi.Select((c, i) => new { Cau = c, Stt = i + 1 }))
+        {
+            var c = item.Cau;
+            var dung = c.Dung;
+            <div class="mb-3 p-3 rounded-3" style="background-color:@(dung ? "#e9fbe9" : "#fdeaea")">
+                <div class="fw-semibold mb-1">@($"{item.Stt}. {c.NoiDung}")</div>
+                <div><b>Đáp án đúng:</b> @c.DapAnDung</div>
+                <div><b>Bạn chọn:</b> @c.DapAnChon</div>
+                <div class="small text-muted">@((dung ? "✅ Chính xác" : "❌ Chưa chính xác"))</div>
+            </div>
+        }
+    </div>
+}
+
+@code {
+    [Parameter] public int BaiLamId { get; set; }
+    private KetQuaBaiLamDto? ketQua;
+
+    protected override async Task OnInitializedAsync()
+    {
+        ketQua = await BaiLamService.GetKetQuaAsync(BaiLamId);
+    }
+}

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic; 
 
 namespace EduConnect.Shared.DTOs.HocLieu
 {
@@ -13,5 +14,12 @@ namespace EduConnect.Shared.DTOs.HocLieu
         public bool LaHocLieuAn { get; set; }
         public DateTime NgayTao { get; set; }
         public string? TenKhoaHoc { get; set; }
+        public Guid NguoiTaoId { get; set; }
+
+
+   
+        public List<CauHoiHocLieuDto> CauHoiTuTao { get; set; } = new();
+        public List<CauHoiNganHangDto> CauHoiDuocChon { get; set; } = new();
+
     }
 }

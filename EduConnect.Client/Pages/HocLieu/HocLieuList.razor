@@ -1,5 +1,5 @@
 ﻿@page "/hoclieu"
-@attribute [Authorize]
+@attribute [Authorize(Roles = "GiaoVien")]
 @layout MainLayout
 @using EduConnect.Shared.DTOs.HocLieu
 @using EduConnect.Client.Services

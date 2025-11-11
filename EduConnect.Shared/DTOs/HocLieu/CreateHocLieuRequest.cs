@@ -8,5 +8,7 @@
         public string NguonTao { get; set; } = "Tự tạo";
         public bool LaHocLieuTuDo { get; set; }
         public bool LaHocLieuAn { get; set; }
+        public Guid NguoiTaoId { get; set; }
+
     }
 }

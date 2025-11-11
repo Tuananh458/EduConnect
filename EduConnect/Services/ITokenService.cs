@@ -1,10 +1,10 @@
-﻿using EduConnect.Models.Auth;
+﻿using EduConnect.Models;
 
 namespace EduConnect.Services
 {
     public interface ITokenService
     {
-        (string accessToken, DateTime expiresAt) CreateAccessToken(User user);
+        (string accessToken, DateTime expiresAt) CreateAccessToken(NguoiDung nguoiDung);
         string CreateRefreshToken();
     }
 }

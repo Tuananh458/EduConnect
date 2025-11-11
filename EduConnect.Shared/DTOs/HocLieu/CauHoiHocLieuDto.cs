@@ -14,5 +14,6 @@
         public string? DapAnC { get; set; }
         public string? DapAnD { get; set; }
         public string? DapAnDung { get; set; }
+        public int? ThuTu { get; set; }
     }
 }

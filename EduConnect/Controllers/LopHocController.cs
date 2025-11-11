@@ -1,7 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using EduConnect.Services.Interfaces;
-using EduConnect.Shared.DTOs;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
+using EduConnect.Shared.DTOs.LopHoc;
+
 
 namespace EduConnect.Controllers
 {
@@ -16,13 +19,21 @@ namespace EduConnect.Controllers
             _service = service;
         }
 
-        // 🟢 Lấy danh sách lớp học
+        [Authorize(Roles = "GiaoVien,Admin")]
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var result = await _service.GetAllAsync();
-            return Ok(result);
+            var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+            var role = User.FindFirst(ClaimTypes.Role)?.Value;
+
+            if (role == "GiaoVien")
+                return Ok(await _service.GetAllByNguoiTaoAsync(userId));
+
+            return Ok(await _service.GetAllAsync()); // Admin xem tất cả
         }
+
+
+
 
         // 🟢 Lấy chi tiết 1 lớp học theo ID
         [HttpGet("{id:int}")]
@@ -36,6 +47,7 @@ namespace EduConnect.Controllers
         }
 
         // 🟢 Thêm mới lớp học (cho phép tạo nhiều lớp cùng lúc, ví dụ: A1;A2)
+        [Authorize(Roles = "GiaoVien,Admin")]
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateLopHocRequest request)
         {
@@ -58,11 +70,18 @@ namespace EduConnect.Controllers
         }
 
         // 🔴 Xóa lớp học
+        [Authorize(Roles = "Teacher,Admin")]
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> Delete(int id)
         {
-            await _service.DeleteAsync(id);
+            // ✅ Lấy ID người dùng hiện tại từ JWT
+            var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+
+            // ✅ Gọi service kèm theo userId để kiểm tra quyền
+            await _service.DeleteAsync(id, userId);
+
             return Ok(new { message = "Xóa lớp học thành công" });
         }
+
     }
 }

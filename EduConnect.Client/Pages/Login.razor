@@ -182,9 +182,8 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender)
-        {
-            await JS.InvokeVoidAsync("loadGoogleSignIn");
-        }
+        // 🟢 Luôn gọi lại mỗi lần trang login render (không chỉ lần đầu)
+        await JS.InvokeVoidAsync("loadGoogleSignIn");
     }
+
 }

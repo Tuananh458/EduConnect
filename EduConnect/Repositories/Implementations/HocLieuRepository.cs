@@ -45,7 +45,7 @@ namespace EduConnect.Repositories.Implementations
         {
             return _ctx.HocLieus
                 .Include(x => x.CauHois)
-                .FirstOrDefaultAsync(x => x.Id == id);
+                .FirstOrDefaultAsync(x => x.HocLieuId == id);
         }
 
         public async Task<HocLieu> AddAsync(HocLieu entity)

@@ -3,10 +3,13 @@
 @layout MainLayout
 @using EduConnect.Client.Services
 @using EduConnect.Shared.DTOs
+@using EduConnect.Shared.DTOs.LopHoc
 @using Microsoft.AspNetCore.Authorization
 @inject LopHocService LopHocService
 @inject IJSRuntime JS
 @inject NavigationManager Nav
+@inject UserSessionService Session
+
 
 
 <div class="container-fluid">
@@ -65,15 +68,23 @@
                                             <i class="fas fa-download"></i> Tải về
                                         </button>
 
-                                        <button class="btn btn-link text-info text-decoration-none me-3 p-0"
-                                                @onclick="() => Edit(lop.MaLopHoc)">
-                                            <i class="fas fa-edit"></i> Sửa
-                                        </button>
+                                        @if (lop.NguoiTaoId == Guid.Parse(currentUserId ?? Guid.Empty.ToString()) || currentUserRole == "Admin")
+                                        {
+                                            <button class="btn btn-link text-info text-decoration-none me-3 p-0"
+                                                    @onclick="() => Edit(lop.MaLopHoc)">
+                                                <i class="fas fa-edit"></i> Sửa
+                                            </button>
 
-                                        <button class="btn btn-link text-danger text-decoration-none p-0"
-                                                @onclick="() => Delete(lop.MaLopHoc)">
-                                            <i class="fas fa-times-circle"></i> Xóa
-                                        </button>
+                                            <button class="btn btn-link text-danger text-decoration-none p-0"
+                                                    @onclick="() => Delete(lop.MaLopHoc)">
+                                                <i class="fas fa-times-circle"></i> Xóa
+                                            </button>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted small"><i class="fas fa-lock"></i> Chỉ người tạo</span>
+                                        }
+
                                     </div>
 
 
@@ -159,6 +170,9 @@
     private bool isCreate = true;
     private string modalTitle = "Thêm lớp học";
     private string buttonText = "Lưu";
+    private string? currentUserId;
+    private string? currentUserRole;
+
 
     private CreateLopHocRequest createModel = new();
     private UpdateLopHocRequest editModel = new();
@@ -172,6 +186,14 @@
 
     protected override async Task OnInitializedAsync()
     {
+        var user = await Session.GetUserAsync();
+        if (user != null)
+        {
+            currentUserId = user.UserId.ToString();   // GUID người dùng hiện tại
+            currentUserRole = user.Role;              // Vai trò (Teacher, Admin, ...)
+        }
+
+
         await LoadLopHoc();
     }
 
@@ -237,7 +259,9 @@
             createModel.TenLopHoc = editModel.TenLopHoc;
             createModel.MaKhoiHoc = editModel.MaKhoiHoc;
 
-            var success = await LopHocService.CreateAsync(createModel);
+            var user = await Session.GetUserAsync();
+            var success = await LopHocService.CreateAsync(createModel, user?.UserId ?? Guid.Empty);
+
             if (success)
             {
                 await JS.InvokeVoidAsync("alert", "✅ Thêm lớp học thành công!");

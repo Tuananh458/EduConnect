@@ -1,5 +1,5 @@
 ﻿using System.Net.Http.Json;
-using EduConnect.Shared.DTOs;
+using EduConnect.Shared.DTOs.LopHoc;
 
 namespace EduConnect.Client.Services
 {
@@ -13,7 +13,6 @@ namespace EduConnect.Client.Services
         }
 
         // ====================== GET ALL ======================
-        // GET: https://localhost:7276/api/LopHoc
         public async Task<List<LopHocDto>> GetAllAsync()
         {
             try
@@ -29,7 +28,6 @@ namespace EduConnect.Client.Services
         }
 
         // ====================== GET BY ID ======================
-        // GET: https://localhost:7276/api/LopHoc/{id}
         public async Task<LopHocDto?> GetByIdAsync(int id)
         {
             try
@@ -45,11 +43,19 @@ namespace EduConnect.Client.Services
 
         // ====================== CREATE ======================
         // POST: https://localhost:7276/api/LopHoc
-        public async Task<bool> CreateAsync(CreateLopHocRequest request)
+        public async Task<bool> CreateAsync(CreateLopHocRequest request, Guid nguoiTaoId)
         {
             try
             {
-                var res = await _http.PostAsJsonAsync("api/LopHoc", request);
+                // ✅ Gửi kèm NguoiTaoId (server sẽ lưu vào bảng LOPHOC)
+                var payload = new
+                {
+                    request.MaKhoiHoc,
+                    request.TenLopHoc,
+                    NguoiTaoId = nguoiTaoId
+                };
+
+                var res = await _http.PostAsJsonAsync("api/LopHoc", payload);
                 return res.IsSuccessStatusCode;
             }
             catch (Exception ex)
@@ -60,7 +66,6 @@ namespace EduConnect.Client.Services
         }
 
         // ====================== UPDATE ======================
-        // PUT: https://localhost:7276/api/LopHoc/{id}
         public async Task<bool> UpdateAsync(UpdateLopHocRequest request)
         {
             try
@@ -76,7 +81,6 @@ namespace EduConnect.Client.Services
         }
 
         // ====================== DELETE ======================
-        // DELETE: https://localhost:7276/api/LopHoc/{id}
         public async Task<bool> DeleteAsync(int id)
         {
             try

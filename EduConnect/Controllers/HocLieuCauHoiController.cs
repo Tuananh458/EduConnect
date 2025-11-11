@@ -1,5 +1,6 @@
 ﻿using EduConnect.Services.Interfaces;
 using EduConnect.Shared.DTOs.HocLieu;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
@@ -7,6 +8,7 @@ namespace EduConnect.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize(Roles = "GiaoVien")]
     public class HocLieuCauHoiController : ControllerBase
     {
         private readonly IHocLieuCauHoiService _service;

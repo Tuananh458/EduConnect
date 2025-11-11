@@ -62,16 +62,28 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSG9jTGlldVxDb21wb25lbnRzXENhdUhvaVByZXZpZXcucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
+[D:/DA/EduConnect/EduConnect.Client/Pages/HocLieu/DeThi.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSG9jTGlldVxEZVRoaS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
 [D:/DA/EduConnect/EduConnect.Client/Pages/HocLieu/HocLieuEditor.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSG9jTGlldVxIb2NMaWV1RWRpdG9yLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/DA/EduConnect/EduConnect.Client/Pages/HocLieu/HocLieuLamBai.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSG9jTGlldVxIb2NMaWV1TGFtQmFpLnJhem9y
-build_metadata.AdditionalFiles.CssScope = 
-
 [D:/DA/EduConnect/EduConnect.Client/Pages/HocLieu/HocLieuList.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSG9jTGlldVxIb2NMaWV1TGlzdC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/DA/EduConnect/EduConnect.Client/Pages/HocLieu/KetQuaHocLieu.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSG9jTGlldVxLZXRRdWFIb2NMaWV1LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/DA/EduConnect/EduConnect.Client/Pages/HocLieu/KetQuaLamBai.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSG9jTGlldVxLZXRRdWFMYW1CYWkucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/DA/EduConnect/EduConnect.Client/Pages/HocLieu/LamBai.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSG9jTGlldVxMYW1CYWkucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
 [D:/DA/EduConnect/EduConnect.Client/Pages/Home.razor]
@@ -84,6 +96,10 @@ build_metadata.AdditionalFiles.CssScope =
 
 [D:/DA/EduConnect/EduConnect.Client/Pages/LopHoc/HocSinhImport.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTG9wSG9jXEhvY1NpbmhJbXBvcnQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/DA/EduConnect/EduConnect.Client/Pages/LopHoc/LopCuaToi.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTG9wSG9jXExvcEN1YVRvaS5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
 [D:/DA/EduConnect/EduConnect.Client/Pages/LopHoc/LopHocList.razor]

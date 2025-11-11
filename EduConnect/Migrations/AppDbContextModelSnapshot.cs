@@ -22,186 +22,165 @@ namespace EduConnect.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("EduConnect.Models.Auth.EmailVerification", b =>
+            modelBuilder.Entity("EduConnect.Models.DatLaiMatKhau", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<Guid>("MaDatLaiMatKhau")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Code")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("maDatLaiMatKhau");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime2")
+                        .HasColumnName("ngayTao");
 
                     b.Property<DateTime>("ExpiresAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime2")
+                        .HasColumnName("hetHanLuc");
 
-                    b.Property<bool>("Used")
-                        .HasColumnType("bit");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("EmailVerifications");
-                });
-
-            modelBuilder.Entity("EduConnect.Models.Auth.PasswordReset", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("ExpiresAt")
-                        .HasColumnType("datetime2");
+                    b.Property<Guid>("MaNguoiDung")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("maNguoiDung");
 
                     b.Property<string>("Token")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)")
+                        .HasColumnName("token");
 
                     b.Property<bool>("Used")
-                        .HasColumnType("bit");
+                        .HasColumnType("bit")
+                        .HasColumnName("daSuDung");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
+                    b.HasKey("MaDatLaiMatKhau");
+
+                    b.HasIndex("MaNguoiDung");
+
+                    b.ToTable("DATLAIMATKHAU");
+                });
+
+            modelBuilder.Entity("EduConnect.Models.GiaoVien", b =>
+                {
+                    b.Property<int>("MaGiaoVien")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("maGiaoVien");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MaGiaoVien"));
+
+                    b.Property<string>("ChuyenMon")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
+                        .HasColumnName("chuyenMon");
+
+                    b.Property<string>("DiaChi")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasColumnName("diaChi");
+
+                    b.Property<Guid>("MaNguoiDung")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("maNguoiDung");
+
+                    b.Property<DateTime?>("NgayBatDau")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("ngayBatDau");
+
+                    b.Property<DateTime?>("NgayTao")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("ngayTao");
+
+                    b.Property<bool>("TrangThaiCongTac")
+                        .HasColumnType("bit")
+                        .HasColumnName("trangThaiCongTac");
+
+                    b.Property<string>("TrinhDo")
+                        .HasMaxLength(60)
+                        .HasColumnType("nvarchar(60)")
+                        .HasColumnName("trinhDo");
+
+                    b.HasKey("MaGiaoVien");
+
+                    b.HasIndex("MaNguoiDung");
+
+                    b.ToTable("GIAOVIEN");
+                });
+
+            modelBuilder.Entity("EduConnect.Models.HocLieu.BaiLamChiTiet", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool?>("DungSai")
+                        .HasColumnType("bit")
+                        .HasColumnName("dungSai");
+
+                    b.Property<int>("MaBaiLam")
+                        .HasColumnType("int")
+                        .HasColumnName("maBaiLam");
+
+                    b.Property<int>("MaCauHoi")
+                        .HasColumnType("int")
+                        .HasColumnName("maCauHoi");
+
+                    b.Property<string>("TraLoi")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("traLoi");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("MaBaiLam");
 
-                    b.ToTable("PasswordResets");
-                });
+                    b.HasIndex("MaCauHoi");
 
-            modelBuilder.Entity("EduConnect.Models.Auth.RefreshToken", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("ExpiresAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("RevokedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Token")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("RefreshTokens");
-                });
-
-            modelBuilder.Entity("EduConnect.Models.Auth.User", b =>
-                {
-                    b.Property<Guid>("UserId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("AuthProvider")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Avatar")
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(512)
-                        .HasColumnType("nvarchar(512)")
-                        .HasDefaultValue("/template/img/avt.svg");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Email")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("FullName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("LastLoginAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("MustChangePassword")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("PasswordHash")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Phone")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Role")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<byte>("Status")
-                        .HasColumnType("tinyint");
-
-                    b.Property<string>("Username")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("UserId");
-
-                    b.HasIndex("Email")
-                        .IsUnique()
-                        .HasFilter("[Email] IS NOT NULL");
-
-                    b.HasIndex("Username")
-                        .IsUnique();
-
-                    b.ToTable("Users");
+                    b.ToTable("BAILAMCHITIET");
                 });
 
             modelBuilder.Entity("EduConnect.Models.HocLieu.BaiLamHocLieu", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("id");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<double?>("Diem")
+                        .HasColumnType("float")
+                        .HasColumnName("diem");
+
                     b.Property<int>("HocLieuId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("hocLieuId");
 
-                    b.Property<int?>("HocSinhId")
-                        .HasColumnType("int");
+                    b.Property<int>("HocSinhId")
+                        .HasColumnType("int")
+                        .HasColumnName("hocSinhId");
 
-                    b.Property<string>("TenHocSinh")
+                    b.Property<DateTime?>("NgayBatDau")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("ngayBatDau");
+
+                    b.Property<DateTime?>("NgayNop")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("ngayNop");
+
+                    b.Property<string>("TrangThai")
                         .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
-
-                    b.Property<DateTime>("ThoiGianBatDau")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("ThoiGianNop")
-                        .HasColumnType("datetime2");
-
-                    b.Property<double>("TongDiem")
-                        .HasColumnType("float");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnName("trangThai");
 
                     b.HasKey("Id");
 
-                    b.ToTable("BaiLamHocLieus");
+                    b.HasIndex("HocLieuId");
+
+                    b.HasIndex("HocSinhId");
+
+                    b.ToTable("BAILAMHOCLIEU");
                 });
 
             modelBuilder.Entity("EduConnect.Models.HocLieu.CauHoiHocLieu", b =>
@@ -262,83 +241,68 @@ namespace EduConnect.Migrations
                     b.ToTable("CauHoiHocLieus");
                 });
 
-            modelBuilder.Entity("EduConnect.Models.HocLieu.ChiTietBaiLamHocLieu", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("BaiLamHocLieuId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("CauHoiId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("DapAnChon")
-                        .HasMaxLength(5)
-                        .HasColumnType("nvarchar(5)");
-
-                    b.Property<string>("DapAnDung")
-                        .HasMaxLength(5)
-                        .HasColumnType("nvarchar(5)");
-
-                    b.Property<double>("Diem")
-                        .HasColumnType("float");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BaiLamHocLieuId");
-
-                    b.ToTable("ChiTietBaiLamHocLieus");
-                });
-
             modelBuilder.Entity("EduConnect.Models.HocLieu.HocLieu", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("HocLieuId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("hocLieuId");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("HocLieuId"));
 
                     b.Property<int?>("KhoaHocId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("khoaHocId");
 
                     b.Property<bool>("LaHocLieuAn")
-                        .HasColumnType("bit");
+                        .HasColumnType("bit")
+                        .HasColumnName("laHocLieuAn");
 
                     b.Property<bool>("LaHocLieuTuDo")
-                        .HasColumnType("bit");
+                        .HasColumnType("bit")
+                        .HasColumnName("laHocLieuTuDo");
 
                     b.Property<string>("MaLoaiHocLieu")
                         .IsRequired()
                         .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasColumnType("nvarchar(20)")
+                        .HasColumnName("maLoaiHocLieu");
 
                     b.Property<DateTime>("NgayTao")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime2")
+                        .HasColumnName("ngayTao");
+
+                    b.Property<Guid>("NguoiTaoId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("nguoiTaoId");
 
                     b.Property<string>("NguonTao")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnName("nguonTao");
 
                     b.Property<string>("TenHocLieu")
                         .IsRequired()
                         .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("nvarchar(255)")
+                        .HasColumnName("tenHocLieu");
 
                     b.Property<string>("TenKhoaHoc")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasColumnName("tenKhoaHoc");
 
                     b.Property<string>("TenLoaiHocLieu")
                         .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("nvarchar(255)")
+                        .HasColumnName("tenLoaiHocLieu");
 
-                    b.HasKey("Id");
+                    b.HasKey("HocLieuId");
 
-                    b.ToTable("HocLieus");
+                    b.HasIndex("NguoiTaoId");
+
+                    b.ToTable("HOCLIEU");
                 });
 
             modelBuilder.Entity("EduConnect.Models.HocLieu.HocLieuCauHoi", b =>
@@ -370,48 +334,6 @@ namespace EduConnect.Migrations
                     b.ToTable("HocLieuCauHois");
                 });
 
-            modelBuilder.Entity("EduConnect.Models.HocSinh", b =>
-                {
-                    b.Property<int>("MaHocSinh")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("maHocSinh");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MaHocSinh"));
-
-                    b.Property<bool>("LaLopTruong")
-                        .HasColumnType("bit")
-                        .HasColumnName("laLopTruong");
-
-                    b.Property<string>("MaDinhDanh")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("maDinhDanh");
-
-                    b.Property<int>("MaLopHoc")
-                        .HasColumnType("int")
-                        .HasColumnName("maLopHoc");
-
-                    b.Property<DateTime?>("NgaySinh")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("ngaySinh");
-
-                    b.Property<DateTime?>("NgayTao")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("ngayTao");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("userId");
-
-                    b.HasKey("MaHocSinh");
-
-                    b.HasIndex("MaLopHoc");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("HOCSINH");
-                });
-
             modelBuilder.Entity("EduConnect.Models.LopHoc", b =>
                 {
                     b.Property<int>("MaLopHoc")
@@ -421,11 +343,12 @@ namespace EduConnect.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MaLopHoc"));
 
-                    b.Property<int?>("GiaoVienMaGiaoVien")
-                        .HasColumnType("int");
-
                     b.Property<int?>("KhoiHocMaKhoiHoc")
                         .HasColumnType("int");
+
+                    b.Property<int?>("MaGiaoVienChuNhiem")
+                        .HasColumnType("int")
+                        .HasColumnName("maGiaoVienChuNhiem");
 
                     b.Property<int>("MaKhoiHoc")
                         .HasColumnType("int")
@@ -434,6 +357,10 @@ namespace EduConnect.Migrations
                     b.Property<DateTime?>("NgayTao")
                         .HasColumnType("datetime2")
                         .HasColumnName("ngayTao");
+
+                    b.Property<Guid?>("NguoiTaoId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("nguoiTaoId");
 
                     b.Property<int?>("SiSo")
                         .HasColumnType("int")
@@ -450,9 +377,11 @@ namespace EduConnect.Migrations
 
                     b.HasKey("MaLopHoc");
 
-                    b.HasIndex("GiaoVienMaGiaoVien");
-
                     b.HasIndex("KhoiHocMaKhoiHoc");
+
+                    b.HasIndex("MaGiaoVienChuNhiem");
+
+                    b.HasIndex("NguoiTaoId");
 
                     b.HasIndex("MaKhoiHoc", "TenLopHoc")
                         .IsUnique();
@@ -460,48 +389,100 @@ namespace EduConnect.Migrations
                     b.ToTable("LOPHOC");
                 });
 
-            modelBuilder.Entity("EduConnect.Models.School.GiaoVien", b =>
+            modelBuilder.Entity("EduConnect.Models.NguoiDung", b =>
                 {
-                    b.Property<int>("MaGiaoVien")
+                    b.Property<Guid>("MaNguoiDung")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("maGiaoVien");
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("maNguoiDung");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MaGiaoVien"));
+                    b.Property<string>("AnhDaiDien")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(512)
+                        .HasColumnType("nvarchar(512)")
+                        .HasDefaultValue("/template/img/avt.svg")
+                        .HasColumnName("anhDaiDien");
 
-                    b.Property<string>("ChuyenMon")
+                    b.Property<string>("Email")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
+                        .HasColumnName("email");
+
+                    b.Property<int?>("GiaoVienMaGiaoVien")
+                        .HasColumnType("int");
+
+                    b.Property<string>("HoTen")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)")
-                        .HasColumnName("chuyenMon");
+                        .HasColumnName("hoTen");
 
-                    b.Property<string>("DiaChi")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)")
-                        .HasColumnName("diaChi");
+                    b.Property<int?>("HocSinhMaHocSinh")
+                        .HasColumnType("int");
 
-                    b.Property<int>("MaNguoiDung")
-                        .HasColumnType("int")
-                        .HasColumnName("maNguoiDung");
-
-                    b.Property<DateTime?>("NgayBatDau")
+                    b.Property<DateTime?>("LanDangNhapCuoi")
                         .HasColumnType("datetime2")
-                        .HasColumnName("ngayBatDau");
+                        .HasColumnName("lanDangNhapCuoi");
 
-                    b.Property<bool>("TrangThaiCongTac")
-                        .HasColumnType("bit")
-                        .HasColumnName("trangThaiCongTac");
-
-                    b.Property<string>("TrinhDo")
+                    b.Property<string>("MatKhauHash")
                         .IsRequired()
-                        .HasMaxLength(60)
-                        .HasColumnType("nvarchar(60)")
-                        .HasColumnName("trinhDo");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("matKhauHash");
 
-                    b.HasKey("MaGiaoVien");
+                    b.Property<DateTime>("NgayTao")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("ngayTao");
 
-                    b.ToTable("GIAOVIEN");
+                    b.Property<string>("NguonXacThuc")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)")
+                        .HasColumnName("nguonXacThuc");
+
+                    b.Property<bool>("PhaiDoiMatKhau")
+                        .HasColumnType("bit")
+                        .HasColumnName("phaiDoiMatKhau");
+
+                    b.Property<int?>("PhuHuynhMaPhuHuynh")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SoDienThoai")
+                        .HasMaxLength(15)
+                        .HasColumnType("nvarchar(15)")
+                        .HasColumnName("soDienThoai");
+
+                    b.Property<string>("TenDangNhap")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnName("tenDangNhap");
+
+                    b.Property<byte>("TrangThai")
+                        .HasColumnType("tinyint")
+                        .HasColumnName("trangThai");
+
+                    b.Property<string>("VaiTro")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)")
+                        .HasColumnName("vaiTro");
+
+                    b.HasKey("MaNguoiDung");
+
+                    b.HasIndex("Email")
+                        .IsUnique()
+                        .HasFilter("[email] IS NOT NULL");
+
+                    b.HasIndex("GiaoVienMaGiaoVien");
+
+                    b.HasIndex("HocSinhMaHocSinh");
+
+                    b.HasIndex("PhuHuynhMaPhuHuynh");
+
+                    b.HasIndex("TenDangNhap")
+                        .IsUnique();
+
+                    b.ToTable("NGUOIDUNG");
                 });
 
             modelBuilder.Entity("EduConnect.Models.School.KhoiHoc", b =>
@@ -577,7 +558,86 @@ namespace EduConnect.Migrations
                     b.ToTable("LIENKET_PHUHUYNH_HOCSINH");
                 });
 
-            modelBuilder.Entity("EduConnect.Models.School.PhuHuynh", b =>
+            modelBuilder.Entity("EduConnect.Models.TokenLamMoi", b =>
+                {
+                    b.Property<Guid>("MaTokenLamMoi")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("maTokenLamMoi");
+
+                    b.Property<DateTime>("ExpiresAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("hetHanLuc");
+
+                    b.Property<Guid>("MaNguoiDung")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("maNguoiDung");
+
+                    b.Property<DateTime>("NgayTao")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("ngayTao");
+
+                    b.Property<DateTime?>("RevokedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("biHuyLuc");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasMaxLength(512)
+                        .HasColumnType("nvarchar(512)")
+                        .HasColumnName("token");
+
+                    b.HasKey("MaTokenLamMoi");
+
+                    b.HasIndex("MaNguoiDung");
+
+                    b.ToTable("TOKENLAMMOI");
+                });
+
+            modelBuilder.Entity("HocSinh", b =>
+                {
+                    b.Property<int>("MaHocSinh")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("maHocSinh");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MaHocSinh"));
+
+                    b.Property<bool>("LaLopTruong")
+                        .HasColumnType("bit")
+                        .HasColumnName("laLopTruong");
+
+                    b.Property<string>("MaDinhDanh")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnName("maDinhDanh");
+
+                    b.Property<int?>("MaLopHoc")
+                        .HasColumnType("int")
+                        .HasColumnName("maLopHoc");
+
+                    b.Property<Guid>("MaNguoiDung")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("maNguoiDung");
+
+                    b.Property<DateTime?>("NgaySinh")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("ngaySinh");
+
+                    b.Property<DateTime>("NgayTao")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("ngayTao");
+
+                    b.HasKey("MaHocSinh");
+
+                    b.HasIndex("MaLopHoc");
+
+                    b.HasIndex("MaNguoiDung");
+
+                    b.ToTable("HOCSINH");
+                });
+
+            modelBuilder.Entity("PhuHuynh", b =>
                 {
                     b.Property<int>("MaPhuHuynh")
                         .ValueGeneratedOnAdd()
@@ -587,63 +647,129 @@ namespace EduConnect.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MaPhuHuynh"));
 
                     b.Property<string>("DiaChi")
-                        .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)")
                         .HasColumnName("diaChi");
 
-                    b.Property<int>("MaNguoiDung")
-                        .HasColumnType("int")
+                    b.Property<Guid>("MaNguoiDung")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("maNguoiDung");
 
                     b.Property<string>("MucDoLienKet")
-                        .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)")
                         .HasColumnName("mucDoLienKet");
 
+                    b.Property<DateTime?>("NgayTao")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("ngayTao");
+
                     b.Property<string>("NgheNghiep")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)")
                         .HasColumnName("ngheNghiep");
 
                     b.HasKey("MaPhuHuynh");
 
+                    b.HasIndex("MaNguoiDung");
+
                     b.ToTable("PHUHUYNH");
                 });
 
-            modelBuilder.Entity("EduConnect.Models.Auth.EmailVerification", b =>
+            modelBuilder.Entity("XacThucEmail", b =>
                 {
-                    b.HasOne("EduConnect.Models.Auth.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Property<Guid>("MaXacThuc")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("maXacThuc");
 
-                    b.Navigation("User");
+                    b.Property<bool>("DaSuDung")
+                        .HasColumnType("bit")
+                        .HasColumnName("daSuDung");
+
+                    b.Property<string>("MaCode")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnName("maCode");
+
+                    b.Property<Guid>("MaNguoiDung")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("maNguoiDung");
+
+                    b.Property<DateTime>("NgayHetHan")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("ngayHetHan");
+
+                    b.Property<DateTime>("NgayTao")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("ngayTao");
+
+                    b.HasKey("MaXacThuc");
+
+                    b.HasIndex("MaNguoiDung");
+
+                    b.ToTable("XACTHUCEMAIL");
                 });
 
-            modelBuilder.Entity("EduConnect.Models.Auth.PasswordReset", b =>
+            modelBuilder.Entity("EduConnect.Models.DatLaiMatKhau", b =>
                 {
-                    b.HasOne("EduConnect.Models.Auth.User", "User")
+                    b.HasOne("EduConnect.Models.NguoiDung", "NguoiDung")
                         .WithMany()
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("MaNguoiDung")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("User");
+                    b.Navigation("NguoiDung");
                 });
 
-            modelBuilder.Entity("EduConnect.Models.Auth.RefreshToken", b =>
+            modelBuilder.Entity("EduConnect.Models.GiaoVien", b =>
                 {
-                    b.HasOne("EduConnect.Models.Auth.User", "User")
-                        .WithMany("RefreshTokens")
-                        .HasForeignKey("UserId")
+                    b.HasOne("EduConnect.Models.NguoiDung", "NguoiDung")
+                        .WithMany()
+                        .HasForeignKey("MaNguoiDung")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("NguoiDung");
+                });
+
+            modelBuilder.Entity("EduConnect.Models.HocLieu.BaiLamChiTiet", b =>
+                {
+                    b.HasOne("EduConnect.Models.HocLieu.BaiLamHocLieu", "BaiLamHocLieu")
+                        .WithMany("ChiTiets")
+                        .HasForeignKey("MaBaiLam")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("User");
+                    b.HasOne("EduConnect.Models.HocLieu.CauHoiHocLieu", "CauHoiHocLieu")
+                        .WithMany()
+                        .HasForeignKey("MaCauHoi")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("BaiLamHocLieu");
+
+                    b.Navigation("CauHoiHocLieu");
+                });
+
+            modelBuilder.Entity("EduConnect.Models.HocLieu.BaiLamHocLieu", b =>
+                {
+                    b.HasOne("EduConnect.Models.HocLieu.HocLieu", "HocLieu")
+                        .WithMany("BaiLams")
+                        .HasForeignKey("HocLieuId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("HocSinh", "HocSinh")
+                        .WithMany()
+                        .HasForeignKey("HocSinhId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("HocLieu");
+
+                    b.Navigation("HocSinh");
                 });
 
             modelBuilder.Entity("EduConnect.Models.HocLieu.CauHoiHocLieu", b =>
@@ -657,15 +783,15 @@ namespace EduConnect.Migrations
                     b.Navigation("HocLieu");
                 });
 
-            modelBuilder.Entity("EduConnect.Models.HocLieu.ChiTietBaiLamHocLieu", b =>
+            modelBuilder.Entity("EduConnect.Models.HocLieu.HocLieu", b =>
                 {
-                    b.HasOne("EduConnect.Models.HocLieu.BaiLamHocLieu", "BaiLam")
-                        .WithMany("ChiTietBaiLams")
-                        .HasForeignKey("BaiLamHocLieuId")
+                    b.HasOne("EduConnect.Models.NguoiDung", "NguoiTao")
+                        .WithMany()
+                        .HasForeignKey("NguoiTaoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("BaiLam");
+                    b.Navigation("NguoiTao");
                 });
 
             modelBuilder.Entity("EduConnect.Models.HocLieu.HocLieuCauHoi", b =>
@@ -677,7 +803,7 @@ namespace EduConnect.Migrations
                         .IsRequired();
 
                     b.HasOne("EduConnect.Models.HocLieu.HocLieu", "HocLieu")
-                        .WithMany()
+                        .WithMany("HocLieuCauHois")
                         .HasForeignKey("HocLieuId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
@@ -687,53 +813,65 @@ namespace EduConnect.Migrations
                     b.Navigation("HocLieu");
                 });
 
-            modelBuilder.Entity("EduConnect.Models.HocSinh", b =>
-                {
-                    b.HasOne("EduConnect.Models.LopHoc", "LopHoc")
-                        .WithMany()
-                        .HasForeignKey("MaLopHoc")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("EduConnect.Models.Auth.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("LopHoc");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("EduConnect.Models.LopHoc", b =>
                 {
-                    b.HasOne("EduConnect.Models.School.GiaoVien", null)
-                        .WithMany("LopHocsChuNhiem")
-                        .HasForeignKey("GiaoVienMaGiaoVien");
-
                     b.HasOne("EduConnect.Models.School.KhoiHoc", null)
                         .WithMany("LopHocs")
                         .HasForeignKey("KhoiHocMaKhoiHoc");
 
+                    b.HasOne("EduConnect.Models.GiaoVien", "GiaoVienChuNhiem")
+                        .WithMany("LopChuNhiems")
+                        .HasForeignKey("MaGiaoVienChuNhiem")
+                        .OnDelete(DeleteBehavior.SetNull);
+
                     b.HasOne("EduConnect.Models.School.KhoiHoc", "KhoiHoc")
                         .WithMany()
                         .HasForeignKey("MaKhoiHoc")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("EduConnect.Models.NguoiDung", "NguoiTao")
+                        .WithMany()
+                        .HasForeignKey("NguoiTaoId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("GiaoVienChuNhiem");
+
                     b.Navigation("KhoiHoc");
+
+                    b.Navigation("NguoiTao");
+                });
+
+            modelBuilder.Entity("EduConnect.Models.NguoiDung", b =>
+                {
+                    b.HasOne("EduConnect.Models.GiaoVien", "GiaoVien")
+                        .WithMany()
+                        .HasForeignKey("GiaoVienMaGiaoVien");
+
+                    b.HasOne("HocSinh", "HocSinh")
+                        .WithMany()
+                        .HasForeignKey("HocSinhMaHocSinh");
+
+                    b.HasOne("PhuHuynh", "PhuHuynh")
+                        .WithMany()
+                        .HasForeignKey("PhuHuynhMaPhuHuynh");
+
+                    b.Navigation("GiaoVien");
+
+                    b.Navigation("HocSinh");
+
+                    b.Navigation("PhuHuynh");
                 });
 
             modelBuilder.Entity("EduConnect.Models.School.LienKetPhuHuynhHocSinh", b =>
                 {
-                    b.HasOne("EduConnect.Models.HocSinh", "HocSinh")
+                    b.HasOne("HocSinh", "HocSinh")
                         .WithMany()
                         .HasForeignKey("MaHocSinh")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("EduConnect.Models.School.PhuHuynh", "PhuHuynh")
+                    b.HasOne("PhuHuynh", "PhuHuynh")
                         .WithMany("LienKetPhuHuynhHocSinhs")
                         .HasForeignKey("MaPhuHuynh")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -744,24 +882,79 @@ namespace EduConnect.Migrations
                     b.Navigation("PhuHuynh");
                 });
 
-            modelBuilder.Entity("EduConnect.Models.Auth.User", b =>
+            modelBuilder.Entity("EduConnect.Models.TokenLamMoi", b =>
                 {
-                    b.Navigation("RefreshTokens");
+                    b.HasOne("EduConnect.Models.NguoiDung", "NguoiDung")
+                        .WithMany("TokenLamMois")
+                        .HasForeignKey("MaNguoiDung")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("NguoiDung");
+                });
+
+            modelBuilder.Entity("HocSinh", b =>
+                {
+                    b.HasOne("EduConnect.Models.LopHoc", "LopHoc")
+                        .WithMany()
+                        .HasForeignKey("MaLopHoc")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("EduConnect.Models.NguoiDung", "NguoiDung")
+                        .WithMany()
+                        .HasForeignKey("MaNguoiDung")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("LopHoc");
+
+                    b.Navigation("NguoiDung");
+                });
+
+            modelBuilder.Entity("PhuHuynh", b =>
+                {
+                    b.HasOne("EduConnect.Models.NguoiDung", "NguoiDung")
+                        .WithMany()
+                        .HasForeignKey("MaNguoiDung")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("NguoiDung");
+                });
+
+            modelBuilder.Entity("XacThucEmail", b =>
+                {
+                    b.HasOne("EduConnect.Models.NguoiDung", "NguoiDung")
+                        .WithMany()
+                        .HasForeignKey("MaNguoiDung")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("NguoiDung");
+                });
+
+            modelBuilder.Entity("EduConnect.Models.GiaoVien", b =>
+                {
+                    b.Navigation("LopChuNhiems");
                 });
 
             modelBuilder.Entity("EduConnect.Models.HocLieu.BaiLamHocLieu", b =>
                 {
-                    b.Navigation("ChiTietBaiLams");
+                    b.Navigation("ChiTiets");
                 });
 
             modelBuilder.Entity("EduConnect.Models.HocLieu.HocLieu", b =>
                 {
+                    b.Navigation("BaiLams");
+
                     b.Navigation("CauHois");
+
+                    b.Navigation("HocLieuCauHois");
                 });
 
-            modelBuilder.Entity("EduConnect.Models.School.GiaoVien", b =>
+            modelBuilder.Entity("EduConnect.Models.NguoiDung", b =>
                 {
-                    b.Navigation("LopHocsChuNhiem");
+                    b.Navigation("TokenLamMois");
                 });
 
             modelBuilder.Entity("EduConnect.Models.School.KhoiHoc", b =>
@@ -769,7 +962,7 @@ namespace EduConnect.Migrations
                     b.Navigation("LopHocs");
                 });
 
-            modelBuilder.Entity("EduConnect.Models.School.PhuHuynh", b =>
+            modelBuilder.Entity("PhuHuynh", b =>
                 {
                     b.Navigation("LienKetPhuHuynhHocSinhs");
                 });

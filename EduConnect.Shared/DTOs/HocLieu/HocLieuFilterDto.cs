@@ -7,5 +7,7 @@
         public string? Keyword { get; set; }
         public bool LaHocLieuTuDo { get; set; }
         public bool LaHocLieuAn { get; set; }
+        public Guid NguoiTaoId { get; set; }
+
     }
 }

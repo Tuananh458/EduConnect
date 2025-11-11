@@ -1,4 +1,5 @@
 ﻿using EduConnect.Shared.DTOs.HocSinh;
+using EduConnect.Shared.DTOs.LopHoc;
 
 namespace EduConnect.Services.Interfaces
 {
@@ -11,6 +12,9 @@ namespace EduConnect.Services.Interfaces
         Task<ImportConfirmResult> ConfirmImportAsync(ImportConfirmRequest req);
         Task<ImportPreviewResponse> GeneratePreviewAsync(IFormFile file, int maLopHoc, string? prefix = null, string? defaultPassword = null);
         Task<int> DeleteManyAsync(List<int> ids);
+        Task<HocSinhDto?> GetByUserIdAsync(Guid maNguoiDung);
+        Task<LopHocChiTietDto?> GetLopHocCuaToiAsync(Guid maNguoiDung);
+
 
     }
 }

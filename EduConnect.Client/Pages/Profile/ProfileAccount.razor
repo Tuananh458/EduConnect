@@ -173,10 +173,13 @@ else
 
         if (success)
         {
-            // ✅ Cập nhật session và thông báo topbar ở đây
             model!.FullName = edit.FullName;
             model.Avatar = edit.Avatar;
+
+            // ✅ Cập nhật localStorage
             await Session.SetProfileAsync(model);
+
+            // ✅ Báo Topbar reload avatar mới
             Auth.NotifyLoginStateChanged();
 
             await JS.InvokeVoidAsync("Swal.fire", new
@@ -187,16 +190,7 @@ else
                 confirmButtonColor = "#3085d6"
             });
         }
-        else
-        {
-            await JS.InvokeVoidAsync("Swal.fire", new
-            {
-                title = "Lỗi!",
-                text = "Không thể cập nhật hồ sơ.",
-                icon = "error",
-                confirmButtonColor = "#d33"
-            });
-        }
+
     }
 
 
